@@ -76,6 +76,7 @@ body {
   padding: 10px 15px;
   text-align: center;
   overflow-y: auto;
+  overflow-x: hidden;
   /* overflow-y: scroll; */
 }
 
@@ -109,9 +110,8 @@ body {
 
 .modalCloseBtn:hover {
   background-color: #ee6c4d;
-  top: 4px;
-
-  box-shadow: 3px 7px 0px 0px rgba(0, 0, 0, 0.75);
+  /* top: 4px;
+  box-shadow: 3px 7px 0px 0px rgba(0, 0, 0, 0.75); */
 }
 
 .modalDevices {
@@ -123,19 +123,55 @@ body {
 .devicePreview {
   display: inline-block;
   width: 200px;
-  height: 300px;
+  min-height: 280px;
   background-color: rgba(142, 202, 230, 0.1);
   margin-right: 10px;
   margin-left: 10px;
   border-radius: 5px;
   margin-bottom: 20px;
+  padding: 10px;
 
-  cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .devicePreview:hover {
   background-color: rgba(142, 202, 230, 0.6);
+}
+
+.previewCanvas {
+  background-color: #003049;
+  /* border-radius: inherit; */
+  width: 200px;
+  height: 200px;
+}
+
+.devicePreview span {
+  color: inherit;
+  transition: color 0.3s;
+}
+
+.devicePreview:hover span {
+  color: white;
+}
+
+.devicePreview .deviceAddBtn {
+  border-radius: 5px;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+
+  user-select: none;
+  cursor: pointer;
+
+  color: white;
+  background-color: #219ebc;
+  transition: background-color 0.3s;
+}
+
+.devicePreview .deviceAddBtn:hover {
+  background-color: #219ebc80;
 }
 
 .invisible {
