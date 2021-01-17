@@ -75,6 +75,7 @@ body {
 
   padding: 10px 15px;
   text-align: center;
+  overflow-y: auto;
   /* overflow-y: scroll; */
 }
 
@@ -121,8 +122,8 @@ body {
 
 .devicePreview {
   display: inline-block;
-  width: 300px;
-  height: 400px;
+  width: 200px;
+  height: 300px;
   background-color: #8ecae6;
 }
 
