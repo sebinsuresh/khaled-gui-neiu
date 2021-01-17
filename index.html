@@ -34,11 +34,15 @@
   </head>
   <body>
     <h1 class="maintitle">Welcome to your Device Space</h1>
+
+    <!-- Space visualizer that allows for dragging devices around -->
     <div id="visualizer">
       <div class="addDevice" title="Add New Device" onclick="addPlusClicked();">
         +
       </div>
     </div>
+
+    <!-- Popup window (modal) that shows all add device options -->
     <div class="modalbg invisible">
       <div class="modal" data-simplebar>
         <h2 class="modalHeader">Choose Device:</h2>
@@ -46,7 +50,7 @@
           X
         </div>
 
-        <!-- Div below is a container for all the device types previews -->
+        <!-- div below is a container for all the add device previews -->
         <div class="modalDevices">
           <div class="devicePreview"></div>
           <div class="devicePreview"></div>
@@ -58,5 +62,6 @@
   </body>
   <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script src="modal.js"></script>
   <script src="index.js"></script>
 </html>
