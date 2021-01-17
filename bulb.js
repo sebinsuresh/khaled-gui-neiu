@@ -2,16 +2,7 @@
  *  Zdog Light Bulb Illustration code
  */
 
-// TAU = 2*PI -> Needed for Zdog angle calculations
-let TAU = Zdog.TAU;
-
 // Colors for the illustration
-let strongRed = "#CD2F10";
-let yellow = "#E0CB23";
-let offWhite = "#F8F9E8";
-let darkBlue = "#082B5C";
-let lightBlue = "#8BA6BB";
-let bgColor = "#231725"; //"#131719";
 let bulbBaseColor = "#868D87";
 let baseBottomColor = "#333232";
 let bulbColor = hexToRgba(lightBlue, 0.4);
@@ -20,11 +11,10 @@ let bulbHighlightColor = offWhite;
 let filamentOffColor = "#A87356";
 let filamentOnColor = offWhite;
 let innerGlowColor = hexToRgba(offWhite, 0.3);
-let outerGlowColor = hexToRgba(yellow, 0.3);
-let rayColor = hexToRgba(yellow, 0.3);
+let outerGlowColor = hexToRgba(bulbYellow, 0.3);
+let rayColor = hexToRgba(bulbYellow, 0.3);
 
 const createBulb = () => ({
-  zoom: 30,
   rotate: { x: -0.4 + TAU / 4, y: 0.3 },
   illo: null,
   setZoom(zoom) {
@@ -34,11 +24,10 @@ const createBulb = () => ({
   create(canvElement) {
     this.illo = new Zdog.Illustration({
       element: canvElement,
-      dragRotate: true,
       resize: true,
       rotate: this.rotate,
       translate: { x: 1, y: 3 },
-      zoom: this.zoom,
+      zoom: 30,
     });
     this.baseStart = new Zdog.Ellipse({
       addTo: this.illo,

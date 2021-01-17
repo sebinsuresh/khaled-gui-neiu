@@ -28,32 +28,45 @@ function initializeAddDevicesRegion() {
     let previewCanvas = document.createElement("canvas");
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
+    let prevIllo; // Illustration element for each device type
 
     switch (deviceTypes[deviceType]) {
       case deviceTypes.BULB:
         deviceName = "Light Bulb";
-        let prevBulb = createBulb().create(previewCanvas).setZoom(15);
-        previewElem.onmouseover = (e) => {
-          prevBulb = prevBulb.hoverEnter();
-          prevBulb = prevBulb.show();
-        };
-        previewElem.onmouseout = (e) => {
-          prevBulb = prevBulb.hoverLeave();
-          prevBulb = prevBulb.show();
-        };
-        // Add the preview illustation to the array
-        devicePreviewIllos.push(previewElem);
-        prevBulb = prevBulb.show();
+        prevIllo = createBulb().create(previewCanvas).setZoom(15);
         break;
       case deviceTypes.LAMP:
         deviceName = "Table Lamp";
+        prevIllo = createLamp().create(previewCanvas).setZoom(20);
         break;
       case deviceTypes.THERMOMETER:
         deviceName = "Thermometer";
+        prevIllo = createThermo().create(previewCanvas).setZoom(25);
         break;
       default:
         break;
     }
+
+    if (prevIllo) {
+      // Show illustration
+      prevIllo = prevIllo.show();
+      // Add the preview illustation to the array
+      devicePreviewIllos.push(previewElem);
+
+      // Hovering over the preview element div will do something
+      // with the illustration (whatever is implemented by hoverEnter)
+      if (prevIllo.hoverEnter) {
+        previewElem.onmouseover = () => {
+          prevIllo = prevIllo.hoverEnter();
+          prevIllo = prevIllo.show();
+        };
+        previewElem.onmouseout = () => {
+          prevIllo = prevIllo.hoverLeave();
+          prevIllo = prevIllo.show();
+        };
+      }
+    }
+
     let titleElem = document.createElement("span");
     titleElem.innerText = deviceName;
     previewElem.appendChild(titleElem);
