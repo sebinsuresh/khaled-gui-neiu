@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prototype 3</title>
+
+    <!-- Poppins Google Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styling for this page -->
+    <link rel="stylesheet" href="index.css" />
+
+    <!-- Scrollbar js framework -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
+    />
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+    <noscript>
+      <style>
+        /**
+        * Reinstate scrolling for non-JS clients
+        */
+        .simplebar-content-wrapper {
+          overflow: auto;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <h1 class="maintitle">Welcome to your Device Space</h1>
+    <div id="visualizer">
+      <div class="addDevice" title="Add New Device" onclick="addPlusClicked();">
+        +
+      </div>
+    </div>
+    <div class="modalbg">
+      <div class="modal" data-simplebar>
+        <h2 class="modalHeader">Choose Device:</h2>
+        <div class="modalCloseBtn" onclick="modalCloseClicked();">X</div>
+        <div class="modalDevices">
+          <div class="devicePreview"></div>
+          <div class="devicePreview"></div>
+          <div class="devicePreview"></div>
+          <div class="devicePreview"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script src="index.js"></script>
+</html>

@@ -1,0 +1,131 @@
+* {
+  color: #8ecae6;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #003049;
+}
+
+.maintitle {
+  text-align: center;
+}
+
+#visualizer {
+  border: 2px dashed white;
+  width: 95vw;
+  height: 80vh;
+  margin: auto;
+  position: relative;
+}
+
+.addDevice {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 2.3rem;
+  font-weight: 600;
+  text-align: center;
+  width: 3rem;
+  height: 3rem;
+  line-height: 2.5rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow: 4px 3px 0px 0px rgba(0, 0, 0, 0.75);
+
+  color: #8ecae6;
+  border: 5px solid #8ecae6;
+  background-color: #219ebc;
+
+  user-select: none;
+  cursor: pointer;
+
+  transition: color 0.3s, border 0.3s, background-color 0.3s;
+}
+
+.addDevice:hover {
+  color: #e8ddb5;
+  border: 5px solid #e8ddb5;
+  background-color: #8ecae6;
+}
+
+.modalbg {
+  background-color: rgba(255, 255, 255, 0.6);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal {
+  /* width: 400px; */
+  /* min-width: max-content; */
+  max-width: 85%;
+  min-height: 300px;
+  max-height: 60vh;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.75);
+
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  top: 20vh;
+
+  padding: 10px 15px;
+  text-align: center;
+  /* overflow-y: scroll; */
+}
+
+.modalHeader {
+  width: fit-content;
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modalCloseBtn {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  width: 50px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 6px;
+
+  user-select: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+
+  background-color: #e84855;
+  color: white;
+
+  box-shadow: 3px 5px 0px 0px rgba(0, 0, 0, 0.75);
+  transition: background-color 0.3s, top 0.3s, box-shadow 0.3s;
+}
+
+.modalCloseBtn:hover {
+  background-color: #ee6c4d;
+  top: 4px;
+
+  box-shadow: 3px 7px 0px 0px rgba(0, 0, 0, 0.75);
+}
+
+.modalDevices {
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.devicePreview {
+  display: inline-block;
+  width: 300px;
+  height: 400px;
+  background-color: #8ecae6;
+}
+
+.invisible {
+  visibility: hidden;
+}
