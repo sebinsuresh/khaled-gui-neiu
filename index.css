@@ -124,7 +124,18 @@ body {
   display: inline-block;
   width: 200px;
   height: 300px;
-  background-color: #8ecae6;
+  background-color: rgba(142, 202, 230, 0.1);
+  margin-right: 10px;
+  margin-left: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.devicePreview:hover {
+  background-color: rgba(142, 202, 230, 0.6);
 }
 
 .invisible {
