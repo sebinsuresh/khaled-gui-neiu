@@ -5,7 +5,7 @@ let deviceTypes = {
   THERMOMETER: 3,
 };
 
-let devicePreviews = [];
+let devicePreviewIllos = [];
 let addDevicesRegion = document.querySelector(".modalDevices");
 initializeAddDevicesRegion();
 
@@ -15,18 +15,35 @@ initializeAddDevicesRegion();
 // with title of the device, and a button to add it to the space.
 function initializeAddDevicesRegion() {
   addDevicesRegion.innerHTML = "";
+  devicePreviewIllos = [];
   for (let deviceType in deviceTypes) {
     // Create new div within the region
     let previewElem = document.createElement("div");
     previewElem.classList.add("devicePreview");
 
-    let deviceName = "EMPTY";
+    // Add the preview containing div to the region
+    addDevicesRegion.appendChild(previewElem);
+
+    let deviceName = "";
     let previewCanvas = document.createElement("canvas");
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
+
     switch (deviceTypes[deviceType]) {
       case deviceTypes.BULB:
         deviceName = "Light Bulb";
+        let prevBulb = createBulb().create(previewCanvas).setZoom(15);
+        previewElem.onmouseover = (e) => {
+          prevBulb = prevBulb.hoverEnter();
+          prevBulb = prevBulb.show();
+        };
+        previewElem.onmouseout = (e) => {
+          prevBulb = prevBulb.hoverLeave();
+          prevBulb = prevBulb.show();
+        };
+        // Add the preview illustation to the array
+        devicePreviewIllos.push(previewElem);
+        prevBulb = prevBulb.show();
         break;
       case deviceTypes.LAMP:
         deviceName = "Table Lamp";
@@ -49,12 +66,9 @@ function initializeAddDevicesRegion() {
       hideAddModal();
     };
     previewElem.appendChild(addBtn);
-
-    // Add the preview containing div to the region
-    addDevicesRegion.appendChild(previewElem);
   }
+}
 
-  function addDeviceToSpace(deviceType) {
-    console.log(`Add ${deviceType} to Device Space`);
-  }
+function addDeviceToSpace(deviceType) {
+  console.log(`Add ${deviceType} to Device Space`);
 }
