@@ -122,7 +122,7 @@ function addDeviceToSpace(deviceType) {
   let deviceIllo;
   switch (deviceTypes[deviceType]) {
     case deviceTypes.BULB:
-      deviceIllo = createBulb().create(deviceCanvElem).setZoom(15);
+      deviceIllo = createBulb().create(deviceCanvElem).setZoom(12);
       break;
     case deviceTypes.LAMP:
       deviceIllo = createLamp().create(deviceCanvElem).setZoom(15);
