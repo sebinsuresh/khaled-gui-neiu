@@ -37,9 +37,16 @@
     <h1 class="maintitle">Welcome to your Device Space</h1>
 
     <!-- Space visualizer that allows for dragging devices around -->
-    <div id="visualizer">
-      <div class="addDevice" title="Add New Device" onclick="addPlusClicked();">
-        +
+    <div id="visParent">
+      <div id="visualizer">
+        <div
+          class="addDevice"
+          title="Add New Device"
+          onclick="addPlusClicked();"
+        >
+          +
+        </div>
+        <div class="deviceContainer draggable"></div>
       </div>
     </div>
 

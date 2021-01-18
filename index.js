@@ -1,11 +1,11 @@
 // Device types enum
 let deviceTypes = {
-  BULB: 1,
-  LAMP: 2,
-  THERMOMETER: 3,
+  BULB: "Light Bulb",
+  LAMP: "Table Lamp",
+  THERMOMETER: "Thermometer",
 };
 
-let devicePreviewIllos = [];
+let devicePreviewObjects = [];
 let addDevicesRegion = document.querySelector(".modalDevices");
 initializeAddDevicesRegion();
 
@@ -15,7 +15,7 @@ initializeAddDevicesRegion();
 // with title of the device, and a button to add it to the space.
 function initializeAddDevicesRegion() {
   addDevicesRegion.innerHTML = "";
-  devicePreviewIllos = [];
+  devicePreviewObjects = [];
   for (let deviceType in deviceTypes) {
     // Create new div within the region
     let previewElem = document.createElement("div");
@@ -24,7 +24,6 @@ function initializeAddDevicesRegion() {
     // Add the preview containing div to the region
     addDevicesRegion.appendChild(previewElem);
 
-    let deviceName = "";
     let previewCanvas = document.createElement("canvas");
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
@@ -32,15 +31,12 @@ function initializeAddDevicesRegion() {
 
     switch (deviceTypes[deviceType]) {
       case deviceTypes.BULB:
-        deviceName = "Light Bulb";
         prevIllo = createBulb().create(previewCanvas).setZoom(15);
         break;
       case deviceTypes.LAMP:
-        deviceName = "Table Lamp";
         prevIllo = createLamp().create(previewCanvas).setZoom(20);
         break;
       case deviceTypes.THERMOMETER:
-        deviceName = "Thermometer";
         prevIllo = createThermo().create(previewCanvas).setZoom(25);
         break;
       default:
@@ -51,7 +47,7 @@ function initializeAddDevicesRegion() {
       // Show illustration
       prevIllo = prevIllo.show();
       // Add the preview illustation to the array
-      devicePreviewIllos.push(previewElem);
+      devicePreviewObjects.push(prevIllo);
 
       // Hovering over the preview element div will do something
       // with the illustration (whatever is implemented by hoverEnter)
@@ -68,7 +64,7 @@ function initializeAddDevicesRegion() {
     }
 
     let titleElem = document.createElement("span");
-    titleElem.innerText = deviceName;
+    titleElem.innerText = deviceTypes[deviceType];
     previewElem.appendChild(titleElem);
 
     let addBtn = document.createElement("div");
@@ -82,6 +78,140 @@ function initializeAddDevicesRegion() {
   }
 }
 
+// Array containing the deviceObject objects
+var devicesOnSpace = [];
+// Array containing the illustration
+// objects obtained using the create() methods
+var deviceIllosOnSpace = [];
+
+// Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
-  console.log(`Add ${deviceType} to Device Space`);
+  let deviceObject = {
+    deviceType,
+    x: 0.1,
+    y: 0.1,
+    status: "OFF",
+    name: deviceTypes[deviceType],
+  };
+  devicesOnSpace.push(deviceObject);
+
+  // Count the number of devices in the space already
+  // with the same type.
+  let sameTypeCount = 0;
+  devicesOnSpace.forEach((el) => {
+    if (el.deviceType === deviceType) sameTypeCount++;
+  });
+  deviceObject.name += " " + sameTypeCount;
+
+  // Create HTML elements and append them into the visualizer area
+  let deviceElem = document.createElement("div");
+  deviceElem.classList.add("draggable", "deviceContainer");
+  let deviceCanvElem = document.createElement("canvas");
+  deviceCanvElem.classList.add("deviceCanv");
+  let deviceNameP = document.createElement("p");
+  deviceNameP.innerText = deviceObject.name;
+  deviceNameP.classList.add("deviceNameP");
+  let deviceStatusP = document.createElement("p");
+  deviceStatusP.innerText = "OFF";
+  deviceStatusP.classList.add("deviceStatusP");
+  deviceElem.appendChild(deviceCanvElem);
+  deviceElem.appendChild(deviceNameP);
+  deviceElem.appendChild(deviceStatusP);
+  document.querySelector("#visualizer").appendChild(deviceElem);
+
+  let deviceIllo;
+  switch (deviceTypes[deviceType]) {
+    case deviceTypes.BULB:
+      deviceIllo = createBulb().create(deviceCanvElem).setZoom(15);
+      break;
+    case deviceTypes.LAMP:
+      deviceIllo = createLamp().create(deviceCanvElem).setZoom(15);
+      break;
+    case deviceTypes.THERMOMETER:
+      deviceIllo = createThermo().create(deviceCanvElem).setZoom(15);
+      break;
+    default:
+      break;
+  }
+  deviceIllo.show();
+  deviceIllosOnSpace.push(deviceIllo);
+}
+
+// Set the .draggable objects to have draggable properties
+interact(".draggable").draggable({
+  autoScroll: false,
+  inertia: false,
+  modifiers: [
+    interact.modifiers.restrictRect({
+      restriction: "parent",
+      endOnly: false,
+    }),
+  ],
+  listeners: {
+    move: dragMoveListener,
+    end: dragEndListener,
+  },
+});
+
+// Listens to move events thrown by the interactable object
+function dragMoveListener(event) {
+  let target = event.target;
+  let x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
+  let y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
+
+  target.style.transform = `translate(${x}px, ${y}px)`;
+
+  target.setAttribute("data-x", x);
+  target.setAttribute("data-y", y);
+}
+
+// Function that gets called when an object drag ends
+// TODO: Set the x & y positions in device objects using
+// devX & devY from here
+function dragEndListener(event) {
+  let devX = Math.abs(
+    (
+      (parseFloat(event.target.getAttribute("data-x")) || 0) /
+      event.target.parentElement.clientWidth
+    ).toFixed(2)
+  );
+  let devY = Math.abs(
+    (
+      (parseFloat(event.target.getAttribute("data-y")) || 0) /
+      event.target.parentElement.clientHeight
+    ).toFixed(2)
+  );
+  console.log(devX, devY);
+}
+
+// When the window is resized, the illustrations
+// have to re-rendered.
+window.addEventListener("resize", () => {
+  renderDevicePreviews();
+  renderDeviceSpaceDevices();
+});
+
+// Function to re-render the device illustrations in the
+// add device popup/modal
+function renderDevicePreviews() {
+  devicePreviewObjects.forEach((el) => {
+    if (el.show) {
+      let _ = el.show();
+    }
+  });
+}
+
+// Function to re-render the device illustrations in the
+// visualization region.
+// NOTE: The setTimeOut() is needed, otherwise the
+//       illustration disappears on window resize.
+//       No idea why. It works in the above method 🤷🏽‍♂️
+function renderDeviceSpaceDevices() {
+  deviceIllosOnSpace.forEach((el) => {
+    if (el.show) {
+      setTimeout(() => {
+        el.show();
+      }, 1);
+    }
+  });
 }

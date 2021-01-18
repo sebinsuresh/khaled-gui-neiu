@@ -39,7 +39,7 @@ const createThermo = () => ({
     });
     this.line1 = new Zdog.Shape({
       addTo: this.arcGroup,
-      color: yellow,
+      color: blue1,
       stroke: 0.25,
       path: [{ y: -2 }, { y: -1.5 }],
     });
@@ -55,12 +55,12 @@ const createThermo = () => ({
     this.line1.copy({
       rotate: { z: -TAU / 6 },
     });
-    this.smallerLinesGroup = new Zdog.Group({
+    this.smallerLinesGroup1 = new Zdog.Group({
       addTo: this.arcGroup,
     });
     this.smallLine1 = new Zdog.Shape({
-      addTo: this.smallerLinesGroup,
-      color: yellow,
+      addTo: this.smallerLinesGroup1,
+      color: blue1,
       stroke: 0.125,
       path: [{ y: -2 }, { y: -1.75 }],
       rotate: { z: TAU / 24 },
@@ -71,17 +71,17 @@ const createThermo = () => ({
     this.smallLine1.copy({
       rotate: { z: (3 * TAU) / 24 },
     });
-    this.smallerLinesGroup.copyGraph({
+    this.smallerLinesGroup2 = this.smallerLinesGroup1.copyGraph({
       rotate: {
         z: TAU / 6,
       },
     });
-    this.smallerLinesGroup.copyGraph({
+    this.smallerLinesGroup3 = this.smallerLinesGroup1.copyGraph({
       rotate: {
         z: -TAU / 6,
       },
     });
-    this.smallerLinesGroup.copyGraph({
+    this.smallerLinesGroup4 = this.smallerLinesGroup1.copyGraph({
       rotate: {
         z: -TAU / 3,
       },
@@ -90,7 +90,7 @@ const createThermo = () => ({
     // https://zzz.dog/extras#z-fighting
     this.line1_offset = new Zdog.Ellipse({
       addTo: this.arcGroup,
-      color: yellow,
+      color: blue1,
       stroke: 0.2,
       diameter: 0.5,
       translate: { y: 1.25 },
@@ -136,9 +136,47 @@ const createThermo = () => ({
       fill: true,
       textAlign: "center",
       stroke: 0.01,
-      color: "white",
+      color: blue0,
       translate: { y: 0.5 },
+      visible: false,
     });
+    return this;
+  },
+  turnOn() {
+    this.IlloOffText.visible = true;
+    this.IlloOffText.color = "white";
+    this.line1_offset.color = yellow;
+    for (let i = 0; i < 5; i++) {
+      this.arcGroup.children[i].color = yellow;
+    }
+    for (let i = 0; i < 3; i++) {
+      this.smallerLinesGroup1.children[i].color = yellow;
+      this.smallerLinesGroup2.children[i].color = yellow;
+      this.smallerLinesGroup3.children[i].color = yellow;
+      this.smallerLinesGroup4.children[i].color = yellow;
+    }
+    return this;
+  },
+  turnOff() {
+    this.IlloOffText.visible = false;
+    this.line1_offset.color = blue1;
+    for (let i = 0; i < 5; i++) {
+      this.arcGroup.children[i].color = blue1;
+    }
+    for (let i = 0; i < 3; i++) {
+      this.smallerLinesGroup1.children[i].color = blue1;
+      this.smallerLinesGroup2.children[i].color = blue1;
+      this.smallerLinesGroup3.children[i].color = blue1;
+      this.smallerLinesGroup4.children[i].color = blue1;
+    }
+    return this;
+  },
+  hoverEnter() {
+    this.turnOn();
+    return this;
+  },
+  hoverLeave() {
+    this.turnOff();
     return this;
   },
   show() {
