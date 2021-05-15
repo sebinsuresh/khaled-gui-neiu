@@ -156,8 +156,8 @@ interact(".draggable").draggable({
 // Listens to move events thrown by the interactable object
 function dragMoveListener(event) {
   let target = event.target;
-  let x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
-  let y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
+  let x = Math.round((parseFloat(target.getAttribute("data-x")) || 0) + event.dx);
+  let y = Math.round((parseFloat(target.getAttribute("data-y")) || 0) + event.dy);
 
   target.style.transform = `translate(${x}px, ${y}px)`;
 
