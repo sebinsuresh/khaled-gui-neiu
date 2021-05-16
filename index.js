@@ -15,7 +15,7 @@ initializeAddDevicesRegion();
 // <span> with title of the device, and a button to add it to 
 // the space.
 function initializeAddDevicesRegion() {
-  addDevicesRegion.innerHTML = "";
+  
   devicePreviewObjects = [];
   for (let deviceType in deviceTypes) {
     // Create new div within the region
@@ -80,10 +80,10 @@ function initializeAddDevicesRegion() {
 }
 
 // Array containing the deviceObject objects
-var devicesOnSpace = [];
+let devicesOnSpace = [];
 // Array containing the illustration
 // objects obtained using the create() methods
-var deviceIllosOnSpace = [];
+let deviceIllosOnSpace = [];
 
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
