@@ -1,5 +1,5 @@
 // Device types enum
-let deviceTypes = {
+const deviceTypes = {
   BULB: "Light Bulb",
   LAMP: "Table Lamp",
   THERMOMETER: "Thermometer",
@@ -11,8 +11,9 @@ initializeAddDevicesRegion();
 
 // Function that adds preview elements to the add devices modal.
 // Each preview element is a div with the class "devicePreview",
-// has a canvas that shows an illustrtation of the device, span
-// with title of the device, and a button to add it to the space.
+// has a <canvas> that shows an illustrtation of the device, 
+// <span> with title of the device, and a button to add it to 
+// the space.
 function initializeAddDevicesRegion() {
   addDevicesRegion.innerHTML = "";
   devicePreviewObjects = [];
