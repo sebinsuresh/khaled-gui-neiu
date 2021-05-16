@@ -9,13 +9,13 @@ const createLamp = () => ({
     this.illo.zoom = zoom;
     return this;
   },
-  create(canvElement) {
+  create(canvElement, isPreviewElem=false) {
     this.illo = new Zdog.Illustration({
       element: canvElement,
       resize: true,
       rotate: this.rotate,
       translate: { y: 3 },
-      zoom: 30,
+      zoom: isPreviewElem ? 20 : 15,
     });
     this.base = new Zdog.Cylinder({
       addTo: this.illo,

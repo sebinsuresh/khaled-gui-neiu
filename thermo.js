@@ -8,11 +8,11 @@ const createThermo = () => ({
     this.illo.zoom = zoom;
     return this;
   },
-  create(canvElement) {
+  create(canvElement, isPreviewElem=false) {
     this.illo = new Zdog.Illustration({
       element: canvElement,
       resize: true,
-      zoom: 30,
+      zoom: isPreviewElem ? 25 : 15,
       rotate: this.rotate,
     });
     this.base = new Zdog.Cylinder({

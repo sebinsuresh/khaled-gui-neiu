@@ -32,13 +32,13 @@ function initializeAddDevicesRegion() {
 
     switch (deviceTypes[deviceType]) {
       case deviceTypes.BULB:
-        prevIllo = createBulb().create(previewCanvas).setZoom(15);
+        prevIllo = createBulb().create(previewCanvas, true);
         break;
       case deviceTypes.LAMP:
-        prevIllo = createLamp().create(previewCanvas).setZoom(20);
+        prevIllo = createLamp().create(previewCanvas, true);
         break;
       case deviceTypes.THERMOMETER:
-        prevIllo = createThermo().create(previewCanvas).setZoom(25);
+        prevIllo = createThermo().create(previewCanvas, true);
         break;
       default:
         break;
@@ -123,13 +123,13 @@ function addDeviceToSpace(deviceType) {
   let deviceIllo;
   switch (deviceTypes[deviceType]) {
     case deviceTypes.BULB:
-      deviceIllo = createBulb().create(deviceCanvElem).setZoom(12);
+      deviceIllo = createBulb().create(deviceCanvElem);
       break;
     case deviceTypes.LAMP:
-      deviceIllo = createLamp().create(deviceCanvElem).setZoom(15);
+      deviceIllo = createLamp().create(deviceCanvElem);
       break;
     case deviceTypes.THERMOMETER:
-      deviceIllo = createThermo().create(deviceCanvElem).setZoom(15);
+      deviceIllo = createThermo().create(deviceCanvElem);
       break;
     default:
       break;

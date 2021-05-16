@@ -21,13 +21,13 @@ const createBulb = () => ({
     this.illo.zoom = zoom;
     return this;
   },
-  create(canvElement) {
+  create(canvElement, isPreviewElem=false) {
     this.illo = new Zdog.Illustration({
       element: canvElement,
       resize: true,
       rotate: this.rotate,
       translate: { x: 1, y: 3 },
-      zoom: 30,
+      zoom: isPreviewElem ? 15 : 12,
     });
     this.baseStart = new Zdog.Ellipse({
       addTo: this.illo,
