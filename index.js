@@ -291,12 +291,26 @@ function dragEndListener(event) {
   // console.log(deviceObj);
 }
 
-// When the window is resized, the illustrations
-// have to re-rendered.
+// When the window is resized, the illustrations have to re-render.
+// However, the "resize" event fires every frame of the browser UI,
+// so we add a timeout - The event is placed on a 200ms delay.
+// 'windowResizer' is a variable for this timeout functionality.
+// Code from: https://stackoverflow.com/a/60204716
+let windowResizer;
 window.addEventListener("resize", () => {
-  renderDevicePreviews();
-  placeDeviceSpaceDevices();
-  renderDeviceSpaceDevices();
+
+  // Clear any existing timeout.
+  clearTimeout(windowResizer);
+
+  // Create a new timeout on a 200ms delay.
+  windowResizer = setTimeout(() => {
+
+    // Execute these functions on a timeout.
+    renderDevicePreviews();
+    placeDeviceSpaceDevices();
+    renderDeviceSpaceDevices();
+    
+  }, 200);  
 });
 
 // Function to re-render the device illustrations in the
