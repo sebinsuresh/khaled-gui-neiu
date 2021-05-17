@@ -218,7 +218,7 @@ body {
   /* touch-action: none; */
   cursor: move;
 
-  position: relative;
+  position: absolute;
   left: 0px;
   top: 0px;
   transform: translate(0px, 0px);
