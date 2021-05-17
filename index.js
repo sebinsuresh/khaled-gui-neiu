@@ -48,24 +48,9 @@ function initializeAddDevicesRegion() {
     let previewCanvas = document.createElement("canvas");
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
-    let prevIllo; // Illustration element for each device type
 
-    switch (deviceTypes[deviceType]) {
-      case deviceTypes.BULB:
-        // prevIllo = createBulb().create(previewCanvas, true);
-        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
-        break;
-      case deviceTypes.LAMP:
-        // prevIllo = createLamp().create(previewCanvas, true);
-        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
-        break;
-      case deviceTypes.THERMOMETER:
-        // prevIllo = createThermo().create(previewCanvas, true);
-        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
-        break;
-      default:
-        break;
-    }
+    // Illustration element for each device type
+    const prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
 
     if (prevIllo) {
       // Show illustration
