@@ -27,7 +27,7 @@ const createBulb = () => ({
       resize: true,
       rotate: this.rotate,
       translate: { x: 1, y: 3 },
-      zoom: isPreviewElem ? 15 : 12,
+      zoom: isPreviewElem ? 15 : 10,
     });
     this.baseStart = new Zdog.Ellipse({
       addTo: this.illo,
@@ -219,7 +219,7 @@ const createBulb = () => ({
         this.bulbInnerGlow.visible = false;
         this.bulbOuterGlow.visible = false;
         this.outerRays.visible = false;
-        return this;
+        return this.show();
       case 'ON':
         this.bulb.color = bulbOnColor;
         this.bulbHighlight.visible = false;
@@ -227,9 +227,9 @@ const createBulb = () => ({
         this.bulbInnerGlow.visible = true;
         this.bulbOuterGlow.visible = true;
         this.outerRays.visible = true;
-        return this;
+        return this.show();
       default:
-        return this;
+        return this.show();
     }
   },
   hoverEnter() {

@@ -157,7 +157,7 @@ const createThermo = () => ({
           this.smallerLinesGroup3.children[i].color = blue1;
           this.smallerLinesGroup4.children[i].color = blue1;
         }
-        return this;
+        return this.show();
       case 'ON':
         this.IlloOffText.visible = true;
         this.IlloOffText.color = "white";
@@ -171,9 +171,9 @@ const createThermo = () => ({
           this.smallerLinesGroup3.children[i].color = yellow;
           this.smallerLinesGroup4.children[i].color = yellow;
         }
-        return this;
+        return this.show();
       default:
-        return this;
+        return this.show();
     }
   },
   hoverEnter() {

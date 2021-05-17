@@ -120,6 +120,7 @@ function addDeviceToSpace(deviceType) {
     y: 0.1,
     status: "OFF",
     name: deviceTypes[deviceType].name,
+    id: deviceType + "",
   };
   
   // Count the number of devices in the space already
@@ -129,6 +130,7 @@ function addDeviceToSpace(deviceType) {
     if (el.deviceType === deviceType) sameTypeCount++;
   });
   deviceObject.name += " " + sameTypeCount;
+  deviceObject.id += sameTypeCount;
   
   // Add the device's JS object to the array.
   devicesOnSpace.push(deviceObject);
@@ -140,6 +142,7 @@ function addDeviceToSpace(deviceType) {
   // (Draggability functionality is implemented using interactjs framework)
   let deviceElem = document.createElement("div");
   deviceElem.classList.add("draggable", "deviceContainer");
+  deviceElem.id = deviceObject.id;
 
   // The canvas element that contians the illustration for each device.
   // Notice that the content of the canvas itself is called later in the method.
@@ -160,22 +163,49 @@ function addDeviceToSpace(deviceType) {
     deviceObject.name = newName;
   });
 
-  // The input status shown to the user.
-  let deviceStatusP = document.createElement("p");
-  deviceStatusP.innerText = "OFF";
-  deviceStatusP.classList.add("deviceStatusP");
+  // The input status shown to the user - I am creating a <select> tag
+  // and calling it a "menu".
+  let deviceStatusMenu = document.createElement("select");
+  
+  // Create the statuses available to the device as options in the menu.
+  for (statusChoice of deviceTypes[deviceType].create().statuses){
+    let statusOption = document.createElement("option");
+    statusOption.innerText = statusChoice;
+    statusOption.value = statusChoice;
+
+    // Choose the "OFF" option by default.
+    if (statusChoice == "OFF")
+      statusOption.selected = true;
+
+    // Add this option to the menu.
+    deviceStatusMenu.appendChild(statusOption);
+  }
+  deviceStatusMenu.classList.add("deviceStatusMenu");
 
   // Add the children elements to the deviceElem div.
   deviceElem.appendChild(deviceCanvElem);
   deviceElem.appendChild(deviceNameTextInput);
-  deviceElem.appendChild(deviceStatusP);
+  deviceElem.appendChild(deviceStatusMenu);
 
   // Add the deviceElem div to the device space/visualizer/dotted region.
   document.querySelector("#visualizer").appendChild(deviceElem);
 
   // The canvas gets the appropriate illustration for the device displayed.
   let deviceIllo = deviceTypes[deviceType].create().create(deviceCanvElem);
-  deviceIllo.show();
+  deviceIllo = deviceIllo.show();
+
+  // Add listener to the status menu - when a choice is selected from the
+  // menu, update the illustration (by calling the changeStatus function
+  //  of the device object).
+  deviceStatusMenu.onchange = (ev) => {
+    const choice = ev.target.options.selectedIndex;
+    const optionSelected = deviceStatusMenu.options.item(choice);
+    const optionTextValue = optionSelected.value;
+
+    // Update the illustration object & the object in this file.
+    deviceIllo = deviceIllo.changeStatus(optionTextValue);
+    deviceObject.status = optionTextValue;
+  }
 
   // Add this device object to the deviceIllosOnSpace array.
   deviceIllosOnSpace.push(deviceIllo);
@@ -230,22 +260,24 @@ function dragMoveListener(event) {
 }
 
 // Function that gets called when an object drag ends
-// TODO: Set the x & y positions in device objects using
-// devX & devY from here
+// Sets the x & y positions in device objects using
+// devX & devY from here.
 function dragEndListener(event) {
+  const deviceDiv = event.target;
+  const deviceId = deviceDiv.id;
   let devX = Math.abs(
     (
-      (parseFloat(event.target.getAttribute("data-x")) || 0) /
-      event.target.parentElement.clientWidth
+      (parseFloat(deviceDiv.getAttribute("data-x")) || 0) /
+      deviceDiv.parentElement.clientWidth
     ).toFixed(2)
   );
   let devY = Math.abs(
     (
-      (parseFloat(event.target.getAttribute("data-y")) || 0) /
-      event.target.parentElement.clientHeight
+      (parseFloat(deviceDiv.getAttribute("data-y")) || 0) /
+      deviceDiv.parentElement.clientHeight
     ).toFixed(2)
   );
-  console.log(devX, devY);
+  console.log(devX, devY, deviceId);
 }
 
 // When the window is resized, the illustrations
@@ -279,3 +311,5 @@ function renderDeviceSpaceDevices() {
     }
   });
 }
+
+addDeviceToSpace("THERMOMETER")
