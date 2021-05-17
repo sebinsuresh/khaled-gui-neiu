@@ -50,6 +50,23 @@ function initializeAddDevicesRegion() {
     previewElem.appendChild(previewCanvas);
 
     // Illustration element for each device type
+    // Explanation: The (object representing) the current device we are looking 
+    // at, is selected from the object containing all the devices 
+    // (deviceTypes[deviceType]).
+    // This object has two properties: 'name' and 'create'. 
+    // This function 'create' represents a function for the entire object, as 
+    // found in the files lamp.js, bulb.js, and thermo.js.
+    // Each of these functions returns an object with some properties and 
+    // functions, such as rotate, illo, create(), turnOn(), etc.
+    // These objects have the create() function, which in turn, is called - 
+    // and the canvas element which contains the illustration is passed in as
+    // the first parameter. 
+    // The second parameter that's passed in is a boolean value that represents
+    // whether or not this element is being shown in the preview pane (as 
+    // opposed to being shown on the actual device space - within the dotted 
+    // rectangle). This only determines the zoom level, as of now.
+    // Since the below code creates the devices for preview pane, this is set to
+    // true, and the canvas gets an appropriate zoom level.
     const prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
 
     if (prevIllo) {
