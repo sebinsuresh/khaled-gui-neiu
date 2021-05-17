@@ -27,14 +27,14 @@ const deviceTypes = {
 
 let devicePreviewObjects = [];
 let addDevicesRegion = document.querySelector(".modalDevices");
-initializeAddDevicesRegion();
+initializeAddDevicesModal();
 
 // Function that adds preview elements to the add devices modal.
 // Each preview element is a div with the class "devicePreview",
 // has a <canvas> that shows an illustrtation of the device, 
 // <span> with title of the device, and a button to add it to 
 // the space.
-function initializeAddDevicesRegion() {
+function initializeAddDevicesModal() {
   
   devicePreviewObjects = [];
   for (let deviceType in deviceTypes) {
