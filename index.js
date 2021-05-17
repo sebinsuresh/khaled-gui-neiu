@@ -295,6 +295,7 @@ function dragEndListener(event) {
 // have to re-rendered.
 window.addEventListener("resize", () => {
   renderDevicePreviews();
+  placeDeviceSpaceDevices();
   renderDeviceSpaceDevices();
 });
 
@@ -305,6 +306,27 @@ function renderDevicePreviews() {
     if (el.show) {
       let _ = el.show();
     }
+  });
+}
+
+// Function to place the draggable device divs in the correct location
+// on screen (within the dotted region).
+function placeDeviceSpaceDevices() {
+  
+  // Get the width and height of the dotted region.
+  const spaceW = document.getElementById("visualizer").clientWidth;
+  const spaceH = document.getElementById("visualizer").clientHeight;
+  
+  devicesOnSpace.forEach((devObj) => {
+    let deviceDiv = document.getElementById(devObj.id);
+    const newX = Math.round(spaceW * devObj.x, 2);
+    const newY = Math.round(spaceH * devObj.y, 2);
+
+    deviceDiv.setAttribute('data-x', newX);
+    deviceDiv.setAttribute('data-y', newY);
+    deviceDiv.style.transform = `translate(${newX}px, ${newY}px)`;
+
+    console.log(deviceDiv);
   });
 }
 
