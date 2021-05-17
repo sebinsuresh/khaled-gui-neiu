@@ -288,7 +288,7 @@ function dragEndListener(event) {
   deviceObj.x = devX;
   deviceObj.y = devY;
 
-  console.log(deviceObj);
+  // console.log(deviceObj);
 }
 
 // When the window is resized, the illustrations
@@ -322,5 +322,3 @@ function renderDeviceSpaceDevices() {
     }
   });
 }
-
-addDeviceToSpace("THERMOMETER")
