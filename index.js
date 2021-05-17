@@ -67,7 +67,7 @@ function initializeAddDevicesRegion() {
     // rectangle). This only determines the zoom level, as of now.
     // Since the below code creates the devices for preview pane, this is set to
     // true, and the canvas gets an appropriate zoom level.
-    const prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
+    let prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
 
     if (prevIllo) {
       // Show illustration
