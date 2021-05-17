@@ -121,15 +121,17 @@ function addDeviceToSpace(deviceType) {
     status: "OFF",
     name: deviceTypes[deviceType].name,
   };
-  devicesOnSpace.push(deviceObject);
-
+  
   // Count the number of devices in the space already
-  // with the same type.
-  let sameTypeCount = 0;
+  // with the same type, and set the name accordingly.
+  let sameTypeCount = 1;
   devicesOnSpace.forEach((el) => {
     if (el.deviceType === deviceType) sameTypeCount++;
   });
   deviceObject.name += " " + sameTypeCount;
+  
+  // Add the device's JS object to the array.
+  devicesOnSpace.push(deviceObject);
 
   // Create HTML elements and append them into the visualizer area
 
@@ -150,6 +152,12 @@ function addDeviceToSpace(deviceType) {
   deviceNameTextInput.type = "text";
   deviceNameTextInput.value = deviceObject.name;
   deviceNameTextInput.classList.add("deviceNameInput");
+  // Bind (one-way) the name changes in the text input element and the
+  // JS object representing this device.
+  deviceNameTextInput.onchange = ((ev) => {
+    let newName = ev.target.value;
+    deviceObject.name = newName;
+  })
 
   // The input status shown to the user.
   let deviceStatusP = document.createElement("p");
