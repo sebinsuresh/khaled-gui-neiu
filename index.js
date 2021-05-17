@@ -1,8 +1,18 @@
-// Device types enum
+// Device types, their string names, and the create
+// functions for them.
 const deviceTypes = {
-  BULB: "Light Bulb",
-  LAMP: "Table Lamp",
-  THERMOMETER: "Thermometer",
+  BULB: {
+    name: "Light Bulb",
+    create: createBulb
+  },
+  LAMP: { 
+    name: "Table Lamp",
+    create: createLamp
+  },
+  THERMOMETER: {
+    name: "Thermometer",
+    create: createThermo
+  }
 };
 
 let devicePreviewObjects = [];
@@ -32,13 +42,16 @@ function initializeAddDevicesRegion() {
 
     switch (deviceTypes[deviceType]) {
       case deviceTypes.BULB:
-        prevIllo = createBulb().create(previewCanvas, true);
+        // prevIllo = createBulb().create(previewCanvas, true);
+        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
         break;
       case deviceTypes.LAMP:
-        prevIllo = createLamp().create(previewCanvas, true);
+        // prevIllo = createLamp().create(previewCanvas, true);
+        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
         break;
       case deviceTypes.THERMOMETER:
-        prevIllo = createThermo().create(previewCanvas, true);
+        // prevIllo = createThermo().create(previewCanvas, true);
+        prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
         break;
       default:
         break;
