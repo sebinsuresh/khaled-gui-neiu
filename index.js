@@ -259,12 +259,18 @@ function dragMoveListener(event) {
   target.setAttribute("data-y", y);
 }
 
-// Function that gets called when an object drag ends
-// Sets the x & y positions in device objects using
-// devX & devY from here.
+// Function that gets called when an object drag ends.
+// Sets the x & y positions in device objects using devX & devY from here.
+// The x & y values are values between 0 and 1, representing it's position 
+// within the device space/dotted region - this might be useful for setting
+// the position of the html div, irrespective of resolution/window size.
 function dragEndListener(event) {
   const deviceDiv = event.target;
   const deviceId = deviceDiv.id;
+  
+  // Find the object for this device from the devicesOnSpace array.
+  const deviceObj = devicesOnSpace.find(el => el.id == deviceId);
+
   let devX = Math.abs(
     (
       (parseFloat(deviceDiv.getAttribute("data-x")) || 0) /
@@ -277,7 +283,12 @@ function dragEndListener(event) {
       deviceDiv.parentElement.clientHeight
     ).toFixed(2)
   );
-  console.log(devX, devY, deviceId);
+
+  // Update the object's x & y properties.
+  deviceObj.x = devX;
+  deviceObj.y = devY;
+
+  console.log(deviceObj);
 }
 
 // When the window is resized, the illustrations
