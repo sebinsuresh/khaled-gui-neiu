@@ -1,3 +1,5 @@
+// NOTE: The term "illo" is used as short for "illustration".
+
 // Device types, their string names, and the create
 // functions for them.
 // To add more devices: 
@@ -5,7 +7,7 @@
 //    a. Make sure the js file has the same const devicename()
 //    and the methods within such as create(), turnOn(), 
 //    turnOff(), etc.
-//    b. Follow the same structure in this file:
+// 2. Follow the same structure in this file:
 //    DEVICENAME: {
 //      name: "Name of device as it appears on screen",
 //      create: <create function of this device>
