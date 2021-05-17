@@ -134,14 +134,15 @@ function addDeviceToSpace(deviceType) {
   deviceElem.classList.add("draggable", "deviceContainer");
   let deviceCanvElem = document.createElement("canvas");
   deviceCanvElem.classList.add("deviceCanv");
-  let deviceNameP = document.createElement("p");
-  deviceNameP.innerText = deviceObject.name;
-  deviceNameP.classList.add("deviceNameP");
+  let deviceNameTextInput = document.createElement("input");
+  deviceNameTextInput.type = "text";
+  deviceNameTextInput.value = deviceObject.name;
+  deviceNameTextInput.classList.add("deviceNameP");
   let deviceStatusP = document.createElement("p");
   deviceStatusP.innerText = "OFF";
   deviceStatusP.classList.add("deviceStatusP");
   deviceElem.appendChild(deviceCanvElem);
-  deviceElem.appendChild(deviceNameP);
+  deviceElem.appendChild(deviceNameTextInput);
   deviceElem.appendChild(deviceStatusP);
   document.querySelector("#visualizer").appendChild(deviceElem);
 
@@ -164,7 +165,27 @@ interact(".draggable").draggable({
     move: dragMoveListener,
     end: dragEndListener,
   },
-});
+})
+
+
+// Trying out touch and drag to scroll/move devices in mobile browsers.
+// Disabled - because it's not perfect, you have to drag really slow on
+// iOS browsers at least.
+/* interact(".draggable")
+  .on('down', deviceTouchDown)
+  .on('up', deviceTouchUp);
+
+function deviceTouchDown(event){
+  let visualizerDiv =  document.getElementById("visualizer");
+  if (visualizerDiv.style.touchAction != "none")
+    visualizerDiv.style.touchAction = "none";
+};
+
+function deviceTouchUp(event){
+  let visualizerDiv =  document.getElementById("visualizer");
+  if (visualizerDiv.style.touchAction == "none")
+    visualizerDiv.style.touchAction = "pan-x pan-y";
+}; */
 
 // Listens to move events thrown by the interactable object
 function dragMoveListener(event) {

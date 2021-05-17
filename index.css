@@ -25,6 +25,7 @@ body {
   margin: auto;
   position: relative;
   touch-action: none;
+  /* touch-action: pan-x pan-y; */
   box-sizing: border-box;
 }
 
@@ -204,6 +205,25 @@ body {
 
 .deviceContainer p:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.deviceContainer input[type=text] {
+  outline: none;
+  border: 1px solid rgba(0,0,0,0);
+  border-radius: 5px;
+  display: block;
+  width: 100px;
+  
+  background-color: rgba(0,0,0,0);
+
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.deviceContainer input[type=text]:focus {
+  background-color: rgba(0,0,0,0.1);
+  border-color: rgba(142, 202, 230, 0.1);
 }
 
 .deviceContainer canvas {
