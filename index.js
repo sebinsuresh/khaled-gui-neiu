@@ -90,7 +90,7 @@ function initializeAddDevicesRegion() {
     }
 
     let titleElem = document.createElement("span");
-    titleElem.innerText = deviceTypes[deviceType];
+    titleElem.innerText = deviceTypes[deviceType].name;
     previewElem.appendChild(titleElem);
 
     let addBtn = document.createElement("div");
@@ -117,7 +117,7 @@ function addDeviceToSpace(deviceType) {
     x: 0.1,
     y: 0.1,
     status: "OFF",
-    name: deviceTypes[deviceType],
+    name: deviceTypes[deviceType].name,
   };
   devicesOnSpace.push(deviceObject);
 
