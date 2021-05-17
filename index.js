@@ -145,20 +145,7 @@ function addDeviceToSpace(deviceType) {
   deviceElem.appendChild(deviceStatusP);
   document.querySelector("#visualizer").appendChild(deviceElem);
 
-  let deviceIllo;
-  switch (deviceTypes[deviceType]) {
-    case deviceTypes.BULB:
-      deviceIllo = createBulb().create(deviceCanvElem);
-      break;
-    case deviceTypes.LAMP:
-      deviceIllo = createLamp().create(deviceCanvElem);
-      break;
-    case deviceTypes.THERMOMETER:
-      deviceIllo = createThermo().create(deviceCanvElem);
-      break;
-    default:
-      break;
-  }
+  let deviceIllo = deviceTypes[deviceType].create().create(deviceCanvElem);
   deviceIllo.show();
   deviceIllosOnSpace.push(deviceIllo);
 }
