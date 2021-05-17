@@ -209,31 +209,34 @@ const createBulb = () => ({
     });
     return this;
   },
-  turnOn() {
-    this.bulb.color = bulbOnColor;
-    this.bulbHighlight.visible = false;
-    this.filament.color = filamentOnColor;
-    this.bulbInnerGlow.visible = true;
-    this.bulbOuterGlow.visible = true;
-    this.outerRays.visible = true;
-    return this;
-  },
-  turnOff() {
-    this.bulb.color = bulbColor;
-    this.bulbHighlight.visible = true;
-    this.filament.color = filamentOffColor;
-    this.bulbInnerGlow.visible = false;
-    this.bulbOuterGlow.visible = false;
-    this.outerRays.visible = false;
-    return this;
+  statuses: ["OFF", "ON"],
+  changeStatus(status) {
+    switch(status) {
+      case 'OFF':
+        this.bulb.color = bulbColor;
+        this.bulbHighlight.visible = true;
+        this.filament.color = filamentOffColor;
+        this.bulbInnerGlow.visible = false;
+        this.bulbOuterGlow.visible = false;
+        this.outerRays.visible = false;
+        return this;
+      case 'ON':
+        this.bulb.color = bulbOnColor;
+        this.bulbHighlight.visible = false;
+        this.filament.color = filamentOnColor;
+        this.bulbInnerGlow.visible = true;
+        this.bulbOuterGlow.visible = true;
+        this.outerRays.visible = true;
+        return this;
+      default:
+        return this;
+    }
   },
   hoverEnter() {
-    this.turnOn();
-    return this;
+    return this.changeStatus("ON");
   },
   hoverLeave() {
-    this.turnOff();
-    return this;
+    return this.changeStatus("OFF");
   },
   show() {
     this.illo.updateRenderGraph();

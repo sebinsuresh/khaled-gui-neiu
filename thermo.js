@@ -142,42 +142,45 @@ const createThermo = () => ({
     });
     return this;
   },
-  turnOn() {
-    this.IlloOffText.visible = true;
-    this.IlloOffText.color = "white";
-    this.line1_offset.color = yellow;
-    for (let i = 0; i < 5; i++) {
-      this.arcGroup.children[i].color = yellow;
+  statuses: ["OFF", "ON"],
+  changeStatus(status) {
+    switch(status) {
+      case 'OFF':
+        this.IlloOffText.visible = false;
+        this.line1_offset.color = blue1;
+        for (let i = 0; i < 5; i++) {
+          this.arcGroup.children[i].color = blue1;
+        }
+        for (let i = 0; i < 3; i++) {
+          this.smallerLinesGroup1.children[i].color = blue1;
+          this.smallerLinesGroup2.children[i].color = blue1;
+          this.smallerLinesGroup3.children[i].color = blue1;
+          this.smallerLinesGroup4.children[i].color = blue1;
+        }
+        return this;
+      case 'ON':
+        this.IlloOffText.visible = true;
+        this.IlloOffText.color = "white";
+        this.line1_offset.color = yellow;
+        for (let i = 0; i < 5; i++) {
+          this.arcGroup.children[i].color = yellow;
+        }
+        for (let i = 0; i < 3; i++) {
+          this.smallerLinesGroup1.children[i].color = yellow;
+          this.smallerLinesGroup2.children[i].color = yellow;
+          this.smallerLinesGroup3.children[i].color = yellow;
+          this.smallerLinesGroup4.children[i].color = yellow;
+        }
+        return this;
+      default:
+        return this;
     }
-    for (let i = 0; i < 3; i++) {
-      this.smallerLinesGroup1.children[i].color = yellow;
-      this.smallerLinesGroup2.children[i].color = yellow;
-      this.smallerLinesGroup3.children[i].color = yellow;
-      this.smallerLinesGroup4.children[i].color = yellow;
-    }
-    return this;
-  },
-  turnOff() {
-    this.IlloOffText.visible = false;
-    this.line1_offset.color = blue1;
-    for (let i = 0; i < 5; i++) {
-      this.arcGroup.children[i].color = blue1;
-    }
-    for (let i = 0; i < 3; i++) {
-      this.smallerLinesGroup1.children[i].color = blue1;
-      this.smallerLinesGroup2.children[i].color = blue1;
-      this.smallerLinesGroup3.children[i].color = blue1;
-      this.smallerLinesGroup4.children[i].color = blue1;
-    }
-    return this;
   },
   hoverEnter() {
-    this.turnOn();
-    return this;
+    return this.changeStatus("ON");
   },
   hoverLeave() {
-    this.turnOff();
-    return this;
+    return this.changeStatus("OFF");
   },
   show() {
     this.illo.updateRenderGraph();

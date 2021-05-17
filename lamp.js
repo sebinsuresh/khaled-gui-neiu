@@ -70,30 +70,32 @@ const createLamp = () => ({
 
     return this;
   },
-  turnOn() {
-    this.bulbCoverCylinder.color = blue2;
-    this.bulbCoverCylinder.children[0].children[1].backface = yellow;
-    this.bulbGlow.visible = true;
-    this.base.children[1].frontFace = blue3;
-    this.base.children[0].children[0].backface = blue3;
-    return this;
-  },
-  turnOff() {
-    this.bulbCoverCylinder.color = blue1;
-    this.bulbCoverCylinder.children[0].children[1].backface = blue2;
-    this.bulbGlow.visible = false;
-    this.base.children[0].children[0].backface = blue2;
-    return this;
+  statuses: ["OFF", "ON"],
+  changeStatus(status) {
+    switch(status) {
+      case 'OFF':
+        this.bulbCoverCylinder.color = blue1;
+        this.bulbCoverCylinder.children[0].children[1].backface = blue2;
+        this.bulbGlow.visible = false;
+        this.base.children[0].children[0].backface = blue2;
+        return this;
+      case 'ON':
+        this.bulbCoverCylinder.color = blue2;
+        this.bulbCoverCylinder.children[0].children[1].backface = yellow;
+        this.bulbGlow.visible = true;
+        this.base.children[1].frontFace = blue3;
+        this.base.children[0].children[0].backface = blue3;
+        return this;
+      default:
+        return this;
+    }
   },
   hoverEnter() {
-    this.turnOn();
-    return this;
+    return this.changeStatus("ON");
   },
   hoverLeave() {
-    this.turnOff();
-    return this;
+    return this.changeStatus("OFF");
   },
-
   show() {
     this.illo.updateRenderGraph();
     return this;

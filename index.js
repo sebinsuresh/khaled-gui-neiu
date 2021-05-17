@@ -152,12 +152,13 @@ function addDeviceToSpace(deviceType) {
   deviceNameTextInput.type = "text";
   deviceNameTextInput.value = deviceObject.name;
   deviceNameTextInput.classList.add("deviceNameInput");
+
   // Bind (one-way) the name changes in the text input element and the
   // JS object representing this device.
   deviceNameTextInput.onchange = ((ev) => {
     let newName = ev.target.value;
     deviceObject.name = newName;
-  })
+  });
 
   // The input status shown to the user.
   let deviceStatusP = document.createElement("p");
