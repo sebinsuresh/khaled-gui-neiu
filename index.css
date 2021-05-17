@@ -207,7 +207,7 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.deviceContainer input[type=text] {
+.deviceContainer .deviceNameInput {
   outline: none;
   border: 1px solid rgba(0,0,0,0);
   border-radius: 5px;
@@ -221,7 +221,7 @@ body {
   margin-right: auto;
 }
 
-.deviceContainer input[type=text]:focus {
+.deviceContainer .deviceNameInput:focus {
   background-color: rgba(0,0,0,0.1);
   border-color: rgba(142, 202, 230, 0.1);
 }

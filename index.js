@@ -130,24 +130,43 @@ function addDeviceToSpace(deviceType) {
   deviceObject.name += " " + sameTypeCount;
 
   // Create HTML elements and append them into the visualizer area
+
+  // Create the outer div that you add the canvas, input, text elements to.
+  // This element is the "draggable" element that can move around.
+  // (Draggability functionality is implemented using interactjs framework)
   let deviceElem = document.createElement("div");
   deviceElem.classList.add("draggable", "deviceContainer");
+
+  // The canvas element that contians the illustration for each device.
+  // Notice that the content of the canvas itself is called later in the method.
+  // Otherwise, the canvas won't render properly.
   let deviceCanvElem = document.createElement("canvas");
   deviceCanvElem.classList.add("deviceCanv");
+
+  // The text input element containing the generated name of the device by default.
   let deviceNameTextInput = document.createElement("input");
   deviceNameTextInput.type = "text";
   deviceNameTextInput.value = deviceObject.name;
-  deviceNameTextInput.classList.add("deviceNameP");
+  deviceNameTextInput.classList.add("deviceNameInput");
+
+  // The input status shown to the user.
   let deviceStatusP = document.createElement("p");
   deviceStatusP.innerText = "OFF";
   deviceStatusP.classList.add("deviceStatusP");
+
+  // Add the children elements to the deviceElem div.
   deviceElem.appendChild(deviceCanvElem);
   deviceElem.appendChild(deviceNameTextInput);
   deviceElem.appendChild(deviceStatusP);
+
+  // Add the deviceElem div to the device space/visualizer/dotted region.
   document.querySelector("#visualizer").appendChild(deviceElem);
 
+  // The canvas gets the appropriate illustration for the device displayed.
   let deviceIllo = deviceTypes[deviceType].create().create(deviceCanvElem);
   deviceIllo.show();
+
+  // Add this device object to the deviceIllosOnSpace array.
   deviceIllosOnSpace.push(deviceIllo);
 }
 
