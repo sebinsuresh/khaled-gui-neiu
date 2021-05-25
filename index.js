@@ -13,18 +13,9 @@
 //      create: <create function of this device>
 //    }
 const deviceTypes = {
-  BULB: {
-    name: "Light Bulb",
-    create: createBulb
-  },
-  LAMP: { 
-    name: "Table Lamp",
-    create: createLamp
-  },
-  THERMOMETER: {
-    name: "Thermometer",
-    create: createThermo
-  }
+  BULB: Bulb,
+  LAMP: Lamp,
+  THERMOMETER: Thermometer
 };
 
 let devicePreviewObjects = [];
@@ -51,6 +42,7 @@ function initializeAddDevicesModal() {
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
 
+    // TODO: Update the comment to match new class syntax.
     // Illustration element for each device type
     // Explanation: The (object representing) the current device we are looking 
     // at, is selected from the object containing all the devices 
@@ -69,7 +61,7 @@ function initializeAddDevicesModal() {
     // rectangle). This only determines the zoom level, as of now.
     // Since the below code creates the devices for preview pane, this is set to
     // true, and the canvas gets an appropriate zoom level.
-    let prevIllo = deviceTypes[deviceType].create().create(previewCanvas, true);
+    let prevIllo = new deviceTypes[deviceType](previewCanvas, true);
 
     if (prevIllo) {
       // Show illustration
