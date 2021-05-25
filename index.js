@@ -1,35 +1,63 @@
 // NOTE: The term "illo" is used as short for "illustration".
 
-// Device types, their string names, and the create
-// functions for them.
-// To add more devices: 
-// 1. Create another js file for the device
-//    a. Make sure the js file has the same const devicename()
-//    and the methods within such as create(), turnOn(), 
-//    turnOff(), etc.
-// 2. Follow the same structure in this file:
-//    DEVICENAME: {
-//      name: "Name of device as it appears on screen",
-//      create: <create function of this device>
-//    }
+/* 
+To add more devices:
+1. Create another js file for the device
+   a. Make sure the js file has the same const devicename()
+   and the methods within such as create(), turnOn(),
+   turnOff(), etc.
+2. Follow the same structure in this file:
+   DEVICENAME: {
+     name: "Name of device as it appears on screen",
+     create: <create function of this device>
+   } 
+*/
+
+/* 
+Device types and their Classes.
+
+To create a device of a particular type, call:
+new <deviceTypes[type - eg: BULB]>(
+  <canvas Element>,
+  <boolean representing whether this is a preview element or not>,
+  <boolean representing whether you want to create an illustration or not>
+  );
+
+- The first parameter needs to be a <canvas> element already created.
+- The second parameter is false by default.
+- The third parameter is true by default. Set it to false to use the properties
+  of devices (default name, statuses, etc) without creating an illustration 
+  object for it.
+
+To get the properties such as the list of statuses available for each device,
+create a class instance with "null" for canvas, any value for the second 
+parameter,and false for the third parameter (important). This will initialize an
+object of the class, without creating a canvas illustration for it.
+
+E.g: To get the statuses available to the Bulb object:
+const bulbStatuses = new deviceTypes["BULB"](null, false, false).statuses;
+*/
 const deviceTypes = {
   BULB: Bulb,
   LAMP: Lamp,
-  THERMOMETER: Thermometer
+  THERMOMETER: Thermometer,
 };
 
+// This array will contain the objects in the "add devices" modal
+// that preview the devices.
 let devicePreviewObjects = [];
+
 let addDevicesRegion = document.querySelector(".modalDevices");
 initializeAddDevicesModal();
 
-// Function that adds preview elements to the add devices modal.
+// Function that adds preview elements to the "add devices" modal.
 // Each preview element is a div with the class "devicePreview",
-// has a <canvas> that shows an illustrtation of the device, 
-// <span> with title of the device, and a button to add it to 
+// has a <canvas> that shows an illustrtation of the device,
+// <span> with title of the device, and a button to add it to
 // the space.
 function initializeAddDevicesModal() {
-  
   devicePreviewObjects = [];
+
   for (let deviceType in deviceTypes) {
     // Create new div within the region
     let previewElem = document.createElement("div");
@@ -42,49 +70,46 @@ function initializeAddDevicesModal() {
     previewCanvas.classList.add("previewCanvas");
     previewElem.appendChild(previewCanvas);
 
-    // TODO: Update the comment to match new class syntax.
-    // Illustration element for each device type
-    // Explanation: The (object representing) the current device we are looking 
-    // at, is selected from the object containing all the devices 
-    // (deviceTypes[deviceType]).
-    // This object has two properties: 'name' and 'create'. 
-    // This function 'create' represents a function for the entire object, as 
-    // found in the files lamp.js, bulb.js, and thermo.js.
-    // Each of these functions returns an object with some properties and 
-    // functions, such as rotate, illo, create(), turnOn(), etc.
-    // These objects have the create() function, which in turn, is called - 
-    // and the canvas element which contains the illustration is passed in as
-    // the first parameter. 
-    // The second parameter that's passed in is a boolean value that represents
-    // whether or not this element is being shown in the preview pane (as 
-    // opposed to being shown on the actual device space - within the dotted 
-    // rectangle). This only determines the zoom level, as of now.
-    // Since the below code creates the devices for preview pane, this is set to
-    // true, and the canvas gets an appropriate zoom level.
-    let prevIllo = new deviceTypes[deviceType](previewCanvas, true);
+    /* 
+    Illustration element for each device type.
+    Explanation: The (object representing) current device we are looking
+    at, is selected from the object containing all the devices
+    in the statement "deviceTypes[deviceType]". Each of these objects are
+    classes, defined in the files such as bulb.js, thermo.js, etc.
+    
+    You use the 'new' keyword to create each such object, and pass in the canvas
+    element (in which an illustration for the device will appear), and a boolean
+    value which tells it that this is a preview element & not an element in the 
+    device space (this affects only the zoom level for the moment). Since the 
+    below code creates the devices for preview pane, this is set to true, and 
+    the canvas gets an appropriate zoom level.
+    Each of these classes create objects with some properties and functions, 
+    such as rotate, illo, create(), turnOn(), etc.
+    */
+    let previewDeviceIllo = new deviceTypes[deviceType](previewCanvas, true);
 
-    if (prevIllo) {
+    if (previewDeviceIllo) {
       // Show illustration
-      prevIllo = prevIllo.show();
+      previewDeviceIllo = previewDeviceIllo.show();
       // Add the preview illustation to the array
-      devicePreviewObjects.push(prevIllo);
+      devicePreviewObjects.push(previewDeviceIllo);
 
       // Hovering over the preview element div will do something
       // with the illustration (whatever is implemented by hoverEnter)
-      if (prevIllo.hoverEnter) {
+      if (previewDeviceIllo.hoverEnter) {
         previewElem.onmouseover = () => {
-          prevIllo = prevIllo.hoverEnter();
-          prevIllo = prevIllo.show();
+          previewDeviceIllo = previewDeviceIllo.hoverEnter();
+          previewDeviceIllo = previewDeviceIllo.show();
         };
         previewElem.onmouseout = () => {
-          prevIllo = prevIllo.hoverLeave();
-          prevIllo = prevIllo.show();
+          previewDeviceIllo = previewDeviceIllo.hoverLeave();
+          previewDeviceIllo = previewDeviceIllo.show();
         };
       }
     }
 
     let titleElem = document.createElement("span");
-    titleElem.innerText = deviceTypes[deviceType].name;
+    titleElem.innerText = previewDeviceIllo.name;
     previewElem.appendChild(titleElem);
 
     let addBtn = document.createElement("div");
@@ -98,10 +123,22 @@ function initializeAddDevicesModal() {
   }
 }
 
-// Array containing the deviceObject objects
+/*
+Array containing the deviceObject objects.
+
+These objects will keep track of the type of device, x and y positions as ratios
+on screen, status of the device, name of it, and the id for the device.
+*/
 let devicesOnSpace = [];
-// Array containing the illustration
-// objects obtained using the create() methods
+
+/* 
+Array containing the illustration objects obtained using the create() methods.
+
+These objects have the methods like show(), setZoom(), changeStatus(), etc. that
+are defined in their respective classes. To update the illustration to reflect
+changes like that, you need to keep track of those objects & thus this array is
+necessary.
+ */
 let deviceIllosOnSpace = [];
 
 // Function to add Devices to the Device space visualizer
@@ -111,10 +148,10 @@ function addDeviceToSpace(deviceType) {
     x: 0.1,
     y: 0.1,
     status: "OFF",
-    name: deviceTypes[deviceType].name,
+    name: new deviceTypes[deviceType](null, false, false).name,
     id: deviceType + "",
   };
-  
+
   // Count the number of devices in the space already
   // with the same type, and set the name accordingly.
   let sameTypeCount = 1;
@@ -123,22 +160,22 @@ function addDeviceToSpace(deviceType) {
   });
   deviceObject.name += " " + sameTypeCount;
   deviceObject.id += sameTypeCount;
-  
+
   // Add the device's JS object to the array.
   devicesOnSpace.push(deviceObject);
 
-  // Create HTML elements and append them into the visualizer area
+  // Section below creates the HTML elements and append them into the
+  // dotted area.
 
   // Create the outer div that you add the canvas, input, text elements to.
   // This element is the "draggable" element that can move around.
-  // (Draggability functionality is implemented using interactjs framework)
+  // (Draggability functionality is implemented using interact.js framework)
   let deviceElem = document.createElement("div");
   deviceElem.classList.add("draggable", "deviceContainer");
   deviceElem.id = deviceObject.id;
 
   // The canvas element that contians the illustration for each device.
-  // Notice that the content of the canvas itself is called later in the method.
-  // Otherwise, the canvas won't render properly.
+  // This is later passed into the device class's constructors.
   let deviceCanvElem = document.createElement("canvas");
   deviceCanvElem.classList.add("deviceCanv");
 
@@ -148,26 +185,19 @@ function addDeviceToSpace(deviceType) {
   deviceNameTextInput.value = deviceObject.name;
   deviceNameTextInput.classList.add("deviceNameInput");
 
-  // Bind (one-way) the name changes in the text input element and the
-  // JS object representing this device.
-  deviceNameTextInput.onchange = ((ev) => {
-    let newName = ev.target.value;
-    deviceObject.name = newName;
-  });
-
   // The input status shown to the user - I am creating a <select> tag
   // and calling it a "menu".
   let deviceStatusMenu = document.createElement("select");
-  
+
   // Create the statuses available to the device as options in the menu.
-  for (statusChoice of deviceTypes[deviceType].create().statuses){
+  for (statusChoice of new deviceTypes[deviceType](null, false, false)
+    .statuses) {
     let statusOption = document.createElement("option");
     statusOption.innerText = statusChoice;
     statusOption.value = statusChoice;
 
     // Choose the "OFF" option by default.
-    if (statusChoice == "OFF")
-      statusOption.selected = true;
+    if (statusChoice == "OFF") statusOption.selected = true;
 
     // Add this option to the menu.
     deviceStatusMenu.appendChild(statusOption);
@@ -183,7 +213,7 @@ function addDeviceToSpace(deviceType) {
   document.querySelector("#visualizer").appendChild(deviceElem);
 
   // The canvas gets the appropriate illustration for the device displayed.
-  let deviceIllo = deviceTypes[deviceType].create().create(deviceCanvElem);
+  let deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
   deviceIllo = deviceIllo.show();
 
   // Add listener to the status menu - when a choice is selected from the
@@ -197,7 +227,16 @@ function addDeviceToSpace(deviceType) {
     // Update the illustration object & the object in this file.
     deviceIllo = deviceIllo.changeStatus(optionTextValue);
     deviceObject.status = optionTextValue;
-  }
+  };
+
+  // Bind (one-way) the name changes in the text input element with the
+  // JS object representing this device, and with the device object that 
+  // represents its illustration.
+  deviceNameTextInput.onchange = (ev) => {
+    let newName = ev.target.value;
+    deviceObject.name = newName;
+    deviceIllo.name = newName;
+  };
 
   // Add this device object to the deviceIllosOnSpace array.
   deviceIllosOnSpace.push(deviceIllo);
@@ -217,8 +256,7 @@ interact(".draggable").draggable({
     move: dragMoveListener,
     end: dragEndListener,
   },
-})
-
+});
 
 // Trying out touch and drag to scroll/move devices in mobile browsers.
 // Disabled - because it's not perfect, you have to drag really slow on
@@ -242,8 +280,12 @@ function deviceTouchUp(event){
 // Listens to move events thrown by the interactable object
 function dragMoveListener(event) {
   let target = event.target;
-  let x = Math.round((parseFloat(target.getAttribute("data-x")) || 0) + event.dx);
-  let y = Math.round((parseFloat(target.getAttribute("data-y")) || 0) + event.dy);
+  let x = Math.round(
+    (parseFloat(target.getAttribute("data-x")) || 0) + event.dx
+  );
+  let y = Math.round(
+    (parseFloat(target.getAttribute("data-y")) || 0) + event.dy
+  );
 
   target.style.transform = `translate(${x}px, ${y}px)`;
 
@@ -253,15 +295,15 @@ function dragMoveListener(event) {
 
 // Function that gets called when an object drag ends.
 // Sets the x & y positions in device objects using devX & devY from here.
-// The x & y values are values between 0 and 1, representing it's position 
+// The x & y values are values between 0 and 1, representing it's position
 // within the device space/dotted region - this might be useful for setting
 // the position of the html div, irrespective of resolution/window size.
 function dragEndListener(event) {
   const deviceDiv = event.target;
   const deviceId = deviceDiv.id;
-  
+
   // Find the object for this device from the devicesOnSpace array.
-  const deviceObj = devicesOnSpace.find(el => el.id == deviceId);
+  const deviceObj = devicesOnSpace.find((el) => el.id == deviceId);
 
   let devX = Math.abs(
     (
@@ -290,19 +332,16 @@ function dragEndListener(event) {
 // Code from: https://stackoverflow.com/a/60204716
 let windowResizer;
 window.addEventListener("resize", () => {
-
   // Clear any existing timeout.
   clearTimeout(windowResizer);
 
   // Create a new timeout on a 200ms delay.
   windowResizer = setTimeout(() => {
-
     // Execute these functions on a timeout.
     renderDevicePreviews();
     placeDeviceSpaceDevices();
     renderDeviceSpaceDevices();
-    
-  }, 200);  
+  }, 200);
 });
 
 // Function to re-render the device illustrations in the
@@ -318,21 +357,20 @@ function renderDevicePreviews() {
 // Function to place the draggable device divs in the correct location
 // on screen (within the dotted region).
 function placeDeviceSpaceDevices() {
-  
   // Get the width and height of the dotted region.
   const spaceW = document.getElementById("visualizer").clientWidth;
   const spaceH = document.getElementById("visualizer").clientHeight;
-  
+
   devicesOnSpace.forEach((devObj) => {
     let deviceDiv = document.getElementById(devObj.id);
     const newX = Math.round(spaceW * devObj.x, 2);
     const newY = Math.round(spaceH * devObj.y, 2);
 
-    deviceDiv.setAttribute('data-x', newX);
-    deviceDiv.setAttribute('data-y', newY);
+    deviceDiv.setAttribute("data-x", newX);
+    deviceDiv.setAttribute("data-y", newY);
     deviceDiv.style.transform = `translate(${newX}px, ${newY}px)`;
 
-    console.log(deviceDiv);
+    // console.log(deviceDiv);
   });
 }
 

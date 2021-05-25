@@ -3,13 +3,14 @@
  */
 
 class Thermometer {
-  constructor(canvElement, isPreviewElem = false){
+  constructor(canvElement, isPreviewElem = false, createIllo = true){
     this.name = "Thermometer";
     this.rotate = { x: -0.3, y: 0.6 };
     this.illo = null;
     this.statuses = ["OFF", "ON"];
 
-    this.createIllo(canvElement, isPreviewElem);
+    if(createIllo)
+      this.createIllo(canvElement, isPreviewElem);
   }
 
   createIllo(canvElement, isPreviewElem){

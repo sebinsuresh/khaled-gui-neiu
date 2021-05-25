@@ -15,13 +15,14 @@ let outerGlowColor = hexToRgba(bulbYellow, 0.3);
 let rayColor = hexToRgba(bulbYellow, 0.3);
 
 class Bulb {
-  constructor(canvElement, isPreviewElem = false) {
+  constructor(canvElement, isPreviewElem = false, createIllo = true) {
     this.name = "Light Bulb";
     this.rotate = { x: -0.4 + TAU / 4, y: 0.3 };
     this.illo = null;
     this.statuses = ["OFF", "ON"];
-    
-    this.createIllo(canvElement, isPreviewElem);
+
+    if(createIllo)
+      this.createIllo(canvElement, isPreviewElem);
   }
 
   createIllo(canvElement, isPreviewElem) {

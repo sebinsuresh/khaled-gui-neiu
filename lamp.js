@@ -3,13 +3,14 @@
  */
 
 class Lamp {
-  constructor(canvElement, isPreviewElem = false) {
+  constructor(canvElement, isPreviewElem = false, createIllo = true) {
     this.name = "Table Lamp";
     this.rotate = { x: TAU / 5, z: TAU / 7 };
     this.illo = null;
     this.statuses = ["OFF", "ON"];
 
-    this.createIllo(canvElement, isPreviewElem);
+    if(createIllo)
+      this.createIllo(canvElement, isPreviewElem);
   }
 
   createIllo(canvElement, isPreviewElem) {
