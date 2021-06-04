@@ -68,6 +68,8 @@ class LEDBulb {
       color: redLight + "55",
       visible: false,
     });
+
+    return this.show();
   }
 
   setZoom(zoom) {

@@ -484,6 +484,8 @@ class RPi {
         z: TAU / 6,
       },
     });
+
+    return this.show();
   }
 
   setZoom(zoom) {

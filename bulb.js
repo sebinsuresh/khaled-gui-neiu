@@ -211,7 +211,8 @@ class Bulb {
     this.ray1.copy({
       rotate: { y: (5 * TAU) / 6 },
     });
-    return this;
+    
+    return this.show();
   }
 
   setZoom(zoom) {
