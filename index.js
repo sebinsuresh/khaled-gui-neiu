@@ -6,11 +6,12 @@ To add more devices:
    a. Make sure the js file has the same const devicename()
    and the methods within such as create(), turnOn(),
    turnOff(), etc.
-2. Follow the same structure in this file:
+2. Add the script before index.js in the HTML file
+3. Follow the same structure in this file:
    DEVICENAME: {
      name: "Name of device as it appears on screen",
      create: <create function of this device>
-   } 
+   }
 */
 
 /* 
@@ -41,6 +42,7 @@ const deviceTypes = {
   BULB: Bulb,
   LAMP: Lamp,
   THERMOMETER: Thermometer,
+  RPI: RPi,
 };
 
 // This array will contain the objects in the "add devices" modal
