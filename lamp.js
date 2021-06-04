@@ -77,7 +77,7 @@ class Lamp {
 
   setZoom(zoom) {
     this.illo.zoom = zoom;
-    return this;
+    return this.show();
   }
 
   changeStatus(status) {
