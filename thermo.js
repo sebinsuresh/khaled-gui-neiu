@@ -203,7 +203,7 @@ class Thermometer {
   }
 }
 
-const createThermo = () => ({
+/* const createThermo = () => ({
   rotate: { x: -0.3, y: 0.6 },
   illo: null,
   setZoom(zoom) {
@@ -388,4 +388,4 @@ const createThermo = () => ({
     this.illo.updateRenderGraph();
     return this;
   },
-});
+}); */
