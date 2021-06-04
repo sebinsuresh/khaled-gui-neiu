@@ -40,6 +40,7 @@ const bulbStatuses = new deviceTypes["BULB"](null, false, false).statuses;
 */
 const deviceTypes = {
   RPI: RPi,
+  LED: LEDBulb,
   BULB: Bulb,
   LAMP: Lamp,
   THERMOMETER: Thermometer,

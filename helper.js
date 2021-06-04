@@ -26,6 +26,9 @@ const yellowPi = "#ECC05B";
 const grayDark = "#ABB4C4";
 const gray = "#CED3DC";
 const grayLight = "#FBFFFE";
+const red = "#E94F37";
+const redLight = "#F99D8A";
+const redLight2 = "#F7A1BB";
 
 // Converts a hex color code string to 'rgba(..)' string
 function hexToRgba(hex, alpha = "1.0") {
