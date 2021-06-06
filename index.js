@@ -208,10 +208,19 @@ function addDeviceToSpace(deviceType) {
   }
   deviceStatusMenu.classList.add("deviceStatusMenu");
 
+  // Create a delete button for the devices
+  const deleteBtn = document.createElement("div");
+  deleteBtn.classList.add("delete-btn");
+  deleteBtn.innerText = "x";
+  deleteBtn.addEventListener('click', (ev) => {
+    console.log(`delete button clicked for ${deviceObject.id}`);
+  });
+
   // Add the children elements to the deviceElem div.
   deviceElem.appendChild(deviceCanvElem);
   deviceElem.appendChild(deviceNameTextInput);
   deviceElem.appendChild(deviceStatusMenu);
+  deviceElem.appendChild(deleteBtn);
 
   // Add the deviceElem div to the device space/visualizer/dotted region.
   document.querySelector("#visualizer").appendChild(deviceElem);

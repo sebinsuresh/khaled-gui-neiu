@@ -195,7 +195,7 @@ body {
   background-color: #e8ddb520;
   border-radius: 5px;
   text-align: center;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .deviceContainer p {
@@ -248,4 +248,29 @@ body {
   left: 0px;
   top: 0px;
   transform: translate(0px, 0px);
+}
+
+.deviceContainer .delete-btn {
+  background-color: #e84855;
+  color: white;
+  font-weight: bold;
+
+  display: block;
+  position: absolute;
+  top: -12.5px;
+  right: -12.5px;
+
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  transition: background-color 0.3s, top 0.3s, right 0.3s, padding 0.3s;
+}
+
+.deviceContainer .delete-btn:hover {
+  background-color: #ee6c4d;
+  top: -13px;
+  right: -14px; 
+  padding: 1px;
 }
