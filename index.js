@@ -217,7 +217,7 @@ function addDeviceToSpace(deviceType) {
   document.querySelector("#visualizer").appendChild(deviceElem);
 
   // The canvas gets the appropriate illustration for the device displayed.
-  const deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
+  let deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
   deviceIllo = deviceIllo.show();
 
   // Add listener to the status menu - when a choice is selected from the
