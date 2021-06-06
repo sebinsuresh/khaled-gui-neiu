@@ -168,8 +168,9 @@ function addDeviceToSpace(deviceType) {
   // Add the device's JS object to the array.
   devicesOnSpace.push(deviceObject);
 
-  // Section below creates the HTML elements and append them into the
-  // dotted area.
+  /* 
+    Section below creates the HTML elements and append them into the dotted area
+  */
 
   // Create the outer div that you add the canvas, input, text elements to.
   // This element is the "draggable" element that can move around.
@@ -212,9 +213,6 @@ function addDeviceToSpace(deviceType) {
   const deleteBtn = document.createElement("div");
   deleteBtn.classList.add("delete-btn");
   deleteBtn.innerText = "x";
-  deleteBtn.addEventListener('click', (ev) => {
-    console.log(`delete button clicked for ${deviceObject.id}`);
-  });
 
   // Add the children elements to the deviceElem div.
   deviceElem.appendChild(deviceCanvElem);
@@ -242,8 +240,26 @@ function addDeviceToSpace(deviceType) {
     deviceObject.status = optionTextValue;
   };
 
+  deleteBtn.addEventListener("click", (ev) => {
+    // Delete the html element and children
+    deviceElem.innerText = "";
+    deviceElem.remove();
+
+    // Delete the illustration object
+    deviceIllosOnSpace.splice(deviceIllosOnSpace.indexOf(deviceIllo), 1);
+
+    // Delete the JS object
+    devicesOnSpace.splice(devicesOnSpace.indexOf(deviceObject), 1);
+
+    // Remove the interactjs listening for this element potentially.
+    // I'm not sure if the object won't get garbage-collected if I
+    // don't remove this. This .draggable class is how interact-js
+    // grabs elements for dragging.
+    deviceElem.classList.remove("draggable");
+  });
+
   // Bind (one-way) the name changes in the text input element with the
-  // JS object representing this device, and with the device object that 
+  // JS object representing this device, and with the device object that
   // represents its illustration.
   deviceNameTextInput.onchange = (ev) => {
     const newName = ev.target.value;
