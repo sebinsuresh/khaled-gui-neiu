@@ -224,6 +224,7 @@ function addDeviceToSpace(deviceType) {
   const deleteBtn = document.createElement("div");
   deleteBtn.classList.add("delete-btn");
   deleteBtn.innerText = "x";
+  deleteBtn.title = "Delete this device";
 
   // Add the children elements to the deviceElem div.
   deviceElem.appendChild(deviceCanvElem);
