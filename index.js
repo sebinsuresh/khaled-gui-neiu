@@ -147,23 +147,34 @@ let deviceIllosOnSpace = [];
 
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
+  // Find all existing device objects of this type
+  const devicesOfSameType = devicesOnSpace.filter(
+    (dev) => dev.deviceType == deviceType
+  );
+  const numDevicesOfSameType = devicesOfSameType.length;
+
+  // Find the index of the new device based on that
+  const indexOfNewDevice =
+    numDevicesOfSameType == 0
+      ? 1
+      : devicesOfSameType[numDevicesOfSameType - 1].indexThisType + 1;
+
+  // Create an object for the new device
   const deviceObject = {
     deviceType,
     x: 0.1,
     y: 0.1,
     status: "OFF",
-    name: new deviceTypes[deviceType](null, false, false).name,
-    id: deviceType + "",
+    // Index of this device - based on number of devices of this type
+    // Set the first device's index to 1, and the later devices to the value
+    // of the last device + 1.
+    indexThisType: indexOfNewDevice,
+    name:
+      new deviceTypes[deviceType](null, false, false).name +
+      " " +
+      indexOfNewDevice,
+    id: deviceType + "" + indexOfNewDevice,
   };
-
-  // Count the number of devices in the space already
-  // with the same type, and set the name accordingly.
-  let sameTypeCount = 1;
-  devicesOnSpace.forEach((el) => {
-    if (el.deviceType === deviceType) sameTypeCount++;
-  });
-  deviceObject.name += " " + sameTypeCount;
-  deviceObject.id += sameTypeCount;
 
   // Add the device's JS object to the array.
   devicesOnSpace.push(deviceObject);
