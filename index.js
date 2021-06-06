@@ -147,7 +147,7 @@ let deviceIllosOnSpace = [];
 
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
-  let deviceObject = {
+  const deviceObject = {
     deviceType,
     x: 0.1,
     y: 0.1,
@@ -174,29 +174,29 @@ function addDeviceToSpace(deviceType) {
   // Create the outer div that you add the canvas, input, text elements to.
   // This element is the "draggable" element that can move around.
   // (Draggability functionality is implemented using interact.js framework)
-  let deviceElem = document.createElement("div");
+  const deviceElem = document.createElement("div");
   deviceElem.classList.add("draggable", "deviceContainer");
   deviceElem.id = deviceObject.id;
 
   // The canvas element that contians the illustration for each device.
   // This is later passed into the device class's constructors.
-  let deviceCanvElem = document.createElement("canvas");
+  const deviceCanvElem = document.createElement("canvas");
   deviceCanvElem.classList.add("deviceCanv");
 
   // The text input element containing the generated name of the device by default.
-  let deviceNameTextInput = document.createElement("input");
+  const deviceNameTextInput = document.createElement("input");
   deviceNameTextInput.type = "text";
   deviceNameTextInput.value = deviceObject.name;
   deviceNameTextInput.classList.add("deviceNameInput");
 
   // The input status shown to the user - I am creating a <select> tag
   // and calling it a "menu".
-  let deviceStatusMenu = document.createElement("select");
+  const deviceStatusMenu = document.createElement("select");
 
   // Create the statuses available to the device as options in the menu.
   for (statusChoice of new deviceTypes[deviceType](null, false, false)
     .statuses) {
-    let statusOption = document.createElement("option");
+    const statusOption = document.createElement("option");
     statusOption.innerText = statusChoice;
     statusOption.value = statusChoice;
 
@@ -217,7 +217,7 @@ function addDeviceToSpace(deviceType) {
   document.querySelector("#visualizer").appendChild(deviceElem);
 
   // The canvas gets the appropriate illustration for the device displayed.
-  let deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
+  const deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
   deviceIllo = deviceIllo.show();
 
   // Add listener to the status menu - when a choice is selected from the
@@ -237,7 +237,7 @@ function addDeviceToSpace(deviceType) {
   // JS object representing this device, and with the device object that 
   // represents its illustration.
   deviceNameTextInput.onchange = (ev) => {
-    let newName = ev.target.value;
+    const newName = ev.target.value;
     deviceObject.name = newName;
     deviceIllo.name = newName;
   };
