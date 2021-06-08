@@ -51,7 +51,9 @@ const deviceTypes = {
 // that preview the devices.
 let devicePreviewObjects = [];
 
-let addDevicesRegion = document.querySelector(".modalDevices");
+const addDevicesRegion = document.querySelector(".modalDevices");
+const canv = document.getElementById("visualizer-canvas");
+const ctx = canv.getContext("2d");
 initializeAddDevicesModal();
 
 // Function that adds preview elements to the "add devices" modal.
@@ -61,6 +63,11 @@ initializeAddDevicesModal();
 // the space.
 function initializeAddDevicesModal() {
   devicePreviewObjects = [];
+
+  // Resize the transparent canvas to fit the container width
+  canv.width = canv.parentElement.clientWidth;
+  canv.height = canv.parentElement.clientHeight;
+  redrawCanvas();
 
   for (let deviceType in deviceTypes) {
     // Create new div within the region
@@ -204,6 +211,20 @@ function addDeviceToSpace(deviceType) {
   deviceNameTextInput.type = "text";
   deviceNameTextInput.value = deviceObject.name;
   deviceNameTextInput.classList.add("deviceNameInput");
+
+  // If the device is a RPi, make a button to connect devices to it.
+  if (deviceType == "RPI") {
+    const connectDevicesBtn = document.createElement("div");
+    connectDevicesBtn.classList.add("connectDevBtn");
+    connectDevicesBtn.innerText = "Connect";
+    deviceCanvElem.style.width = "200px";
+    
+    connectDevicesBtn.addEventListener('click', (ev) => {
+      console.log(`Button clicked on ${deviceObject.name}`);
+    })
+
+    deviceElem.appendChild(connectDevicesBtn);
+  }
 
   // The input status shown to the user - I am creating a <select> tag
   // and calling it a "menu".
@@ -385,11 +406,32 @@ window.addEventListener("resize", () => {
   // Create a new timeout on a 200ms delay.
   windowResizer = setTimeout(() => {
     // Execute these functions on a timeout.
+
+    // Resize the background canvas. might need to move to a function
+    canv.width = canv.parentElement.clientWidth;
+    canv.height = canv.parentElement.clientHeight;
+
     renderDevicePreviews();
     placeDeviceSpaceDevices();
     renderDeviceSpaceDevices();
+    redrawCanvas();
   }, 200);
 });
+
+// Redraws the background canvas element containing
+// the lines connecting devices.
+function redrawCanvas() {
+  ctx.clearRect(0, 0, canv.width, canv.height);
+
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#fff";
+
+  // TODO: Replace this with code to find each RPi device and
+  // draw lines to all connected devices.
+  ctx.moveTo(100, 200);
+  ctx.lineTo(400, 800);
+  ctx.stroke();
+}
 
 // Function to re-render the device illustrations in the
 // add device popup/modal
