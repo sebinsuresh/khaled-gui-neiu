@@ -159,12 +159,16 @@ function addDeviceToSpace(deviceType) {
       ? 1
       : devicesOfSameType[numDevicesOfSameType - 1].indexThisType + 1;
 
+  // Get all possible choices of statuses
+  const statusChoices = new deviceTypes[deviceType](null, false, false)
+    .statuses;
+
   // Create an object for the new device
   const deviceObject = {
     deviceType,
     x: 0.1,
     y: 0.1,
-    status: "OFF",
+    status: statusChoices.includes("OFF") ? "OFF" : statusChoices[0],
     // Index of this device - based on number of devices of this type
     // Set the first device's index to 1, and the later devices to the value
     // of the last device + 1.
@@ -206,14 +210,13 @@ function addDeviceToSpace(deviceType) {
   const deviceStatusMenu = document.createElement("select");
 
   // Create the statuses available to the device as options in the menu.
-  for (statusChoice of new deviceTypes[deviceType](null, false, false)
-    .statuses) {
+  for (statusChoice of statusChoices) {
     const statusOption = document.createElement("option");
     statusOption.innerText = statusChoice;
     statusOption.value = statusChoice;
 
-    // Choose the "OFF" option by default.
-    if (statusChoice == "OFF") statusOption.selected = true;
+    // Choose the default status option in menu.
+    if (statusChoice == deviceObject.status) statusOption.selected = true;
 
     // Add this option to the menu.
     deviceStatusMenu.appendChild(statusOption);
@@ -237,7 +240,7 @@ function addDeviceToSpace(deviceType) {
 
   // The canvas gets the appropriate illustration for the device displayed.
   let deviceIllo = new deviceTypes[deviceType](deviceCanvElem);
-  deviceIllo = deviceIllo.show();
+  deviceIllo = deviceIllo.changeStatus(deviceObject.status).show();
 
   // Add listener to the status menu - when a choice is selected from the
   // menu, update the illustration (by calling the changeStatus function
