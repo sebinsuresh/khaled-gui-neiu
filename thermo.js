@@ -184,7 +184,7 @@ class Thermometer {
         return this.show();
       default:
         if (!(status in this.statuses))
-          console.error(`Invalid status change for $(this.name)`);
+          console.error(`Invalid status change for ${this.name}`);
         return this.show();
     }
   }
