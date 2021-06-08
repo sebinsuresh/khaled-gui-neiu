@@ -286,6 +286,9 @@ function addDeviceToSpace(deviceType) {
   deviceIllosOnSpace.push(deviceIllo);
 }
 
+// Remove draggable option from device name input field and delete button.
+interact(".deviceNameInput, .delete-btn").draggable({}).styleCursor(false);
+
 // Set the .draggable objects to have draggable properties
 interact(".draggable").draggable({
   autoScroll: false,
