@@ -19,7 +19,8 @@ class RPi {
     this.illo = new Zdog.Illustration({
       element: canvElement,
       resize: true,
-      zoom: isPreviewElem ? 3 : 1.75,
+      zoom: isPreviewElem ? 3 : 2.75,
+      translate: isPreviewElem ? {} : { y: 2.5 },
       rotate: this.rotate,
     });
 
@@ -507,11 +508,11 @@ class RPi {
   hoverEnter() {
     return this.changeStatus("ON");
   }
-  
+
   hoverLeave() {
     return this.changeStatus("ON");
   }
-  
+
   show() {
     this.illo.updateRenderGraph();
     return this;
