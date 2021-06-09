@@ -54,6 +54,44 @@ let devicePreviewObjects = [];
 const addDevicesRegion = document.querySelector(".modalDevices");
 const canv = document.getElementById("visualizer-canvas");
 const ctx = canv.getContext("2d");
+
+/*
+Array containing the deviceObject objects.
+
+These objects will keep track of the type of device, x and y positions as ratios
+on screen, status of the device, name of it, and the id for the device.
+*/
+let devicesOnSpace = [];
+
+/* 
+Array containing the illustration objects obtained using the create() methods.
+
+These objects have the methods like show(), setZoom(), changeStatus(), etc. that
+are defined in their respective classes. To update the illustration to reflect
+changes like that, you need to keep track of those objects & thus this array is
+necessary.
+ */
+let deviceIllosOnSpace = [];
+
+// Boolean to indicate whether an RPi is waiting for the user to click
+// on a device to connect it to the RPi.
+let rPiWaitingClick = false;
+
+// JS object of the RPi device that is waiting for the user to click
+let rPiObjectWaiting = null;
+
+// List of classes that should be ignored for dragging and tapping.
+// This is needed because otherwise interact.js would drag them
+// instead of treating them as a single tap.
+// It's also used to prevent them from being tapped while the
+// RPi is waiting for the user to click another device.
+const dontDragTapClasses = [
+  "deviceNameInput",
+  "delete-btn",
+  "deviceStatusMenu",
+  "connectDevBtn",
+];
+
 initializeAddDevicesModal();
 
 // Function that adds preview elements to the "add devices" modal.
@@ -67,7 +105,6 @@ function initializeAddDevicesModal() {
   // Resize the transparent canvas to fit the container width
   canv.width = canv.parentElement.clientWidth;
   canv.height = canv.parentElement.clientHeight;
-  redrawCanvas();
 
   for (let deviceType in deviceTypes) {
     // Create new div within the region
@@ -132,44 +169,8 @@ function initializeAddDevicesModal() {
     };
     previewElem.appendChild(addBtn);
   }
+  redrawCanvas();
 }
-
-/*
-Array containing the deviceObject objects.
-
-These objects will keep track of the type of device, x and y positions as ratios
-on screen, status of the device, name of it, and the id for the device.
-*/
-let devicesOnSpace = [];
-
-/* 
-Array containing the illustration objects obtained using the create() methods.
-
-These objects have the methods like show(), setZoom(), changeStatus(), etc. that
-are defined in their respective classes. To update the illustration to reflect
-changes like that, you need to keep track of those objects & thus this array is
-necessary.
- */
-let deviceIllosOnSpace = [];
-
-// Boolean to indicate whether an RPi is waiting for the user to click
-// on a device to connect it to the RPi.
-let rPiWaitingClick = false;
-
-// JS object of the RPi device that is waiting for the user to click
-let rPiObjectWaiting = null;
-
-// List of classes that should be ignored for dragging and tapping.
-// This is needed because otherwise interact.js would drag them
-// instead of treating them as a single tap.
-// It's also used to prevent them from being tapped while the
-// RPi is waiting for the user to click another device.
-const dontDragTapClasses = [
-  "deviceNameInput",
-  "delete-btn",
-  "deviceStatusMenu",
-  "connectDevBtn",
-];
 
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
@@ -546,6 +547,11 @@ function redrawCanvas() {
 
   ctx.lineWidth = 3;
   ctx.strokeStyle = "#fff";
+
+  const rpiDevices = devicesOnSpace.filter(
+    (dev) => dev.type == deviceTypes["RPI"]
+  );
+  console.log(rpiDevices);
 
   // TODO: Replace this with code to find each RPi device and
   // draw lines to all connected devices.
