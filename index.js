@@ -152,6 +152,17 @@ necessary.
  */
 let deviceIllosOnSpace = [];
 
+// Boolean to indicate whether an RPi is waiting for the user to click
+// on a device to connect it to the RPi.
+let rPiWaitingClick = false;
+
+// List of classes that should be ignored for dragging and tapping.
+// This is needed because otherwise interact.js would drag them
+// instead of treating them as a single tap.
+// It's also used to prevent them from being tapped while the
+// RPi is waiting for the user to click another device.
+const dontDragTapClasses = ["deviceNameInput", "delete-btn", "connectDevBtn"];
+
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
   // Find all existing device objects of this type
@@ -218,10 +229,17 @@ function addDeviceToSpace(deviceType) {
     connectDevicesBtn.classList.add("connectDevBtn");
     connectDevicesBtn.innerText = "Connect";
     deviceCanvElem.style.width = "200px";
-    
-    connectDevicesBtn.addEventListener('click', (ev) => {
+
+    deviceObject.connectedDeviceIds = [];
+
+    connectDevicesBtn.addEventListener("click", (ev) => {
+      // TODO: change the value of rPiWaitingClick, and give 
+      // appropriate class names to each other device, for 
+      // letting the user know you should click on them.
+      // Then add or remove those devices IDs from
+      // deviceObject.connectedDeviceIds[] array.
       console.log(`Button clicked on ${deviceObject.name}`);
-    })
+    });
 
     deviceElem.appendChild(connectDevicesBtn);
   }
@@ -251,8 +269,10 @@ function addDeviceToSpace(deviceType) {
   deleteBtn.title = "Delete this device";
 
   // Add the children elements to the deviceElem div.
-  deviceElem.appendChild(deviceCanvElem);
-  deviceElem.appendChild(deviceNameTextInput);
+  deviceElem.insertBefore(deviceNameTextInput, deviceElem.firstChild);
+  deviceElem.insertBefore(deviceCanvElem, deviceElem.firstChild);
+  // deviceElem.appendChild(deviceCanvElem);
+  // deviceElem.appendChild(deviceNameTextInput);
   deviceElem.appendChild(deviceStatusMenu);
   deviceElem.appendChild(deleteBtn);
 
@@ -307,24 +327,32 @@ function addDeviceToSpace(deviceType) {
   deviceIllosOnSpace.push(deviceIllo);
 }
 
-// Remove draggable option from device name input field and delete button.
-interact(".deviceNameInput, .delete-btn").draggable({}).styleCursor(false);
-
 // Set the .draggable objects to have draggable properties
-interact(".draggable").draggable({
-  autoScroll: false,
-  inertia: false,
-  modifiers: [
-    interact.modifiers.restrictRect({
-      restriction: "parent",
-      endOnly: false,
-    }),
-  ],
-  listeners: {
-    move: dragMoveListener,
-    end: dragEndListener,
-  },
-});
+interact(".draggable")
+  .draggable({
+    autoScroll: false,
+    inertia: false,
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: "parent",
+        endOnly: false,
+      }),
+    ],
+    listeners: {
+      move: dragMoveListener,
+      end: dragEndListener,
+    },
+  })
+  .on("tap", (ev) => {
+    if(rPiWaitingClick && ev.target.classList)
+    console.log("tapped", ev.target.id); 
+  });
+
+// Remove draggable option from device name input field,
+// delete button, and connect device button.
+interact("." + dontDragTapClasses.join(", ."))
+  .draggable({})
+  .styleCursor(false);
 
 // Trying out touch and drag to scroll/move devices in mobile browsers.
 // Disabled - because it's not perfect, you have to drag really slow on
