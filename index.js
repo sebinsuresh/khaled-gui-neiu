@@ -437,6 +437,7 @@ interact(".draggable")
               rPiObjectWaiting.connectedDeviceIds.indexOf(tapId)
             );
           }
+          redrawCanvas();
         }
       }
     }
@@ -481,6 +482,8 @@ function dragMoveListener(event) {
 
   target.setAttribute("data-x", x);
   target.setAttribute("data-y", y);
+
+  redrawCanvas();
 }
 
 // Function that gets called when an object drag ends.
@@ -512,7 +515,7 @@ function dragEndListener(event) {
   deviceObj.x = devX;
   deviceObj.y = devY;
 
-  // console.log(deviceObj);
+  redrawCanvas();
 }
 
 // When the window is resized, the illustrations have to re-render.
@@ -546,18 +549,44 @@ function redrawCanvas() {
   ctx.clearRect(0, 0, canv.width, canv.height);
 
   ctx.lineWidth = 3;
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#ffffff40";
 
-  const rpiDevices = devicesOnSpace.filter(
-    (dev) => dev.type == deviceTypes["RPI"]
-  );
-  console.log(rpiDevices);
+  // All the RPi devices that are on screen
+  const rPiDevices = devicesOnSpace.filter((dev) => dev.deviceType == "RPI");
+  rPiDevices.forEach((dev) => {
+    const rPiElement = document.getElementById(dev.id);
 
-  // TODO: Replace this with code to find each RPi device and
-  // draw lines to all connected devices.
-  ctx.moveTo(100, 200);
-  ctx.lineTo(400, 800);
-  ctx.stroke();
+    // Coordinates to start the line from
+    const startX =
+      parseInt(rPiElement.getAttribute("data-x")) +
+      ~~(rPiElement.clientWidth / 2);
+    const startY =
+      parseInt(rPiElement.getAttribute("data-y")) +
+      ~~(rPiElement.clientHeight / 2);
+
+    // Find and iterate over all connected devices
+    const connDevIds = dev.connectedDeviceIds;
+    if (connDevIds) {
+      connDevIds.forEach((connDevId) => {
+        // Get the HTML element for the connected device
+        const connDevElem = document.getElementById(connDevId);
+
+        // Coordinates to end the line on
+        const endX =
+          parseInt(connDevElem.getAttribute("data-x")) +
+          ~~(connDevElem.clientWidth / 2);
+        const endY =
+          parseInt(connDevElem.getAttribute("data-y")) +
+          ~~(connDevElem.clientHeight / 2);
+
+        // Draw the line between the RPi and this connected device
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+      });
+    }
+  });
 }
 
 // Function to re-render the device illustrations in the
