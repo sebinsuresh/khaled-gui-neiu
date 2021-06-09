@@ -236,7 +236,7 @@ function addDeviceToSpace(deviceType) {
   if (deviceType == "RPI") {
     const connectDevicesBtn = document.createElement("div");
     connectDevicesBtn.classList.add("connectDevBtn");
-    connectDevicesBtn.innerText = "+ Connect";
+    connectDevicesBtn.innerText = "+ Connect (0)";
     deviceCanvElem.style.width = "200px";
 
     deviceObject.connectedDeviceIds = [];
@@ -250,7 +250,8 @@ function addDeviceToSpace(deviceType) {
       // more devices by clicking them.
       if (rPiWaitingClick) {
         rPiWaitingClick = false;
-        connectDevicesBtn.innerText = "+ Connect";
+        connectDevicesBtn.innerText =
+          "+ Connect (" + rPiObjectWaiting.connectedDeviceIds.length + ")";
 
         devicesOnSpace.forEach((dev) => {
           const id = dev.id;
@@ -421,7 +422,6 @@ interact(".draggable")
           const connectDevicesBtn = document
             .getElementById(rPiObjectWaiting.id)
             .querySelector(".connectDevBtn");
-          connectDevicesBtn.innerText = "+ Connect";
 
           devicesOnSpace.forEach((dev) => {
             const id = dev.id;
@@ -436,9 +436,12 @@ interact(".draggable")
             // If the device is already connected to the same RPi, remove it
             tapObject.connected = false;
             rPiObjectWaiting.connectedDeviceIds.splice(
-              rPiObjectWaiting.connectedDeviceIds.indexOf(tapId)
+              rPiObjectWaiting.connectedDeviceIds.indexOf(tapId),
+              1
             );
           }
+          connectDevicesBtn.innerText =
+            "+ Connect (" + rPiObjectWaiting.connectedDeviceIds.length + ")";
           redrawCanvas();
         }
       }
@@ -586,6 +589,9 @@ function redrawCanvas() {
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.stroke();
+
+        // TODO: Clear the rectangle behind each device so the line
+        // doesn't appear there?
       });
     }
   });
