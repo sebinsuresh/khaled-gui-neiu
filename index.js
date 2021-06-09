@@ -331,6 +331,8 @@ function addDeviceToSpace(deviceType) {
     deviceObject.status = optionTextValue;
   };
 
+  // TODO: Code for handling deletion of elements from screen:
+  // Handle RPi/non-RPi devices separately
   deleteBtn.addEventListener("click", (ev) => {
     if (!rPiWaitingClick) {
       // Delete the html element and children
