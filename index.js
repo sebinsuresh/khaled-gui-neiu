@@ -156,12 +156,20 @@ let deviceIllosOnSpace = [];
 // on a device to connect it to the RPi.
 let rPiWaitingClick = false;
 
+// JS object of the RPi device that is waiting for the user to click
+let rPiObjectWaiting = null;
+
 // List of classes that should be ignored for dragging and tapping.
 // This is needed because otherwise interact.js would drag them
 // instead of treating them as a single tap.
 // It's also used to prevent them from being tapped while the
 // RPi is waiting for the user to click another device.
-const dontDragTapClasses = ["deviceNameInput", "delete-btn", "connectDevBtn"];
+const dontDragTapClasses = [
+  "deviceNameInput",
+  "delete-btn",
+  "deviceStatusMenu",
+  "connectDevBtn",
+];
 
 // Function to add Devices to the Device space visualizer
 function addDeviceToSpace(deviceType) {
@@ -227,18 +235,44 @@ function addDeviceToSpace(deviceType) {
   if (deviceType == "RPI") {
     const connectDevicesBtn = document.createElement("div");
     connectDevicesBtn.classList.add("connectDevBtn");
-    connectDevicesBtn.innerText = "Connect";
+    connectDevicesBtn.innerText = "+ Connect";
     deviceCanvElem.style.width = "200px";
 
     deviceObject.connectedDeviceIds = [];
 
+    // Listens for a click on the "Connect" button on the RPi device.
     connectDevicesBtn.addEventListener("click", (ev) => {
-      // TODO: change the value of rPiWaitingClick, and give 
-      // appropriate class names to each other device, for 
-      // letting the user know you should click on them.
-      // Then add or remove those devices IDs from
-      // deviceObject.connectedDeviceIds[] array.
-      console.log(`Button clicked on ${deviceObject.name}`);
+      // Changes the value of rPiWaitingClick, update the classes on
+      // each device illustration (to add/remove dotted outlines),
+      // and update the button text.
+      // The .on("tap") event on draggable objects will handle adding
+      // more devices by clicking them.
+      if (rPiWaitingClick) {
+        rPiWaitingClick = false;
+        connectDevicesBtn.innerText = "+ Connect";
+
+        devicesOnSpace.forEach((dev) => {
+          const id = dev.id;
+          document.getElementById(id).classList.remove("raspNotAdded");
+          document.getElementById(id).classList.remove("raspAdded");
+        });
+      } else {
+        rPiWaitingClick = true;
+        rPiObjectWaiting = deviceObject;
+
+        connectDevicesBtn.innerText = "✕ Cancel";
+
+        devicesOnSpace.forEach((dev) => {
+          const id = dev.id;
+          if (id != deviceObject.id) {
+            if (!deviceObject.connectedDeviceIds.includes(id)) {
+              document.getElementById(id).classList.add("raspNotAdded");
+            } else {
+              document.getElementById(id).classList.add("raspAdded");
+            }
+          }
+        });
+      }
     });
 
     deviceElem.appendChild(connectDevicesBtn);
@@ -297,21 +331,23 @@ function addDeviceToSpace(deviceType) {
   };
 
   deleteBtn.addEventListener("click", (ev) => {
-    // Delete the html element and children
-    deviceElem.innerText = "";
-    deviceElem.remove();
+    if (!rPiWaitingClick) {
+      // Delete the html element and children
+      deviceElem.innerText = "";
+      deviceElem.remove();
 
-    // Delete the illustration object
-    deviceIllosOnSpace.splice(deviceIllosOnSpace.indexOf(deviceIllo), 1);
+      // Delete the illustration object
+      deviceIllosOnSpace.splice(deviceIllosOnSpace.indexOf(deviceIllo), 1);
 
-    // Delete the JS object
-    devicesOnSpace.splice(devicesOnSpace.indexOf(deviceObject), 1);
+      // Delete the JS object
+      devicesOnSpace.splice(devicesOnSpace.indexOf(deviceObject), 1);
 
-    // Remove the interactjs listening for this element potentially.
-    // I'm not sure if the object won't get garbage-collected if I
-    // don't remove this. This .draggable class is how interact-js
-    // grabs elements for dragging.
-    deviceElem.classList.remove("draggable");
+      // Remove the interactjs listening for this element potentially.
+      // I'm not sure if the object won't get garbage-collected if I
+      // don't remove this. This .draggable class is how interact-js
+      // grabs elements for dragging.
+      deviceElem.classList.remove("draggable");
+    }
   });
 
   // Bind (one-way) the name changes in the text input element with the
@@ -344,8 +380,65 @@ interact(".draggable")
     },
   })
   .on("tap", (ev) => {
-    if(rPiWaitingClick && ev.target.classList)
-    console.log("tapped", ev.target.id); 
+    if (rPiWaitingClick) {
+      let newTapElement = ev.target;
+
+      // Check classlist for things they shouldnt click on
+      // The user can either click on the empty region in the device,
+      // or on the illustration itself (<canvas> element)
+      let tappedOkElement = true;
+      dontDragTapClasses.forEach((class_) => {
+        if (newTapElement.classList.contains(class_)) {
+          tappedOkElement = false;
+        }
+      });
+
+      if (tappedOkElement) {
+        // Find the actual device container element.
+        // For example, if the user clicks on the canvas, the canvas is
+        // registered as the element that was clicked on. Instead, we
+        // want the .deviceContainer div - which has the ID of the
+        // device.
+        while (!newTapElement.classList.contains("deviceContainer")) {
+          newTapElement = newTapElement.parentElement;
+        }
+
+        // The id of the device connecting to RPi
+        const tapId = newTapElement.id;
+        // console.log(
+        //   `Raspberry Pi #${rPiObjectWaiting.id} wants to connect to #${tapId}`
+        // );
+
+        // The JS object of the device connecting to RPi
+        const tapObject = devicesOnSpace.filter((obj) => obj.id == tapId)[0];
+
+        // Check and make sure it's not rpi itself
+        if (tapId != rPiObjectWaiting.id) {
+          rPiWaitingClick = false;
+          const connectDevicesBtn = document
+            .getElementById(rPiObjectWaiting.id)
+            .querySelector(".connectDevBtn");
+          connectDevicesBtn.innerText = "+ Connect";
+
+          devicesOnSpace.forEach((dev) => {
+            const id = dev.id;
+            document.getElementById(id).classList.remove("raspNotAdded");
+            document.getElementById(id).classList.remove("raspAdded");
+          });
+          if (!tapObject.connected) {
+            // If the device is not already connected to some RPi
+            tapObject.connected = true;
+            rPiObjectWaiting.connectedDeviceIds.push(tapId);
+          } else if (rPiObjectWaiting.connectedDeviceIds.includes(tapId)) {
+            // If the device is already connected to the same RPi, remove it
+            tapObject.connected = false;
+            rPiObjectWaiting.connectedDeviceIds.splice(
+              rPiObjectWaiting.connectedDeviceIds.indexOf(tapId)
+            );
+          }
+        }
+      }
+    }
   });
 
 // Remove draggable option from device name input field,

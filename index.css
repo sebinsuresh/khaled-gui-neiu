@@ -276,15 +276,25 @@ body {
 }
 
 .deviceContainer.raspAdded{
-  border: 5px dotted lightblue;
-  margin-left: -2.5px;
-  margin-top: -2.5px;
+  border: 5px dotted lightcoral;
+  margin-left: -5px;
+  margin-top: -5px;
+  cursor: pointer !important;
 }
 
-.deviceContainer.raspHover{
+.deviceContainer.raspNotAdded{
+  border: 5px dotted lightblue;
+  margin-left: -5px;
+  margin-top: -5px;
+  cursor: pointer !important;
+}
+
+.deviceContainer.raspAdded:hover{
   border: 5px dotted darkRed;
-  margin-left: -2.5px;
-  margin-top: -2.5px;
+}
+
+.deviceContainer.raspNotAdded:hover{
+  border: 5px dotted gold;
 }
 
 .deviceContainer .connectDevBtn {
