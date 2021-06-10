@@ -350,8 +350,36 @@ function addDeviceToSpace(deviceType) {
       // grabs elements for dragging.
       deviceElem.classList.remove("draggable");
 
-      // TODO: Code for handling deletion of elements from screen:
-      // Handle RPi/non-RPi devices separately
+      /* Code for handling deletion of connected devices */
+
+      // Handle removal of devices connected to some RPi
+      devicesOnSpace.forEach((devObj) => {
+        // For each device object, if they are connected to the
+        // item being deleted, remove the item from the array of
+        // connectedDevices.
+        const listDevicesConnected = devObj.connectedDeviceIds;
+        if (listDevicesConnected?.includes(deviceObject.id)) {
+          const index = listDevicesConnected.indexOf(deviceObject.id);
+
+          // Remove from array
+          listDevicesConnected.splice(index, 1);
+
+          // Update the text on the button
+          document
+            .getElementById(devObj.id)
+            .querySelector(".connectDevBtn").innerText =
+            "+ Connect (" + listDevicesConnected.length + ")";
+        }
+      });
+
+      // Handle the removal of an RPi iteslf:
+      // Make sure all of the connected devices are no
+      // longer connected.
+      deviceObject.connectedDeviceIds?.forEach((devId) => {
+        devicesOnSpace.forEach((otherDev) => {
+          if (otherDev.id == devId) otherDev.connected = false;
+        });
+      });
       redrawCanvas();
     }
   });
