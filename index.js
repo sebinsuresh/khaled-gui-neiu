@@ -332,8 +332,6 @@ function addDeviceToSpace(deviceType) {
     deviceObject.status = optionTextValue;
   };
 
-  // TODO: Code for handling deletion of elements from screen:
-  // Handle RPi/non-RPi devices separately
   deleteBtn.addEventListener("click", (ev) => {
     if (!rPiWaitingClick) {
       // Delete the html element and children
@@ -351,6 +349,10 @@ function addDeviceToSpace(deviceType) {
       // don't remove this. This .draggable class is how interact-js
       // grabs elements for dragging.
       deviceElem.classList.remove("draggable");
+
+      // TODO: Code for handling deletion of elements from screen:
+      // Handle RPi/non-RPi devices separately
+      redrawCanvas();
     }
   });
 
@@ -383,95 +385,80 @@ interact(".draggable")
       end: dragEndListener,
     },
   })
-  .on("tap", (ev) => {
-    if (rPiWaitingClick) {
-      let newTapElement = ev.target;
+  .on("tap", tapDraggableListener);
 
-      // Check classlist for things they shouldnt click on
-      // The user can either click on the empty region in the device,
-      // or on the illustration itself (<canvas> element)
-      let tappedOkElement = true;
-      dontDragTapClasses.forEach((class_) => {
-        if (newTapElement.classList.contains(class_)) {
-          tappedOkElement = false;
-        }
-      });
-
-      if (tappedOkElement) {
-        // Find the actual device container element.
-        // For example, if the user clicks on the canvas, the canvas is
-        // registered as the element that was clicked on. Instead, we
-        // want the .deviceContainer div - which has the ID of the
-        // device.
-        while (!newTapElement.classList.contains("deviceContainer")) {
-          newTapElement = newTapElement.parentElement;
-        }
-
-        // The id of the device connecting to RPi
-        const tapId = newTapElement.id;
-        // console.log(
-        //   `Raspberry Pi #${rPiObjectWaiting.id} wants to connect to #${tapId}`
-        // );
-
-        // The JS object of the device connecting to RPi
-        const tapObject = devicesOnSpace.filter((obj) => obj.id == tapId)[0];
-
-        // Check and make sure it's not rpi itself
-        if (tapId != rPiObjectWaiting.id) {
-          rPiWaitingClick = false;
-          const connectDevicesBtn = document
-            .getElementById(rPiObjectWaiting.id)
-            .querySelector(".connectDevBtn");
-
-          devicesOnSpace.forEach((dev) => {
-            const id = dev.id;
-            document.getElementById(id).classList.remove("raspNotAdded");
-            document.getElementById(id).classList.remove("raspAdded");
-          });
-          if (!tapObject.connected) {
-            // If the device is not already connected to some RPi
-            tapObject.connected = true;
-            rPiObjectWaiting.connectedDeviceIds.push(tapId);
-          } else if (rPiObjectWaiting.connectedDeviceIds.includes(tapId)) {
-            // If the device is already connected to the same RPi, remove it
-            tapObject.connected = false;
-            rPiObjectWaiting.connectedDeviceIds.splice(
-              rPiObjectWaiting.connectedDeviceIds.indexOf(tapId),
-              1
-            );
-          }
-          connectDevicesBtn.innerText =
-            "+ Connect (" + rPiObjectWaiting.connectedDeviceIds.length + ")";
-          redrawCanvas();
-        }
-      }
-    }
-  });
-
-// Remove draggable option from device name input field,
-// delete button, and connect device button.
+// Remove draggable option from device name input field, delete 
+// button, and connect device button.
+// Also removes the "move" type cursor when hovering over those.
 interact("." + dontDragTapClasses.join(", ."))
   .draggable({})
   .styleCursor(false);
 
-// Trying out touch and drag to scroll/move devices in mobile browsers.
-// Disabled - because it's not perfect, you have to drag really slow on
-// iOS browsers at least.
-/* interact(".draggable")
-  .on('down', deviceTouchDown)
-  .on('up', deviceTouchUp);
+// Listens to taps on draggable elements (devices on screen).
+function tapDraggableListener(ev) {
+  if (rPiWaitingClick) {
+    let newTapElement = ev.target;
 
-function deviceTouchDown(event){
-  let visualizerDiv =  document.getElementById("visualizer");
-  if (visualizerDiv.style.touchAction != "none")
-    visualizerDiv.style.touchAction = "none";
-};
+    // Check classlist for things they shouldnt click on
+    // The user can either click on the empty region in the device,
+    // or on the illustration itself (<canvas> element)
+    let tappedOkElement = true;
+    dontDragTapClasses.forEach((class_) => {
+      if (newTapElement.classList.contains(class_)) {
+        tappedOkElement = false;
+      }
+    });
 
-function deviceTouchUp(event){
-  let visualizerDiv =  document.getElementById("visualizer");
-  if (visualizerDiv.style.touchAction == "none")
-    visualizerDiv.style.touchAction = "pan-x pan-y";
-}; */
+    if (tappedOkElement) {
+      // Find the actual device container element.
+      // For example, if the user clicks on the canvas, the canvas is
+      // registered as the element that was clicked on. Instead, we
+      // want the .deviceContainer div - which has the ID of the
+      // device.
+      while (!newTapElement.classList.contains("deviceContainer")) {
+        newTapElement = newTapElement.parentElement;
+      }
+
+      // The id of the device connecting to RPi
+      const tapId = newTapElement.id;
+      // console.log(
+      //   `Raspberry Pi #${rPiObjectWaiting.id} wants to connect to #${tapId}`
+      // );
+
+      // The JS object of the device connecting to RPi
+      const tapObject = devicesOnSpace.filter((obj) => obj.id == tapId)[0];
+
+      // Check and make sure it's not rpi itself
+      if (tapId != rPiObjectWaiting.id) {
+        rPiWaitingClick = false;
+        const connectDevicesBtn = document
+          .getElementById(rPiObjectWaiting.id)
+          .querySelector(".connectDevBtn");
+
+        devicesOnSpace.forEach((dev) => {
+          const id = dev.id;
+          document.getElementById(id).classList.remove("raspNotAdded");
+          document.getElementById(id).classList.remove("raspAdded");
+        });
+        if (!tapObject.connected) {
+          // If the device is not already connected to some RPi
+          tapObject.connected = true;
+          rPiObjectWaiting.connectedDeviceIds.push(tapId);
+        } else if (rPiObjectWaiting.connectedDeviceIds.includes(tapId)) {
+          // If the device is already connected to the same RPi, remove it
+          tapObject.connected = false;
+          rPiObjectWaiting.connectedDeviceIds.splice(
+            rPiObjectWaiting.connectedDeviceIds.indexOf(tapId),
+            1
+          );
+        }
+        connectDevicesBtn.innerText =
+          "+ Connect (" + rPiObjectWaiting.connectedDeviceIds.length + ")";
+        redrawCanvas();
+      }
+    }
+  }
+}
 
 // Listens to move events thrown by the interactable object
 function dragMoveListener(event) {
@@ -525,7 +512,7 @@ function dragEndListener(event) {
 
 // When the window is resized, the illustrations have to re-render.
 // However, the "resize" event fires every frame of the browser UI,
-// so we add a timeout - The event is placed on a 200ms delay.
+// so we add a timeout - The event is placed on a 50ms delay.
 // 'windowResizer' is a variable for this timeout functionality.
 // Code from: https://stackoverflow.com/a/60204716
 let windowResizer;
@@ -545,7 +532,7 @@ window.addEventListener("resize", () => {
     placeDeviceSpaceDevices();
     renderDeviceSpaceDevices();
     redrawCanvas();
-  }, 200);
+  }, 50);
 });
 
 // Redraws the background canvas element containing
@@ -602,7 +589,7 @@ function redrawCanvas() {
 function renderDevicePreviews() {
   devicePreviewObjects.forEach((el) => {
     if (el.show) {
-      let _ = el.show();
+      el.show();
     }
   });
 }
@@ -615,7 +602,7 @@ function placeDeviceSpaceDevices() {
   const spaceH = document.getElementById("visualizer").clientHeight;
 
   devicesOnSpace.forEach((devObj) => {
-    let deviceDiv = document.getElementById(devObj.id);
+    const deviceDiv = document.getElementById(devObj.id);
     const newX = Math.round(spaceW * devObj.x, 2);
     const newY = Math.round(spaceH * devObj.y, 2);
 
@@ -641,3 +628,22 @@ function renderDeviceSpaceDevices() {
     }
   });
 }
+
+// Trying out touch and drag to scroll/move devices in mobile browsers.
+// Disabled - because it's not perfect, you have to drag really slow on
+// iOS browsers at least.
+/* interact(".draggable")
+  .on('down', deviceTouchDown)
+  .on('up', deviceTouchUp);
+
+function deviceTouchDown(event){
+  let visualizerDiv =  document.getElementById("visualizer");
+  if (visualizerDiv.style.touchAction != "none")
+    visualizerDiv.style.touchAction = "none";
+};
+
+function deviceTouchUp(event){
+  let visualizerDiv =  document.getElementById("visualizer");
+  if (visualizerDiv.style.touchAction == "none")
+    visualizerDiv.style.touchAction = "pan-x pan-y";
+}; */
