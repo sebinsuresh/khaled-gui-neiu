@@ -52,8 +52,8 @@ const deviceTypes = {
 let devicePreviewObjects = [];
 
 const addDevicesRegion = document.querySelector(".modalDevices");
-const canv = document.getElementById("visualizer-canvas");
-const ctx = canv.getContext("2d");
+const linesCanv = document.getElementById("visualizer-canvas");
+const ctx = linesCanv.getContext("2d");
 
 /*
 Array containing the deviceObject objects.
@@ -103,8 +103,8 @@ function initializeAddDevicesModal() {
   devicePreviewObjects = [];
 
   // Resize the transparent canvas to fit the container width
-  canv.width = canv.parentElement.clientWidth;
-  canv.height = canv.parentElement.clientHeight;
+  linesCanv.width = linesCanv.parentElement.clientWidth;
+  linesCanv.height = linesCanv.parentElement.clientHeight;
 
   for (let deviceType in deviceTypes) {
     // Create new div within the region
@@ -538,8 +538,8 @@ window.addEventListener("resize", () => {
     // Execute these functions on a timeout.
 
     // Resize the background canvas. might need to move to a function
-    canv.width = canv.parentElement.clientWidth;
-    canv.height = canv.parentElement.clientHeight;
+    linesCanv.width = linesCanv.parentElement.clientWidth;
+    linesCanv.height = linesCanv.parentElement.clientHeight;
 
     renderDevicePreviews();
     placeDeviceSpaceDevices();
@@ -551,7 +551,7 @@ window.addEventListener("resize", () => {
 // Redraws the background canvas element containing
 // the lines connecting devices.
 function redrawCanvas() {
-  ctx.clearRect(0, 0, canv.width, canv.height);
+  ctx.clearRect(0, 0, linesCanv.width, linesCanv.height);
 
   ctx.lineWidth = 3;
   ctx.strokeStyle = "#ffffff40";
