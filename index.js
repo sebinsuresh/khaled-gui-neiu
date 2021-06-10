@@ -387,7 +387,7 @@ interact(".draggable")
   })
   .on("tap", tapDraggableListener);
 
-// Remove draggable option from device name input field, delete 
+// Remove draggable option from device name input field, delete
 // button, and connect device button.
 // Also removes the "move" type cursor when hovering over those.
 interact("." + dontDragTapClasses.join(", ."))
