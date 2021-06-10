@@ -285,7 +285,7 @@ function addDeviceToSpace(deviceType) {
   const deviceStatusMenu = document.createElement("select");
 
   // Create the statuses available to the device as options in the menu.
-  for (statusChoice of statusChoices) {
+  for (let statusChoice of statusChoices) {
     const statusOption = document.createElement("option");
     statusOption.innerText = statusChoice;
     statusOption.value = statusChoice;
@@ -603,11 +603,11 @@ function placeDeviceSpaceDevices() {
 
   devicesOnSpace.forEach((devObj) => {
     const deviceDiv = document.getElementById(devObj.id);
-    const newX = Math.round(spaceW * devObj.x, 2);
-    const newY = Math.round(spaceH * devObj.y, 2);
+    const newX = Math.round(spaceW * devObj.x);
+    const newY = Math.round(spaceH * devObj.y);
 
-    deviceDiv.setAttribute("data-x", newX);
-    deviceDiv.setAttribute("data-y", newY);
+    deviceDiv.setAttribute("data-x", newX + "");
+    deviceDiv.setAttribute("data-y", newY + "");
     deviceDiv.style.transform = `translate(${newX}px, ${newY}px)`;
 
     // console.log(deviceDiv);
