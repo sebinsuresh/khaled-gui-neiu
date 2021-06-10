@@ -577,8 +577,16 @@ function redrawCanvas() {
         ctx.lineTo(endX, endY);
         ctx.stroke();
 
-        // TODO: Clear the rectangle behind each device so the line
-        // doesn't appear there?
+        // Clear the rectangle behind each device so the line
+        // doesn't appear there
+        [rPiElement, connDevElem].forEach((elem) => {
+          ctx.clearRect(
+            parseInt(elem.getAttribute("data-x")),
+            parseInt(elem.getAttribute("data-y")),
+            elem.clientWidth,
+            elem.clientHeight
+          );
+        });
       });
     }
   });
