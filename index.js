@@ -397,10 +397,15 @@ function addDeviceToSpace(deviceType) {
   deviceIllosOnSpace.push(deviceIllo);
 }
 
-// Set the .draggable objects to have draggable properties
+// Set the "draggable" class objects to be draggable using interactjs.
+// 'ignoreFrom' property removes draggability from elements other
+// than the canvas (device name input field, delete & connect
+// device button, etc.).
+// Also removes the "move" type cursor when hovering over those.
 interact(".draggable")
   .draggable({
     autoScroll: false,
+    ignoreFrom: ".draggable :not(canvas)",
     inertia: false,
     modifiers: [
       interact.modifiers.restrictRect({
@@ -414,11 +419,6 @@ interact(".draggable")
     },
   })
   .on("tap", tapDraggableListener);
-
-// Remove draggability from elements other than the canvas
-// (device name input field, delete & connect device button, etc.)
-// Also removes the "move" type cursor when hovering over those.
-interact(".draggable :not(canvas)").draggable({}).styleCursor(false);
 
 // Listens to taps on draggable elements (devices on screen).
 function tapDraggableListener(ev) {
