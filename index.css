@@ -275,25 +275,25 @@ body {
   padding: 1px;
 }
 
-.deviceContainer.raspAdded{
+.deviceContainer.raspAdded {
   border: 5px dotted lightcoral;
   margin-left: -5px;
   margin-top: -5px;
   cursor: pointer !important;
 }
 
-.deviceContainer.raspNotAdded{
+.deviceContainer.raspNotAdded {
   border: 5px dotted lightblue;
   margin-left: -5px;
   margin-top: -5px;
   cursor: pointer !important;
 }
 
-.deviceContainer.raspAdded:hover{
+.deviceContainer.raspAdded:hover {
   border: 5px dotted darkRed;
 }
 
-.deviceContainer.raspNotAdded:hover{
+.deviceContainer.raspNotAdded:hover {
   border: 5px dotted gold;
 }
 
