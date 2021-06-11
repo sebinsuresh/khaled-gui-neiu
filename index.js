@@ -602,6 +602,7 @@ function redrawCanvas() {
         // Draw the line between the RPi and this connected device
         ctx.beginPath();
         ctx.moveTo(startX, startY);
+        ctx.lineTo(startX, endY);
         ctx.lineTo(endX, endY);
         ctx.stroke();
 
