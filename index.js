@@ -415,12 +415,10 @@ interact(".draggable")
   })
   .on("tap", tapDraggableListener);
 
-// Remove draggable option from device name input field, delete
-// button, and connect device button.
+// Remove draggability from elements other than the canvas
+// (device name input field, delete & connect device button, etc.)
 // Also removes the "move" type cursor when hovering over those.
-interact("." + dontDragTapClasses.join(", ."))
-  .draggable({})
-  .styleCursor(false);
+interact(".draggable :not(canvas)").draggable({}).styleCursor(false);
 
 // Listens to taps on draggable elements (devices on screen).
 function tapDraggableListener(ev) {
