@@ -334,6 +334,13 @@ function addDeviceToSpace(deviceType) {
 
   deleteBtn.addEventListener("click", (ev) => {
     if (!rPiWaitingClick) {
+      
+      // Remove the interactjs listening for this element potentially.
+      // I'm not sure if the object won't get garbage-collected if I
+      // don't remove this. This .draggable class is how interact-js
+      // grabs elements for dragging.
+      deviceElem.classList.remove("draggable");
+
       // Delete the html element and children
       deviceElem.innerText = "";
       deviceElem.remove();
@@ -343,12 +350,6 @@ function addDeviceToSpace(deviceType) {
 
       // Delete the JS object
       devicesOnSpace.splice(devicesOnSpace.indexOf(deviceObject), 1);
-
-      // Remove the interactjs listening for this element potentially.
-      // I'm not sure if the object won't get garbage-collected if I
-      // don't remove this. This .draggable class is how interact-js
-      // grabs elements for dragging.
-      deviceElem.classList.remove("draggable");
 
       /* Code for handling deletion of connected devices */
 
