@@ -1,58 +1,81 @@
-import deviceTypes from "./deviceTypes.js";
+/* 
+  Device superclass that all device classes extend from.
+
+  The constructor requires passing the 'device type' string (must match the 
+  property key in deviceNames.js for corresponding device), and the number
+  of devices of this type that exist in the space already.
+*/
+import { DeviceNames } from "./deviceNames.js";
 import Label from "./label.js";
 
 export default class Device {
-  constructor(deviceType, numDevicesThisType = 0) {
-    this.indexThisType = numDevicesThisType + 1;
-    this.id = deviceType + this.indexThisType;
-    this.name = deviceTypes[deviceType].name;
+  constructor(deviceTypeStr, numDevicesThisType = 0, isPreviewElem = false) {
+    if (!isPreviewElem) {
+      this.indexThisType = numDevicesThisType + 1;
+      this.deviceTypeStr = deviceTypeStr;
+      this.id = this.deviceTypeStr + this.indexThisType;
+      this.name = DeviceNames[this.deviceTypeStr] + " " + this.indexThisType;
 
-    this.element = createElem();
-    this.canvElem = createCanvElem();
-    this.element.appendChild(this.canvElem);
+      this.element = this.createElem();
+      this.canvElem = this.createCanvElem();
+      this.element.appendChild(this.canvElem);
+      this.illo = null;
 
-    this.statuses = ["OFF", "ON"];
-    this.status = "OFF";
+      this.statuses = ["OFF", "ON"];
+      this.status = "OFF";
 
-    this.position = {
-      x: 0.1,
-      y: 0.1,
-    };
+      this.position = {
+        x: 0.1,
+        y: 0.1,
+      };
 
-    this.isConnected = false;
-    this.connectedTo = null;
-    this.connectedDevices = null;
+      this.isConnected = false;
+      this.connectedTo = null;
+      this.connectedDevices = null;
 
-    this.label = new Label(this);
+      this.label = new Label(this);
+    }
   }
 
+  // Creates the draggable outer-div for the device.
   createElem() {
     const elem = document.createElement("div");
-    elem.classList.add("devicePreview");
+    elem.classList.add("deviceContainer", "draggable");
 
     elem.id = this.id;
 
     return elem;
   }
 
+  // Creates the canvas element placed inside the draggable device div.
   createCanvElem() {
     const canvElem = document.createElement("canvas");
-    canvElem.classList.add("previewCanvas");
+    canvElem.classList.add("deviceCanv");
 
     return canvElem;
   }
 
+  // Sets the zoom level of the illustration.
   setZoom(zoomVal) {
     this.illo.zoom = zoomVal;
+    return this.show();
   }
 
+  // Show/re-render the illustration.
   show() {
     this.illo.updateRenderGraph();
+    return this.illo;
   }
 
+  /* 
+  Delete this device :
+  Removes any listeners, HTML elements, itself from the 
+  space manager array, and removes any connections with other devices 
+  */
   // TODO
   delete() {}
 
+  // Updates the Label object associated with this device.
   updateLabel(key, val) {
     this.label.setObjectVal(key, val);
   }

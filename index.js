@@ -5,6 +5,7 @@
  */
 
 import SpaceManager from "./spaceManager.js";
+import RPi from "./rpi.js";
 
 // Initialize the space manager
 // This kickstarts the whole thing. The preview modal is filled in,
@@ -13,3 +14,6 @@ const spaceMan = new SpaceManager("#visualizer");
 
 // Make the space manager available from JS console in browser.
 window.spaceMan = spaceMan;
+
+// DEBUGGING
+window.Device = new RPi(spaceMan);
