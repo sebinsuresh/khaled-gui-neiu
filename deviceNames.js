@@ -4,7 +4,7 @@
   Example usage:
   DeviceNames["RPI"] -> to get "Raspberry Pi"
 */
-export const DeviceNames = {
+export const deviceNames = {
   RPI: "Raspberry Pi",
   LED: "LED Bulb",
   TEMPSENSOR: "Temp sensor",

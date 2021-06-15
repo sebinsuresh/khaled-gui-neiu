@@ -5,7 +5,7 @@
   property key in deviceNames.js for corresponding device), and the number
   of devices of this type that exist in the space already.
 */
-import { DeviceNames } from "./deviceNames.js";
+import { deviceNames } from "./deviceNames.js";
 import Label from "./label.js";
 
 export default class Device {
@@ -14,7 +14,7 @@ export default class Device {
       this.indexThisType = numDevicesThisType + 1;
       this.deviceTypeStr = deviceTypeStr;
       this.id = this.deviceTypeStr + this.indexThisType;
-      this.name = DeviceNames[this.deviceTypeStr] + " " + this.indexThisType;
+      this.name = deviceNames[this.deviceTypeStr] + " " + this.indexThisType;
 
       this.element = this.createElem();
       this.canvElem = this.createCanvElem();
@@ -64,13 +64,13 @@ export default class Device {
   // Show/re-render the illustration.
   show() {
     this.illo.updateRenderGraph();
-    return this.illo;
+    return this;
   }
 
   /* 
   Delete this device :
-  Removes any listeners, HTML elements, itself from the 
-  space manager array, and removes any connections with other devices 
+  Removes any listeners, any connections with other devices, HTML elements,
+  and itself from the space manager array.
   */
   // TODO
   delete() {}
