@@ -25,6 +25,16 @@ export default class RPi extends Device {
     this.connectedDevices = [];
   }
 
+  // OVERRIDE for RPi (To make the width 200px):
+  // Creates the canvas element placed inside the draggable device div
+  createCanvElem() {
+    const canvElem = document.createElement("canvas");
+    canvElem.classList.add("deviceCanv");
+    canvElem.style.width = "200px";
+
+    return canvElem;
+  }
+
   // Creates and return illustration for the Raspberry Pi device.
   // This must be called after placing the device container on screen already.
   // Otherwise, the width and height of the canvas would not be set properly
