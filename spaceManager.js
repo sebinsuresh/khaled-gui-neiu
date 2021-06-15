@@ -1,6 +1,23 @@
 /* 
   Space Manager class.
 */
+
+import RPi from "./rpi.js";
+// import LEDBulb from "./led.js";
+// import TempSensor from "./tempSensor.js";
+// import Bulb from "./bulb.js";
+// import Lamp from "./lamp.js";
+// import Thermometer from "./thermo.js";
+
+const classNames = {
+  RPI: RPi,
+  // LED: LEDBulb,
+  // TEMPSENSOR: TempSensor,
+  // BULB: Bulb,
+  // LAMP: Lamp,
+  // THERMOMETER: Thermometer,
+};
+
 export default class SpaceManager {
   constructor(selector) {
     /* 
