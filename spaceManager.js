@@ -58,6 +58,10 @@ export default class SpaceManager {
 
   // Reload the illustrations on each device on screen.
   // This might be required after the window size gets changed.
-  // TODO
-  refreshIllustrations() {}
+  // TODO: Decide if line rendering & other stuff happens here.
+  refreshIllustrations() {
+    this.devices.forEach((devObj) => {
+      devObj.show();
+    });
+  }
 }
