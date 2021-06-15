@@ -9,7 +9,7 @@ import RPi from "./rpi.js";
 // import Lamp from "./lamp.js";
 // import Thermometer from "./thermo.js";
 
-const classNames = {
+const deviceClasses = {
   RPI: RPi,
   // LED: LEDBulb,
   // TEMPSENSOR: TempSensor,
@@ -35,8 +35,12 @@ export default class SpaceManager {
   }
 
   // Add a device to the smart devices space
-  // TODO
-  addDevice(deviceType) {}
+  addDevice(deviceType) {
+    const newDeviceObj = new deviceClasses[deviceType](this, false);
+    this.devices.push(newDeviceObj);
+    this.vizSpaceElement.appendChild(newDeviceObj.element);
+    newDeviceObj.createIllustration(false);
+  }
 
   // Delete a device from the devices space, given its id string.
   // TODO
