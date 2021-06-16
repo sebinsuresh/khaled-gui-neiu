@@ -32,6 +32,9 @@ export default class SpaceManager {
     extends the 'Device' class. 
     */
     this.devices = [];
+
+    // TODO: Make .draggable class elements draggable using interact.js
+    // TODO: Other event listeners
   }
 
   // Add a device to the smart devices space
@@ -40,6 +43,8 @@ export default class SpaceManager {
     this.devices.push(newDeviceObj);
     this.vizSpaceElement.appendChild(newDeviceObj.element);
     newDeviceObj.createIllustration(false);
+
+    return newDeviceObj;
   }
 
   // Delete a device from the devices space, given its id string.
