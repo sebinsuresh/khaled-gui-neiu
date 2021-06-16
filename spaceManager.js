@@ -37,14 +37,20 @@ export default class SpaceManager {
     // TODO: Other event listeners
   }
 
-  // Add a device to the smart devices space
+  // Add a device to the smart devices space, and returns the
+  // device object, if it is valid.
   addDevice(deviceType) {
-    const newDeviceObj = new deviceClasses[deviceType](this, false);
-    this.devices.push(newDeviceObj);
-    this.vizSpaceElement.appendChild(newDeviceObj.element);
-    newDeviceObj.createIllustration(false);
+    if (deviceType in deviceClasses) {
+      const newDeviceObj = new deviceClasses[deviceType](this, false);
+      this.devices.push(newDeviceObj);
+      this.vizSpaceElement.appendChild(newDeviceObj.element);
+      newDeviceObj.createIllustration(false);
 
-    return newDeviceObj;
+      return newDeviceObj;
+    } else {
+      console.error("Invalid device type!");
+      return null;
+    }
   }
 
   // Delete a device from the devices space, given its id string.
