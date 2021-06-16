@@ -10,13 +10,10 @@ export default class RPi extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super(
       "RPI",
-      spaceMan.devices.reduce(
-        (acc, el) => {
-          return acc + (el.deviceType == RPi ? 1 : 0);
-        },
-        0,
-        isPreviewElem
-      )
+      spaceMan.devices.reduce((acc, el) => {
+        return acc + (el.deviceTypeStr == "RPI" ? 1 : 0);
+      }, 0),
+      isPreviewElem
     );
 
     this.statuses = ["ON"];
