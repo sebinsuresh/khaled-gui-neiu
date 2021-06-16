@@ -10,6 +10,7 @@ export default class Label {
     this.parent = parentObject;
     this.object = {
       name: parentObject.name,
+      id: parentObject.id,
       comment: "Default comment. Click to type in a new comment.",
     };
 
