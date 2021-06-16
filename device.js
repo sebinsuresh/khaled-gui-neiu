@@ -18,7 +18,9 @@ export default class Device {
 
       this.element = this.createElem();
       this.canvElem = this.createCanvElem();
+      this.deleteBtn = this.createDeleteBtn();
       this.element.appendChild(this.canvElem);
+      this.element.appendChild(this.deleteBtn);
       this.illo = null;
 
       this.statuses = ["OFF", "ON"];
@@ -53,6 +55,16 @@ export default class Device {
     canvElem.classList.add("deviceCanv");
 
     return canvElem;
+  }
+
+  // Creates a delete button for the device.
+  createDeleteBtn() {
+    const deleteBtn = document.createElement("div");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.innerText = "x";
+    deleteBtn.title = "Delete this device";
+
+    return deleteBtn;
   }
 
   // Sets the zoom level of the illustration.
