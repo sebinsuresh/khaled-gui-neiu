@@ -90,8 +90,9 @@ export default class SpaceManager {
   deleteDevice(deviceId) {}
 
   // Change status of device specified by the given ID
-  // TODO
-  changeStatus(deviceId, status) {}
+  changeStatus(deviceId, status) {
+    this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
+  }
 
   // Connnect an RPi-like device with the id fromId, to a device with the
   // id toId.
