@@ -154,7 +154,7 @@ export default class Thermometer extends Device {
     return this.show();
   }
 
-  // Change the status of the LED.
+  // Change the status of the device.
   changeStatus(newStatus) {
     if (this.statuses.includes(newStatus)) {
       this.status = newStatus;
