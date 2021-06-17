@@ -513,9 +513,11 @@ export default class RPi extends Device {
 
   // Change the status of the RPi.
   changeStatus(newStatus) {
+    if (this.statuses.includes(newStatus)) {
+      this.status = newStatus;
+    }
     switch (newStatus) {
       case "ON":
-        this.status = newStatus;
         return this.show();
       default:
         if (!(status in this.statuses))
