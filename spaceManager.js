@@ -97,7 +97,16 @@ export default class SpaceManager {
   // Connnect an RPi-like device with the id fromId, to a device with the
   // id toId.
   // TODO
-  connectDevices(fromId, toId) {}
+  connectDevices(fromId, toId) {
+    const fromDev = this.devices.find((dev) => dev.id == fromId);
+    const toDev = this.devices.find((dev) => dev.id == toId);
+
+    // If either fromDev or toDev aren't valid, show error & return
+
+    // If fromDev is not an RPI, show error & return
+
+    // Handle the connection otherwise
+  }
 
   // Disconnect an RPi-like device with the ID fromId and the device with the
   // id toId.
