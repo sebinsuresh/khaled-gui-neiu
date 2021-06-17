@@ -5,6 +5,15 @@
 // TAU: constant used in illustrations
 export const TAU = Zdog.TAU;
 
+// Converts a hex color code string to 'rgba(..)' string
+export const hexToRgba = function (hex, alpha = "1.0") {
+  hex = hex.trim().replace("#", "");
+  const red = parseInt(hex.substr(0, 2), 16);
+  const green = parseInt(hex.substr(2, 2), 16);
+  const blue = parseInt(hex.substr(4, 2), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+};
+
 // Various colors used by the illustrations.
 export const colors = {
   blue0: "#0C1220",
@@ -28,4 +37,14 @@ export const colors = {
   red: "#E94F37",
   redLight: "#F99D8A",
   redLight2: "#F7A1BB",
+  bulbBaseColor: "#868D87",
+  baseBottomColor: "#333232",
+  bulbColor: hexToRgba("#8BA6BB", 0.4),
+  bulbOnColor: hexToRgba("#8BA6BB", 0.4),
+  bulbHighlightColor: "#F8F9E8",
+  filamentOffColor: "#A87356",
+  filamentOnColor: "#F8F9E8",
+  innerGlowColor: hexToRgba("#F8F9E8", 0.3),
+  outerGlowColor: hexToRgba("#E0CB23", 0.3),
+  rayColor: hexToRgba("#E0CB23", 0.3),
 };
