@@ -6,7 +6,7 @@ import RPi from "./rpi.js";
 import LEDBulb from "./led.js";
 import TempSensor from "./tempSensor.js";
 import Bulb from "./bulb.js";
-// import Lamp from "./lamp.js";
+import Lamp from "./lamp.js";
 import Thermometer from "./thermo.js";
 
 const deviceClasses = {
@@ -14,7 +14,7 @@ const deviceClasses = {
   LED: LEDBulb,
   TEMPSENSOR: TempSensor,
   BULB: Bulb,
-  // LAMP: Lamp,
+  LAMP: Lamp,
   THERMOMETER: Thermometer,
 };
 
