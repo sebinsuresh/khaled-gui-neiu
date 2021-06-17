@@ -520,7 +520,7 @@ export default class RPi extends Device {
       case "ON":
         return this.show();
       default:
-        if (!(status in this.statuses))
+        if (!this.statuses.includes(newStatus))
           console.error(`Invalid status change for ${this.name}`);
         return this.show();
     }

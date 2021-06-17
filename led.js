@@ -98,7 +98,7 @@ export default class LEDBulb extends Device {
         this.glow.visible = true;
         return this.show();
       default:
-        if (!(status in this.statuses))
+        if (!this.statuses.includes(newStatus))
           console.error(`Invalid status change for ${this.name}`);
         return this.show();
     }
