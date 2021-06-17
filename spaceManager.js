@@ -7,7 +7,7 @@ import LEDBulb from "./led.js";
 // import TempSensor from "./tempSensor.js";
 // import Bulb from "./bulb.js";
 // import Lamp from "./lamp.js";
-// import Thermometer from "./thermo.js";
+import Thermometer from "./thermo.js";
 
 const deviceClasses = {
   RPI: RPi,
@@ -15,7 +15,7 @@ const deviceClasses = {
   // TEMPSENSOR: TempSensor,
   // BULB: Bulb,
   // LAMP: Lamp,
-  // THERMOMETER: Thermometer,
+  THERMOMETER: Thermometer,
 };
 
 export default class SpaceManager {
