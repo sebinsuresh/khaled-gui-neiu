@@ -8,6 +8,7 @@ import TempSensor from "./tempSensor.js";
 import Bulb from "./bulb.js";
 import Lamp from "./lamp.js";
 import Thermometer from "./thermo.js";
+import { deviceNames } from "./deviceNames.js";
 
 const deviceClasses = {
   RPI: RPi,
@@ -102,8 +103,14 @@ export default class SpaceManager {
     const toDev = this.devices.find((dev) => dev.id == toId);
 
     // If either fromDev or toDev aren't valid, show error & return
+    if (!fromDev || !toDev) {
+      console.error("fromId and toId must be valid IDs of devices on screen");
+    }
 
     // If fromDev is not an RPI, show error & return
+    if (!fromDev.deviceTypeStr != deviceNames["RPI"]) {
+      console.error("fromId must belong to an RPi device");
+    }
 
     // Handle the connection otherwise
   }
