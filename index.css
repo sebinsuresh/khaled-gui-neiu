@@ -264,6 +264,7 @@ body {
   height: 25px;
   border-radius: 50%;
   cursor: pointer;
+  user-select: none;
 
   transition: background-color 0.3s, top 0.3s, right 0.3s, padding 0.3s;
 }
