@@ -18,8 +18,8 @@ export default class Device {
 
       // Place the device on random location on screen initially.
       this.position = {
-        x: parseFloat(Math.random().toFixed(2)),
-        y: parseFloat(Math.random().toFixed(2)),
+        x: parseFloat((0.9 * Math.random()).toFixed(2)),
+        y: parseFloat((0.9 * Math.random()).toFixed(2)),
       };
 
       this.element = this.createElem();
@@ -32,8 +32,11 @@ export default class Device {
       this.statuses = ["OFF", "ON"];
       this.status = "OFF";
 
+      // Properties to connect devices.
+      // For non-RPi:
       this.isConnected = false;
       this.connectedTo = null;
+      // For RPi:
       this.connectedDevices = null;
 
       this.label = new Label(this);
