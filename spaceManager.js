@@ -110,7 +110,6 @@ export default class SpaceManager {
   the next open pin number.
   Returns true if connected appropriately, false otherwise.
    */
-  // TODO
   connectDevices(fromId, toId, pinNum = -1) {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
@@ -130,8 +129,11 @@ export default class SpaceManager {
     }
 
     // If the device is already connected, show error & return false
-    if (fromDev.connectedDevices.find((dev) => dev.deviceId === toId)) {
-      console.error(`toId '${toId}' already connected to RPI`);
+    // if (fromDev.connectedDevices.find((dev) => dev.deviceId === toId)) {
+    if (toDev.isConnected) {
+      console.error(
+        `toId '${toId}' already connected to RPI '${toDev.connectedTo}'`
+      );
       return false;
     }
 
@@ -159,12 +161,11 @@ export default class SpaceManager {
       while (fromDev.connectedDevices.find((dev) => dev.pinNumber == pinNum))
         pinNum++;
     }
-    // TODO: Update the other devices connected property.
-
-    // TODO: Make sure the other device isn't connected already.
-    // If it is, remove that connection?
 
     fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
+    toDev.isConnected = true;
+    toDev.connectedTo = fromId;
+
     return true;
   }
 
