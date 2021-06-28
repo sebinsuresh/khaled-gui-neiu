@@ -86,6 +86,8 @@ export default class SpaceManager {
       this.vizSpaceElement.appendChild(newDeviceObj.element);
       newDeviceObj.createIllustration(false);
 
+      this.placeDevices();
+
       return newDeviceObj;
     } else {
       console.error("Invalid device type!");
@@ -170,6 +172,27 @@ export default class SpaceManager {
   // id toId.
   // TODO
   disconnectDevices(fromId, toId) {}
+
+  // Place the devices on screen correctly, according to their JS object's
+  // position.x & position.y values.
+  placeDevices() {
+    this.devices.forEach((dev) => {
+      // Find the new x & y values using the JS object's position object.
+      const newX = Math.round(
+        dev.position.x * this.vizSpaceElement.clientWidth
+      );
+      const newY = Math.round(
+        dev.position.y * this.vizSpaceElement.clientHeight
+      );
+
+      // Set the location on screen for the deviceContainer HTML element.
+      dev.element.style.transform = `translate(${newX}px, ${newY}px)`;
+
+      // Set the data attributes that interactjs use.
+      dev.element.setAttribute("data-x", newX);
+      dev.element.setAttribute("data-y", newY);
+    });
+  }
 
   // Reload the illustrations on each device on screen.
   // This might be required after the window size gets changed.
