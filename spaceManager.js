@@ -9,6 +9,7 @@ import Bulb from "./bulb.js";
 import Lamp from "./lamp.js";
 import Thermometer from "./thermo.js";
 import { deviceNames } from "./deviceNames.js";
+import Device from "./device.js";
 
 const deviceClasses = {
   RPI: RPi,
@@ -21,20 +22,22 @@ const deviceClasses = {
 
 export default class SpaceManager {
   constructor(selector) {
-    /* 
-    Select the visualizer area that you can add devices to, drag them 
-    around in, etc.
-    */
+    /**
+     * Visualizer area that you can add devices to, drag them around in, etc.
+     *
+     * @type HTMLDivElement
+     */
     this.vizSpaceElement = document.querySelector(selector);
     if (!this.vizSpaceElement.id) {
       console.error("The visualizer region element needs to have a unique id");
     }
 
-    /* 
-    Array that contains instances of classes representing each device
-    placed on screen. Each element is an instance of some class that
-    extends the 'Device' class. 
-    */
+    /**
+     * Array that contains instances of classes representing each device
+     * placed on screen. Each element is an instance of some class that
+     * extends the 'Device' class.
+     * @type Device[]
+     */
     this.devices = [];
 
     this.makeDraggables();
@@ -151,6 +154,8 @@ export default class SpaceManager {
     toDev.isConnected = true;
     toDev.connectedTo = fromId;
 
+    // TODO: Draw lines
+
     return true;
   }
 
@@ -178,6 +183,22 @@ export default class SpaceManager {
       dev.element.setAttribute("data-x", newX);
       dev.element.setAttribute("data-y", newY);
     });
+  }
+
+  // Draw the lines between connected devices on screen.
+  drawLines() {
+    const ctx = this.lineCanvCtx;
+
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#ffffff40";
+
+    ctx.clearRect(0, 0, this.lineCanvElem.width, this.lineCanvElem.height);
+
+    const rPiDevices = this.devices.filter(
+      (dev) => dev.deviceTypeStr === "RPI"
+    );
+
+    // TODO: Do the rest of line drawing
   }
 
   // Reload the illustrations on each device on screen.
