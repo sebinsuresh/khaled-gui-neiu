@@ -16,6 +16,12 @@ export default class Device {
       this.id = this.deviceTypeStr + this.indexThisType;
       this.name = deviceNames[this.deviceTypeStr] + " " + this.indexThisType;
 
+      // Place the device on random location on screen initially.
+      this.position = {
+        x: parseFloat(Math.random().toFixed(2)),
+        y: parseFloat(Math.random().toFixed(2)),
+      };
+
       this.element = this.createElem();
       this.canvElem = this.createCanvElem();
       this.deleteBtn = this.createDeleteBtn();
@@ -25,11 +31,6 @@ export default class Device {
 
       this.statuses = ["OFF", "ON"];
       this.status = "OFF";
-
-      this.position = {
-        x: 0.1,
-        y: 0.1,
-      };
 
       this.isConnected = false;
       this.connectedTo = null;
