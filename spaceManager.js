@@ -39,6 +39,13 @@ export default class SpaceManager {
 
     this.makeDraggables();
 
+    // Create <canvas> to draw lines connecting devices on.
+    this.lineCanvElem = this.createLineCanv();
+    this.vizSpaceElement.appendChild(this.lineCanvElem);
+
+    // Get the "context" of the canvas, so the program can draw in the canvas.
+    this.lineCanvCtx = this.lineCanvElem.getContext("2d");
+
     // TODO: Other event listeners
   }
 
@@ -127,6 +134,17 @@ export default class SpaceManager {
     this.devices.forEach((devObj) => {
       devObj.show();
     });
+  }
+
+  // Function to create the canvas element that draws lines between devices.
+  createLineCanv() {
+    const canvElem = document.createElement("canvas");
+
+    canvElem.id = "visuazlier-canvas";
+    canvElem.width = this.vizSpaceElement.clientWidth;
+    canvElem.height = this.vizSpaceElement.clientHeight;
+
+    return canvElem;
   }
 
   // Listens to move events thrown by the interactable object
