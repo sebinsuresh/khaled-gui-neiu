@@ -114,46 +114,31 @@ export default class SpaceManager {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
 
-    // If either fromDev or toDev aren't valid, show error & return
-    if (!fromDev || !toDev) {
-      console.error("fromId and toId must be valid IDs of devices on screen");
+    const errMsg =
+      // If either fromDev or toDev aren't valid
+      !fromDev || !toDev
+        ? `fromId and toId must be valid IDs of devices on screen`
+        : // If fromDev is not an RPI
+        fromDev.deviceTypeStr !== "RPI"
+        ? `fromId must belong to an RPi device. Given: ${fromDev.deviceTypeStr}`
+        : // If the device is already connected
+        toDev.isConnected
+        ? `toId '${toId}' already connected to RPi '${toDev.connectedTo}'`
+        : // If there is already a device at that pinNum
+        pinNum !== -1 &&
+          fromDev.connectedDevices.find((devObj) => devObj.pinNumber == pinNum)
+        ? `Device ${foundDevAtPin.deviceId} connected to pin number already`
+        : "";
+
+    if (errMsg) {
+      console.error(errMsg);
       return false;
     }
 
-    // If fromDev is not an RPI, show error & return false
-    if (fromDev.deviceTypeStr !== "RPI") {
-      console.error(
-        `fromId must belong to an RPi device. Given: ${fromDev.deviceTypeStr}`
-      );
-      return false;
-    }
-
-    // If the device is already connected, show error & return false
-    if (toDev.isConnected) {
-      console.error(
-        `toId '${toId}' already connected to RPI '${toDev.connectedTo}'`
-      );
-      return false;
-    }
-
-    // Handle the connection otherwise
-    // ===============================
+    // Handle the connection if there are no errors:
 
     // Get the correct pin number
-    if (pinNum !== -1) {
-      // ^ If pinNum was specified in method call
-      const foundDevAtPin = fromDev.connectedDevices.find(
-        (devObj) => devObj.pinNumber == pinNum
-      );
-      // If there is already a device at that pinNum, show error and return null
-      if (foundDevAtPin) {
-        console.error(
-          `Device ${foundDevAtPin.deviceId} connected to pin number already`
-        );
-        return false;
-      }
-      // Otherwise, given pinNum is fine
-    } else {
+    if (pinNum === -1) {
       // ^ If pinNum was not specified in method call, find first open pinNum.
       // Pin numbers start at 1, not 0.
       pinNum = 1;
@@ -161,6 +146,7 @@ export default class SpaceManager {
         pinNum++;
     }
 
+    // Connect the devices.
     fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
     toDev.isConnected = true;
     toDev.connectedTo = fromId;
