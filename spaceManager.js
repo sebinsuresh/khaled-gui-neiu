@@ -102,24 +102,68 @@ export default class SpaceManager {
     this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
   }
 
-  // Connnect an RPi-like device with the id fromId, to a device with the
-  // id toId.
+  /* 
+  Connnect an RPi-like device with the id fromId, to a device with the id toId.
+  The pin number is an optional third parameter. By default it will be set to 
+  the next open pin number.
+  Returns true if connected appropriately, false otherwise.
+   */
   // TODO
-  connectDevices(fromId, toId) {
+  connectDevices(fromId, toId, pinNum = -1) {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
 
     // If either fromDev or toDev aren't valid, show error & return
     if (!fromDev || !toDev) {
       console.error("fromId and toId must be valid IDs of devices on screen");
+      return false;
     }
 
-    // If fromDev is not an RPI, show error & return
-    if (!fromDev.deviceTypeStr != deviceNames["RPI"]) {
-      console.error("fromId must belong to an RPi device");
+    // If fromDev is not an RPI, show error & return false
+    if (fromDev.deviceTypeStr !== "RPI") {
+      console.error(
+        `fromId must belong to an RPi device. Given: ${fromDev.deviceTypeStr}`
+      );
+      return false;
+    }
+
+    // If the device is already connected, show error & return false
+    if (fromDev.connectedDevices.find((dev) => dev.deviceId === toId)) {
+      console.error(`toId '${toId}' already connected to RPI`);
+      return false;
     }
 
     // Handle the connection otherwise
+    // ===============================
+
+    // Get the correct pin number
+    if (pinNum !== -1) {
+      // ^ If pinNum was specified in method call
+      const foundDevAtPin = fromDev.connectedDevices.find(
+        (devObj) => devObj.pinNumber == pinNum
+      );
+      // If there is already a device at that pinNum, show error and return null
+      if (foundDevAtPin) {
+        console.error(
+          `Device ${foundDevAtPin.deviceId} connected to pin number already`
+        );
+        return false;
+      }
+      // Otherwise, given pinNum is fine
+    } else {
+      // ^ If pinNum was not specified in method call, find first open pinNum.
+      // Pin numbers start at 1, not 0.
+      pinNum = 1;
+      while (fromDev.connectedDevices.find((dev) => dev.pinNumber == pinNum))
+        pinNum++;
+    }
+    // TODO: Update the other devices connected property.
+
+    // TODO: Make sure the other device isn't connected already.
+    // If it is, remove that connection?
+
+    fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
+    return true;
   }
 
   // Disconnect an RPi-like device with the ID fromId and the device with the
