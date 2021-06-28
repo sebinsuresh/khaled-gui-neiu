@@ -236,8 +236,8 @@ export default class SpaceManager {
     );
 
     // Update the object's x & y properties.
-    deviceObj.x = devX;
-    deviceObj.y = devY;
+    deviceObj.position.x = devX;
+    deviceObj.position.y = devY;
 
     // TODO: Lines connecting devices?
     // redrawCanvas();
