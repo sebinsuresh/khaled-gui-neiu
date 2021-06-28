@@ -129,7 +129,6 @@ export default class SpaceManager {
     }
 
     // If the device is already connected, show error & return false
-    // if (fromDev.connectedDevices.find((dev) => dev.deviceId === toId)) {
     if (toDev.isConnected) {
       console.error(
         `toId '${toId}' already connected to RPI '${toDev.connectedTo}'`
