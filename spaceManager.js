@@ -180,8 +180,8 @@ export default class SpaceManager {
       dev.element.style.transform = `translate(${newX}px, ${newY}px)`;
 
       // Set the data attributes that interactjs use.
-      dev.element.setAttribute("data-x", newX);
-      dev.element.setAttribute("data-y", newY);
+      dev.element.dataset.x = newX;
+      dev.element.dataset.y = newY;
     });
   }
 
@@ -194,6 +194,11 @@ export default class SpaceManager {
 
     ctx.clearRect(0, 0, this.lineCanvElem.width, this.lineCanvElem.height);
 
+    /**
+     * List of all RPi devices on screen.
+     *
+     * @type RPi[]
+     */
     const rPiDevices = this.devices.filter(
       (dev) => dev.deviceTypeStr === "RPI"
     );
@@ -224,17 +229,13 @@ export default class SpaceManager {
   // Listens to move events thrown by the interactable object
   dragMoveListener(event) {
     let target = event.target;
-    let x = Math.round(
-      (parseFloat(target.getAttribute("data-x")) || 0) + event.dx
-    );
-    let y = Math.round(
-      (parseFloat(target.getAttribute("data-y")) || 0) + event.dy
-    );
+    let x = Math.round((parseFloat(target.dataset.x) || 0) + event.dx);
+    let y = Math.round((parseFloat(target.dataset.y) || 0) + event.dy);
 
     target.style.transform = `translate(${x}px, ${y}px)`;
 
-    target.setAttribute("data-x", x);
-    target.setAttribute("data-y", y);
+    target.dataset.x = x;
+    target.dataset.y = y;
 
     // TODO: Lines connecting devices?
     // redrawCanvas();
@@ -254,13 +255,13 @@ export default class SpaceManager {
 
     let devX = Math.abs(
       (
-        (parseFloat(deviceDiv.getAttribute("data-x")) || 0) /
+        (parseFloat(deviceDiv.dataset.x) || 0) /
         deviceDiv.parentElement.clientWidth
       ).toFixed(2)
     );
     let devY = Math.abs(
       (
-        (parseFloat(deviceDiv.getAttribute("data-y")) || 0) /
+        (parseFloat(deviceDiv.dataset.y) || 0) /
         deviceDiv.parentElement.clientHeight
       ).toFixed(2)
     );
