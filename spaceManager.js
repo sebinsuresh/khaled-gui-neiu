@@ -65,17 +65,15 @@ export default class SpaceManager {
         }),
       ],
       listeners: {
-        move: this.dragMoveListener,
-        end: (ev) => {
-          // The dragEndListener method requires "this" context access -
-          // So that it can access this.devices[].
-          // To pass the context when the event calls the function, use .apply()
-          // like this, instead of simply saying "end: this.dragEndListener"
-          //
-          // Read more about .apply():
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
-          this.dragEndListener.apply(this, [ev]);
-        },
+        // The drag-listener methods requires "this" context access -
+        // So that it can access this.devices[]., for example.
+        // To pass the context when the event calls the function, use .apply()
+        // like below, instead of simply saying "end: this.dragEndListener".
+        //
+        // Read more about .apply():
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+        move: (ev) => this.dragMoveListener.apply(this, [ev]),
+        end: (ev) => this.dragEndListener.apply(this, [ev]),
       },
     });
   }
@@ -154,7 +152,8 @@ export default class SpaceManager {
     toDev.isConnected = true;
     toDev.connectedTo = fromId;
 
-    // TODO: Draw lines
+    // Draw lines connecting devices
+    this.drawLines();
 
     return true;
   }
@@ -203,7 +202,47 @@ export default class SpaceManager {
       (dev) => dev.deviceTypeStr === "RPI"
     );
 
-    // TODO: Do the rest of line drawing
+    rPiDevices.forEach((rPiObj) => {
+      const rPiElem = rPiObj.element;
+
+      // Coordinates to start the line from
+      const startX = parseInt(rPiElem.dataset.x) + ~~(rPiElem.clientWidth / 2);
+      const startY = parseInt(rPiElem.dataset.y) + ~~(rPiElem.clientHeight / 2);
+
+      // Find and iterate over all connected devices
+      rPiObj.connectedDevices.forEach((devPinId) => {
+        // Get the device object for the connected device
+        const connDevice = this.devices.find(
+          (dev) => dev.id === devPinId.deviceId
+        );
+
+        // Coordinates to end the line on.
+        const endX =
+          parseInt(connDevice.element.dataset.x) +
+          ~~connDevice.element.clientWidth / 2;
+        const endY =
+          parseInt(connDevice.element.dataset.y) +
+          ~~connDevice.element.clientHeight / 2;
+
+        // Draw the line between the RPi and this connected device.
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(startX, endY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        // Clear the rectangle behind each device so the line
+        // doesn't appear there.
+        [rPiElem, connDevice.element].forEach((elem) => {
+          ctx.clearRect(
+            parseInt(elem.dataset.x),
+            parseInt(elem.dataset.y),
+            elem.clientWidth,
+            elem.clientHeight
+          );
+        });
+      });
+    });
   }
 
   // Reload the illustrations on each device on screen.
@@ -237,8 +276,8 @@ export default class SpaceManager {
     target.dataset.x = x;
     target.dataset.y = y;
 
-    // TODO: Lines connecting devices?
-    // redrawCanvas();
+    // Draw lines connecting devices.
+    this.drawLines();
   }
 
   // Function that gets called when an object drag ends.
@@ -270,7 +309,7 @@ export default class SpaceManager {
     deviceObj.position.x = devX;
     deviceObj.position.y = devY;
 
-    // TODO: Lines connecting devices?
-    // redrawCanvas();
+    // Draw lines connecting devices.
+    this.drawLines();
   }
 }
