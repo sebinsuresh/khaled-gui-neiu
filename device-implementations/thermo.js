@@ -20,14 +20,14 @@ export default class Thermometer extends Device {
   // Otherwise, the width and height of the canvas would not be set properly
   // by Zdog, and the illustration won't be rendered correctly.
   createIllustration(isPreviewElem) {
-    this.illo = new Zdog.Illustration({
+    this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
       resize: true,
       zoom: isPreviewElem ? 25 : 15,
       rotate: { x: -0.3, y: 0.6 },
     });
-    this.base = new Zdog.Cylinder({
-      addTo: this.illo,
+    this.illustration.base = new Zdog.Cylinder({
+      addTo: this.illustration.zdogillo,
       diameter: 6,
       length: 2,
       stroke: false,
@@ -36,88 +36,91 @@ export default class Thermometer extends Device {
       backface: colors["blue0"],
       fill: true,
     });
-    this.screen = new Zdog.Ellipse({
-      addTo: this.base,
+    this.illustration.screen = new Zdog.Ellipse({
+      addTo: this.illustration.base,
       diameter: 4.5,
       stroke: 0.5,
       fill: true,
       color: colors["blue0"],
       translate: { z: 1.25 },
     });
-    this.arcGroup = new Zdog.Group({
-      addTo: this.screen,
+    this.illustration.arcGroup = new Zdog.Group({
+      addTo: this.illustration.screen,
       translate: { z: 0.25 },
     });
-    this.line1 = new Zdog.Shape({
-      addTo: this.arcGroup,
+    this.illustration.line1 = new Zdog.Shape({
+      addTo: this.illustration.arcGroup,
       color: colors["blue1"],
       stroke: 0.25,
       path: [{ y: -2 }, { y: -1.5 }],
     });
-    this.line1.copy({
+    this.illustration.line1.copy({
       rotate: { z: TAU / 3 },
     });
-    this.line1.copy({
+    this.illustration.line1.copy({
       rotate: { z: TAU / 6 },
     });
-    this.line1.copy({
+    this.illustration.line1.copy({
       rotate: { z: -TAU / 3 },
     });
-    this.line1.copy({
+    this.illustration.line1.copy({
       rotate: { z: -TAU / 6 },
     });
-    this.smallerLinesGroup1 = new Zdog.Group({
-      addTo: this.arcGroup,
+    this.illustration.smallerLinesGroup1 = new Zdog.Group({
+      addTo: this.illustration.arcGroup,
     });
-    this.smallLine1 = new Zdog.Shape({
-      addTo: this.smallerLinesGroup1,
+    this.illustration.smallLine1 = new Zdog.Shape({
+      addTo: this.illustration.smallerLinesGroup1,
       color: colors["blue1"],
       stroke: 0.125,
       path: [{ y: -2 }, { y: -1.75 }],
       rotate: { z: TAU / 24 },
     });
-    this.smallLine1.copy({
+    this.illustration.smallLine1.copy({
       rotate: { z: TAU / 12 },
     });
-    this.smallLine1.copy({
+    this.illustration.smallLine1.copy({
       rotate: { z: (3 * TAU) / 24 },
     });
-    this.smallerLinesGroup2 = this.smallerLinesGroup1.copyGraph({
-      rotate: {
-        z: TAU / 6,
-      },
-    });
-    this.smallerLinesGroup3 = this.smallerLinesGroup1.copyGraph({
-      rotate: {
-        z: -TAU / 6,
-      },
-    });
-    this.smallerLinesGroup4 = this.smallerLinesGroup1.copyGraph({
-      rotate: {
-        z: -TAU / 3,
-      },
-    });
+    this.illustration.smallerLinesGroup2 =
+      this.illustration.smallerLinesGroup1.copyGraph({
+        rotate: {
+          z: TAU / 6,
+        },
+      });
+    this.illustration.smallerLinesGroup3 =
+      this.illustration.smallerLinesGroup1.copyGraph({
+        rotate: {
+          z: -TAU / 6,
+        },
+      });
+    this.illustration.smallerLinesGroup4 =
+      this.illustration.smallerLinesGroup1.copyGraph({
+        rotate: {
+          z: -TAU / 3,
+        },
+      });
     // fixes z-fighting
     // https://zzz.dog/extras#z-fighting
-    this.line1_offset = new Zdog.Ellipse({
-      addTo: this.arcGroup,
+    this.illustration.line1_offset = new Zdog.Ellipse({
+      addTo: this.illustration.arcGroup,
       color: colors["blue1"],
       stroke: 0.2,
       diameter: 0.5,
       translate: { y: 1.25 },
     });
-    this.screenReflection = new Zdog.Ellipse({
-      addTo: this.screen,
+    this.illustration.screenReflection = new Zdog.Ellipse({
+      addTo: this.illustration.screen,
       color: colors["blue3"],
       stroke: 0.2,
       diameter: 4.75,
       quarters: 1,
     });
-    this.baseReflectionGroup = new Zdog.Group({
-      addTo: this.base,
+    this.illustration.baseReflectionGroup = new Zdog.Group({
+      addTo: this.illustration.base,
     });
-    this.baseReflection = new Zdog.Shape({
-      addTo: this.baseReflectionGroup,
+    this.illustration.baseReflection = new Zdog.Shape({
+      addTo: this.illustration.baseReflectionGroup,
       color: "white",
       stroke: 0.25,
       path: [
@@ -127,21 +130,21 @@ export default class Thermometer extends Device {
       rotate: { z: TAU / 12 },
     });
     // Offset to fix the z-fighting on the reflection
-    this.baseReflectionOffset = new Zdog.Shape({
-      addTo: this.baseReflectionGroup,
+    this.illustration.baseReflectionOffset = new Zdog.Shape({
+      addTo: this.illustration.baseReflectionGroup,
       translate: { x: 2.4, y: -3.25, z: -2.1 },
       color: "white",
       visible: false,
     });
 
     // Set up a font to use
-    this.myFont = new Zdog.Font({
+    this.illustration.font = new Zdog.Font({
       src: "../fonts/Poppins-Light.ttf",
     });
 
-    this.IlloOffText = new Zdog.Text({
-      addTo: this.arcGroup,
-      font: this.myFont,
+    this.illustration.IlloOffText = new Zdog.Text({
+      addTo: this.illustration.arcGroup,
+      font: this.illustration.font,
       value: "73",
       fontSize: 1,
       fill: true,
@@ -161,30 +164,38 @@ export default class Thermometer extends Device {
     }
     switch (newStatus) {
       case "OFF":
-        this.IlloOffText.visible = false;
-        this.line1_offset.color = colors["blue1"];
+        this.illustration.IlloOffText.visible = false;
+        this.illustration.line1_offset.color = colors["blue1"];
         for (let i = 0; i < 5; i++) {
-          this.arcGroup.children[i].color = colors["blue1"];
+          this.illustration.arcGroup.children[i].color = colors["blue1"];
         }
         for (let i = 0; i < 3; i++) {
-          this.smallerLinesGroup1.children[i].color = colors["blue1"];
-          this.smallerLinesGroup2.children[i].color = colors["blue1"];
-          this.smallerLinesGroup3.children[i].color = colors["blue1"];
-          this.smallerLinesGroup4.children[i].color = colors["blue1"];
+          this.illustration.smallerLinesGroup1.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup2.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup3.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup4.children[i].color =
+            colors["blue1"];
         }
         return this.show();
       case "ON":
-        this.IlloOffText.visible = true;
-        this.IlloOffText.color = "white";
-        this.line1_offset.color = colors["yellow"];
+        this.illustration.IlloOffText.visible = true;
+        this.illustration.IlloOffText.color = "white";
+        this.illustration.line1_offset.color = colors["yellow"];
         for (let i = 0; i < 5; i++) {
-          this.arcGroup.children[i].color = colors["yellow"];
+          this.illustration.arcGroup.children[i].color = colors["yellow"];
         }
         for (let i = 0; i < 3; i++) {
-          this.smallerLinesGroup1.children[i].color = colors["yellow"];
-          this.smallerLinesGroup2.children[i].color = colors["yellow"];
-          this.smallerLinesGroup3.children[i].color = colors["yellow"];
-          this.smallerLinesGroup4.children[i].color = colors["yellow"];
+          this.illustration.smallerLinesGroup1.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup2.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup3.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup4.children[i].color =
+            colors["yellow"];
         }
         return this.show();
       default:

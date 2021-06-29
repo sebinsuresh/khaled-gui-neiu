@@ -20,30 +20,30 @@ export default class Bulb extends Device {
   // Otherwise, the width and height of the canvas would not be set properly
   // by Zdog, and the illustration won't be rendered correctly.
   createIllustration(isPreviewElem) {
-    this.illo = new Zdog.Illustration({
+    this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
       resize: true,
       rotate: { x: -0.4 + TAU / 4, y: 0.3 },
       translate: { x: 1, y: 3 },
       zoom: isPreviewElem ? 15 : 10,
     });
-    this.baseStart = new Zdog.Ellipse({
-      addTo: this.illo,
+    this.illustration.baseStart = new Zdog.Ellipse({
+      addTo: this.illustration.zdogillo,
       diameter: 2,
       stroke: 1,
       color: colors["bulbBaseColor"],
       fill: true,
     });
-    this.base2 = this.baseStart.copy({
-      addTo: this.baseStart,
+    this.illustration.base2 = this.illustration.baseStart.copy({
+      addTo: this.illustration.baseStart,
       translate: { z: 1 },
     });
-    this.base3 = this.base2.copy({
-      addTo: this.base2,
+    this.illustration.base3 = this.illustration.base2.copy({
+      addTo: this.illustration.base2,
       translate: { z: 1 },
     });
-    this.baseBottom = new Zdog.Hemisphere({
-      addTo: this.baseStart,
+    this.illustration.baseBottom = new Zdog.Hemisphere({
+      addTo: this.illustration.baseStart,
       diameter: 2,
       stroke: false,
       color: colors["baseBottomColor"],
@@ -54,16 +54,16 @@ export default class Bulb extends Device {
         y: TAU / 2,
       },
     });
-    this.bulb = new Zdog.Shape({
-      addTo: this.base3,
+    this.illustration.bulb = new Zdog.Shape({
+      addTo: this.illustration.base3,
       stroke: 6,
       translate: {
         z: 3,
       },
       color: colors["bulbColor"],
     });
-    this.bulbHighlight = new Zdog.Ellipse({
-      addTo: this.bulb,
+    this.illustration.bulbHighlight = new Zdog.Ellipse({
+      addTo: this.illustration.bulb,
       // color: colors["bulbHighlightColor"],
       color: "rgba(0,0,0,0)",
       stroke: 0.1,
@@ -74,8 +74,8 @@ export default class Bulb extends Device {
       translate: { x: 1.5, y: 1.5, z: 2 },
       rotate: { x: TAU / 2.5, y: TAU / 11, z: 0 },
     });
-    this.filament = new Zdog.Shape({
-      addTo: this.base3,
+    this.illustration.filament = new Zdog.Shape({
+      addTo: this.illustration.base3,
       stroke: 0.2,
       color: colors["filamentOffColor"],
       path: [
@@ -168,41 +168,41 @@ export default class Bulb extends Device {
       ],
       closed: false,
     });
-    this.bulbInnerGlow = new Zdog.Shape({
-      addTo: this.bulb,
+    this.illustration.bulbInnerGlow = new Zdog.Shape({
+      addTo: this.illustration.bulb,
       stroke: 4,
       color: colors["innerGlowColor"],
       visible: false,
     });
-    this.bulbOuterGlow = new Zdog.Shape({
-      addTo: this.bulb,
+    this.illustration.bulbOuterGlow = new Zdog.Shape({
+      addTo: this.illustration.bulb,
       stroke: 8,
       color: colors["outerGlowColor"],
       visible: false,
     });
-    this.outerRays = new Zdog.Group({
-      addTo: this.bulb,
+    this.illustration.outerRays = new Zdog.Group({
+      addTo: this.illustration.bulb,
       visible: false,
     });
-    this.ray1 = new Zdog.Shape({
-      addTo: this.outerRays,
+    this.illustration.ray1 = new Zdog.Shape({
+      addTo: this.illustration.outerRays,
       stroke: 0.5,
       path: [{ x: 5 }, { x: 7 }],
       color: colors["rayColor"],
     });
-    this.ray1.copy({
+    this.illustration.ray1.copy({
       rotate: { y: TAU / 6 },
     });
-    this.ray1.copy({
+    this.illustration.ray1.copy({
       rotate: { y: TAU / 3 },
     });
-    this.ray1.copy({
+    this.illustration.ray1.copy({
       rotate: { y: TAU / 2 },
     });
-    this.ray1.copy({
+    this.illustration.ray1.copy({
       rotate: { y: (2 * TAU) / 3 },
     });
-    this.ray1.copy({
+    this.illustration.ray1.copy({
       rotate: { y: (5 * TAU) / 6 },
     });
 
@@ -216,20 +216,20 @@ export default class Bulb extends Device {
     }
     switch (newStatus) {
       case "OFF":
-        this.bulb.color = colors["bulbColor"];
-        this.bulbHighlight.visible = true;
-        this.filament.color = colors["filamentOffColor"];
-        this.bulbInnerGlow.visible = false;
-        this.bulbOuterGlow.visible = false;
-        this.outerRays.visible = false;
+        this.illustration.bulb.color = colors["bulbColor"];
+        this.illustration.bulbHighlight.visible = true;
+        this.illustration.filament.color = colors["filamentOffColor"];
+        this.illustration.bulbInnerGlow.visible = false;
+        this.illustration.bulbOuterGlow.visible = false;
+        this.illustration.outerRays.visible = false;
         return this.show();
       case "ON":
-        this.bulb.color = colors["bulbOnColor"];
-        this.bulbHighlight.visible = false;
-        this.filament.color = colors["filamentOnColor"];
-        this.bulbInnerGlow.visible = true;
-        this.bulbOuterGlow.visible = true;
-        this.outerRays.visible = true;
+        this.illustration.bulb.color = colors["bulbOnColor"];
+        this.illustration.bulbHighlight.visible = false;
+        this.illustration.filament.color = colors["filamentOnColor"];
+        this.illustration.bulbInnerGlow.visible = true;
+        this.illustration.bulbOuterGlow.visible = true;
+        this.illustration.outerRays.visible = true;
         return this.show();
       default:
         if (!this.statuses.includes(newStatus))

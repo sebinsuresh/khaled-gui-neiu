@@ -21,7 +21,7 @@ export default class LEDBulb extends Device {
   // by Zdog, and the illustration won't be rendered correctly.
   createIllustration(isPreviewElem) {
     // The main illustration
-    this.illo = new Zdog.Illustration({
+    this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
       resize: true,
       zoom: isPreviewElem ? 8 : 5,
@@ -29,8 +29,8 @@ export default class LEDBulb extends Device {
       translate: { x: 0, y: -1 },
     });
 
-    this.ledCylider = new Zdog.Cylinder({
-      addTo: this.illo,
+    this.illustration.ledCylider = new Zdog.Cylinder({
+      addTo: this.illustration.zdogillo,
       color: colors["red"],
       diameter: 8,
       stroke: 0,
@@ -38,23 +38,23 @@ export default class LEDBulb extends Device {
       backface: colors["redLight"],
     });
 
-    this.ledTop = new Zdog.Hemisphere({
-      addTo: this.illo,
+    this.illustration.ledTop = new Zdog.Hemisphere({
+      addTo: this.illustration.zdogillo,
       color: colors["red"],
       diameter: 8,
       stroke: 0,
       translate: { z: 4 },
     });
 
-    this.pinGroup = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.pinGroup = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
       translate: {
         z: -8,
       },
     });
 
-    this.pin1 = new Zdog.Cylinder({
-      addTo: this.pinGroup,
+    this.illustration.pin1 = new Zdog.Cylinder({
+      addTo: this.illustration.pinGroup,
       color: colors["grayDark"],
       stroke: 0,
       diameter: 1,
@@ -62,12 +62,12 @@ export default class LEDBulb extends Device {
       translate: { x: -2 },
     });
 
-    this.pin2 = this.pin1.copy({
+    this.illustration.pin2 = this.illustration.pin1.copy({
       translate: { x: 2 },
     });
 
-    this.glow = new Zdog.Shape({
-      addTo: this.illo,
+    this.illustration.glow = new Zdog.Shape({
+      addTo: this.illustration.zdogillo,
       stroke: 20,
       translate: {
         z: 2,
@@ -86,16 +86,16 @@ export default class LEDBulb extends Device {
     }
     switch (newStatus) {
       case "OFF":
-        this.ledTop.color = colors["red"];
-        this.ledCylider.color = colors["red"];
-        this.ledCylider.backface = colors["redLight"];
-        this.glow.visible = false;
+        this.illustration.ledTop.color = colors["red"];
+        this.illustration.ledCylider.color = colors["red"];
+        this.illustration.ledCylider.backface = colors["redLight"];
+        this.illustration.glow.visible = false;
         return this.show();
       case "ON":
-        this.ledTop.color = colors["redLight"];
-        this.ledCylider.color = colors["redLight"];
-        this.ledCylider.backface = colors["redLight2"];
-        this.glow.visible = true;
+        this.illustration.ledTop.color = colors["redLight"];
+        this.illustration.ledCylider.color = colors["redLight"];
+        this.illustration.ledCylider.backface = colors["redLight2"];
+        this.illustration.glow.visible = true;
         return this.show();
       default:
         if (!this.statuses.includes(newStatus))

@@ -43,7 +43,7 @@ export default class RPi extends Device {
   // by Zdog, and the illustration won't be rendered correctly.
   createIllustration(isPreviewElem) {
     // The main illustration
-    this.illo = new Zdog.Illustration({
+    this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
       resize: true,
       zoom: isPreviewElem ? 3 : 2.75,
@@ -53,14 +53,14 @@ export default class RPi extends Device {
 
     // The Group of elements that make up the PCB:
     // The PCB itself and a counter balance point to prevent z-fighting.
-    this.pcbGroup = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.pcbGroup = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
       updateSort: true,
     });
 
     // The PCB board (simpole green rectangle)
-    this.pcb = new Zdog.Box({
-      addTo: this.pcbGroup,
+    this.illustration.pcb = new Zdog.Box({
+      addTo: this.illustration.pcbGroup,
       width: 60,
       height: 30,
       depth: 2,
@@ -72,21 +72,21 @@ export default class RPi extends Device {
     });
 
     // The counter balance for the PCB to prevent z-fighting
-    this.pcbBalance = new Zdog.Shape({
-      addTo: this.pcbGroup,
+    this.illustration.pcbBalance = new Zdog.Shape({
+      addTo: this.illustration.pcbGroup,
       visible: false,
       translate: { z: -250 },
     });
 
     // The big silver ports - 2x USB, ethernet
-    this.bigPorts = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.bigPorts = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
       translate: { z: 3 },
     });
 
     // The first port among the three
-    this.firstPort = new Zdog.Box({
-      addTo: this.bigPorts,
+    this.illustration.firstPort = new Zdog.Box({
+      addTo: this.illustration.bigPorts,
       width: 7,
       height: 7,
       depth: 7,
@@ -102,18 +102,18 @@ export default class RPi extends Device {
     });
 
     // second port - moved down
-    this.secondPort = this.firstPort.copy({
+    this.illustration.secondPort = this.illustration.firstPort.copy({
       translate: { x: 26, y: -1 },
     });
 
     // third port - moved further down
-    this.thirdPort = this.firstPort.copy({
+    this.illustration.thirdPort = this.illustration.firstPort.copy({
       translate: { x: 26, y: 9 },
     });
 
     // A "shadow" added to the bottom of the three ports
-    this.portsBottom = new Zdog.Rect({
-      addTo: this.illo,
+    this.illustration.portsBottom = new Zdog.Rect({
+      addTo: this.illustration.zdogillo,
       width: 10,
       height: 31,
       depth: 1,
@@ -129,8 +129,8 @@ export default class RPi extends Device {
 
     // The 40 pins on the board.
     // This Group will contain all of them.
-    this.ioPorts = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.ioPorts = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
       translate: {
         y: -12,
         z: 3,
@@ -139,8 +139,8 @@ export default class RPi extends Device {
     });
 
     // The first pin base is created manually.
-    this.firstPin = new Zdog.Box({
-      addTo: this.ioPorts,
+    this.illustration.firstPin = new Zdog.Box({
+      addTo: this.illustration.ioPorts,
       width: 1,
       height: 5,
       depth: 4,
@@ -152,8 +152,8 @@ export default class RPi extends Device {
     });
 
     // The first pin for the first two io pins is added.
-    this.firstPinsPin = new Zdog.Cylinder({
-      addTo: this.firstPin,
+    this.illustration.firstPinsPin = new Zdog.Cylinder({
+      addTo: this.illustration.firstPin,
       diameter: 0.75,
       stroke: 0,
       length: 3,
@@ -165,7 +165,7 @@ export default class RPi extends Device {
     });
 
     // The first pin is cloned and moved down for the second pin.
-    this.firstPinsPin2 = this.firstPinsPin.copy({
+    this.illustration.firstPinsPin2 = this.illustration.firstPinsPin.copy({
       translate: {
         y: 1.5,
         z: 4.25,
@@ -174,21 +174,23 @@ export default class RPi extends Device {
 
     // An array that contains all the pins.
     // The first two pins & their base are added manually to the array.
-    this.allPins = [this.firstPin];
+    this.illustration.allPins = [this.illustration.firstPin];
 
     // The remaining 38 pins are added using a loop, by cloning the
     // previous elements.
     for (let i = 1; i < 20; i++) {
-      this.allPins[i] = this.allPins[i - 1].copyGraph({
-        translate: {
-          x: this.allPins[i - 1].translate.x + 2.5,
-        },
-      });
+      this.illustration.allPins[i] = this.illustration.allPins[i - 1].copyGraph(
+        {
+          translate: {
+            x: this.illustration.allPins[i - 1].translate.x + 2.5,
+          },
+        }
+      );
     }
 
     // A "shadow" for the io pins region.
-    this.pinsBottom = new Zdog.Rect({
-      addTo: this.illo,
+    this.illustration.pinsBottom = new Zdog.Rect({
+      addTo: this.illustration.zdogillo,
       width: 50.5,
       height: 7,
       depth: 1,
@@ -203,8 +205,8 @@ export default class RPi extends Device {
     });
 
     // The dark base for the CPU chip
-    this.cpuBase = new Zdog.Rect({
-      addTo: this.illo,
+    this.illustration.cpuBase = new Zdog.Rect({
+      addTo: this.illustration.zdogillo,
       width: 12,
       height: 12,
       stroke: 0,
@@ -216,8 +218,8 @@ export default class RPi extends Device {
     });
 
     // The CPU chip itself
-    this.cpuChip = new Zdog.Box({
-      addTo: this.illo,
+    this.illustration.cpuChip = new Zdog.Box({
+      addTo: this.illustration.zdogillo,
       width: 10,
       height: 10,
       depth: 0.25,
@@ -231,8 +233,8 @@ export default class RPi extends Device {
     });
 
     // The other chip next to CPU.
-    this.chip2 = new Zdog.Box({
-      addTo: this.illo,
+    this.illustration.chip2 = new Zdog.Box({
+      addTo: this.illustration.zdogillo,
       width: 10,
       height: 8,
       depth: 0.25,
@@ -248,13 +250,13 @@ export default class RPi extends Device {
     // The pins on left side of chip 2 are put in a group.
     // Later, this group is duplicated & flipped to the other
     // side.
-    this.chip2PinsGroup = new Zdog.Group({
-      addTo: this.chip2,
+    this.illustration.chip2PinsGroup = new Zdog.Group({
+      addTo: this.illustration.chip2,
     });
 
     // The first pin among the left side pins of chip 2.
-    this.chip2Pin1 = new Zdog.Ellipse({
-      addTo: this.chip2PinsGroup,
+    this.illustration.chip2Pin1 = new Zdog.Ellipse({
+      addTo: this.illustration.chip2PinsGroup,
       width: 2,
       height: 0.5,
       stroke: 1,
@@ -272,7 +274,7 @@ export default class RPi extends Device {
     });
 
     // second pin
-    this.chip2Pin2 = this.chip2Pin1.copy({
+    this.illustration.chip2Pin2 = this.illustration.chip2Pin1.copy({
       translate: {
         x: -5.5,
         y: 0,
@@ -281,7 +283,7 @@ export default class RPi extends Device {
     });
 
     // third pin
-    this.chip2Pin3 = this.chip2Pin1.copy({
+    this.illustration.chip2Pin3 = this.illustration.chip2Pin1.copy({
       translate: {
         x: -5.5,
         y: 3,
@@ -291,20 +293,21 @@ export default class RPi extends Device {
 
     // Duplicate the pins for chip2 on left side to the right side,
     // and flip it to the other side.
-    this.chip2PinsGroup2 = this.chip2PinsGroup.copyGraph({
-      rotate: {
-        z: TAU / 2,
-      },
-    });
+    this.illustration.chip2PinsGroup2 =
+      this.illustration.chip2PinsGroup.copyGraph({
+        rotate: {
+          z: TAU / 2,
+        },
+      });
 
     // Group to contain the shadow for chip 2
-    this.chip2ShadowGroup = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.chip2ShadowGroup = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
     });
 
     // The shadow for chip2
-    this.chip2Shadow = new Zdog.Rect({
-      addTo: this.chip2ShadowGroup,
+    this.illustration.chip2Shadow = new Zdog.Rect({
+      addTo: this.illustration.chip2ShadowGroup,
       width: 13.5,
       height: 8,
       stroke: 1,
@@ -317,8 +320,8 @@ export default class RPi extends Device {
     });
 
     // hidden element to counter z-fighting for chip2's base shadow.
-    this.chip2Base_balance = new Zdog.Shape({
-      addTo: this.chip2ShadowGroup,
+    this.illustration.chip2Base_balance = new Zdog.Shape({
+      addTo: this.illustration.chip2ShadowGroup,
       visible: false,
       translate: {
         x: 10,
@@ -327,8 +330,8 @@ export default class RPi extends Device {
     });
 
     // Micro USB port in the front-left of the device.
-    this.microUsb = new Zdog.Box({
-      addTo: this.illo,
+    this.illustration.microUsb = new Zdog.Box({
+      addTo: this.illustration.zdogillo,
       width: 5,
       height: 5,
       depth: 2,
@@ -343,8 +346,8 @@ export default class RPi extends Device {
     });
 
     // The hole for the micro USB port.
-    this.microUsbHole = new Zdog.Rect({
-      addTo: this.microUsb,
+    this.illustration.microUsbHole = new Zdog.Rect({
+      addTo: this.illustration.microUsb,
       color: colors["dark"],
       width: 4,
       stroke: 0,
@@ -360,8 +363,8 @@ export default class RPi extends Device {
     });
 
     // Shadow for the micro USB port.
-    this.microUsbShadow = new Zdog.Rect({
-      addTo: this.microUsb,
+    this.illustration.microUsbShadow = new Zdog.Rect({
+      addTo: this.illustration.microUsb,
       width: 6,
       height: 6,
       stroke: 1,
@@ -374,8 +377,8 @@ export default class RPi extends Device {
     });
 
     // HDMI port on the device.
-    this.hdmi = new Zdog.Box({
-      addTo: this.illo,
+    this.illustration.hdmi = new Zdog.Box({
+      addTo: this.illustration.zdogillo,
       width: 7,
       height: 5,
       depth: 2,
@@ -390,8 +393,8 @@ export default class RPi extends Device {
     });
 
     // Shadow for the HDMI port.
-    this.hdmibHole = new Zdog.Rect({
-      addTo: this.hdmi,
+    this.illustration.hdmibHole = new Zdog.Rect({
+      addTo: this.illustration.hdmi,
       color: colors["dark"],
       width: 6.5,
       stroke: 0,
@@ -407,8 +410,8 @@ export default class RPi extends Device {
     });
 
     // Shadow for the HDMI port.
-    this.hdmiShadow = new Zdog.Rect({
-      addTo: this.hdmi,
+    this.illustration.hdmiShadow = new Zdog.Rect({
+      addTo: this.illustration.hdmi,
       width: 8,
       height: 6,
       stroke: 1,
@@ -422,8 +425,8 @@ export default class RPi extends Device {
 
     // The Raspberry Pi Logo (not exact) is created using a bunch of ellipses
     // arranged within this group.
-    this.rpiLogoGroup = new Zdog.Group({
-      addTo: this.illo,
+    this.illustration.rpiLogoGroup = new Zdog.Group({
+      addTo: this.illustration.zdogillo,
       translate: {
         x: -20,
         y: -2,
@@ -431,8 +434,8 @@ export default class RPi extends Device {
       },
     });
 
-    this.circle1 = new Zdog.Ellipse({
-      addTo: this.rpiLogoGroup,
+    this.illustration.circle1 = new Zdog.Ellipse({
+      addTo: this.illustration.rpiLogoGroup,
       width: 2,
       height: 3,
       stroke: 0.5,
@@ -442,7 +445,7 @@ export default class RPi extends Device {
       },
     });
 
-    this.circle2 = this.circle1.copy({
+    this.illustration.circle2 = this.illustration.circle1.copy({
       width: 2,
       translate: {
         x: -2.5,
@@ -452,8 +455,8 @@ export default class RPi extends Device {
       },
     });
 
-    this.circle3 = new Zdog.Ellipse({
-      addTo: this.rpiLogoGroup,
+    this.illustration.circle3 = new Zdog.Ellipse({
+      addTo: this.illustration.rpiLogoGroup,
       width: 2.5,
       height: 3,
       stroke: 0.5,
@@ -464,7 +467,7 @@ export default class RPi extends Device {
       },
     });
 
-    this.circle4 = this.circle3.copy({
+    this.illustration.circle4 = this.illustration.circle3.copy({
       width: 2,
       translate: {
         x: -3.5,
@@ -472,14 +475,14 @@ export default class RPi extends Device {
       },
     });
 
-    this.circle5 = this.circle4.copy({
+    this.illustration.circle5 = this.illustration.circle4.copy({
       translate: {
         x: 1,
         y: 2.75,
       },
     });
 
-    this.circle6 = this.circle3.copy({
+    this.illustration.circle6 = this.illustration.circle3.copy({
       height: 2.5,
       width: 3,
       translate: {
@@ -488,8 +491,8 @@ export default class RPi extends Device {
       },
     });
 
-    this.leaf1 = new Zdog.Ellipse({
-      addTo: this.rpiLogoGroup,
+    this.illustration.leaf1 = new Zdog.Ellipse({
+      addTo: this.illustration.rpiLogoGroup,
       width: 1.5,
       height: 3,
       stroke: 0.5,
@@ -503,7 +506,7 @@ export default class RPi extends Device {
       },
     });
 
-    this.life2 = this.leaf1.copy({
+    this.illustration.life2 = this.illustration.leaf1.copy({
       translate: {
         x: 0,
         y: -2.25,

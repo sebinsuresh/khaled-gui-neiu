@@ -27,7 +27,7 @@ export default class Device {
       this.deleteBtn = this.createDeleteBtn();
       this.element.appendChild(this.canvElem);
       this.element.appendChild(this.deleteBtn);
-      this.illo = null;
+      this.illustration = {};
 
       this.statuses = ["OFF", "ON"];
       this.status = "OFF";
@@ -79,7 +79,7 @@ export default class Device {
 
   // Show/re-render the illustration.
   show() {
-    this.illo.updateRenderGraph();
+    this.illustration.zdogillo.updateRenderGraph();
     return this;
   }
 
