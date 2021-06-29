@@ -3,8 +3,8 @@
 
   This device can connect other devices to it.
 */
-import Device from "./device.js";
-import { colors, TAU } from "./helpers.js";
+import Device from "../device.js";
+import { colors, TAU } from "../helpers/helpers.js";
 
 export default class RPi extends Device {
   constructor(spaceMan, isPreviewElem = false) {

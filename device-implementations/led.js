@@ -1,8 +1,8 @@
 /* 
   LED Bulb.
 */
-import Device from "./device.js";
-import { colors, TAU } from "./helpers.js";
+import Device from "../device.js";
+import { colors, TAU } from "../helpers/helpers.js";
 
 export default class LEDBulb extends Device {
   constructor(spaceMan, isPreviewElem = false) {

@@ -1,8 +1,8 @@
 /* 
   Lamp.
 */
-import Device from "./device.js";
-import { colors, hexToRgba, TAU } from "./helpers.js";
+import Device from "../device.js";
+import { colors, hexToRgba, TAU } from "../helpers/helpers.js";
 
 export default class Lamp extends Device {
   constructor(spaceMan, isPreviewElem = false) {

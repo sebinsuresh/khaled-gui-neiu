@@ -2,13 +2,12 @@
   Space Manager class.
 */
 
-import RPi from "./rpi.js";
-import LEDBulb from "./led.js";
-import TempSensor from "./tempSensor.js";
-import Bulb from "./bulb.js";
-import Lamp from "./lamp.js";
-import Thermometer from "./thermo.js";
-import { deviceNames } from "./deviceNames.js";
+import RPi from "./device-implementations/rpi.js";
+import LEDBulb from "./device-implementations/led.js";
+import TempSensor from "./device-implementations/tempSensor.js";
+import Bulb from "./device-implementations/bulb.js";
+import Lamp from "./device-implementations/lamp.js";
+import Thermometer from "./device-implementations/thermo.js";
 import Device from "./device.js";
 
 const deviceClasses = {

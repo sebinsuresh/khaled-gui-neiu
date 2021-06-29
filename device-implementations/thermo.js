@@ -1,8 +1,8 @@
 /* 
   Thermometer device.
 */
-import Device from "./device.js";
-import { colors, TAU } from "./helpers.js";
+import Device from "../device.js";
+import { colors, TAU } from "../helpers/helpers.js";
 
 export default class Thermometer extends Device {
   constructor(spaceMan, isPreviewElem = false) {
@@ -136,7 +136,7 @@ export default class Thermometer extends Device {
 
     // Set up a font to use
     this.myFont = new Zdog.Font({
-      src: "./Poppins-Light.ttf",
+      src: "../fonts/Poppins-Light.ttf",
     });
 
     this.IlloOffText = new Zdog.Text({

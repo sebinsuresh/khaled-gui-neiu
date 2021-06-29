@@ -5,7 +5,7 @@
   property key in deviceNames.js for corresponding device), and the number
   of devices of this type that exist in the space already.
 */
-import { deviceNames } from "./deviceNames.js";
+import { deviceNames } from "./helpers/deviceNames.js";
 import Label from "./label.js";
 
 export default class Device {
