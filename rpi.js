@@ -19,7 +19,11 @@ export default class RPi extends Device {
     this.statuses = ["ON"];
     this.status = "ON";
 
-    // Array of { pinNumber, deviceId } for other devices connected to this RPi.
+    /**
+     * Array of { pinNumber, deviceId } for other devices connected to the RPi.
+     *
+     * @type [{pinNumber:number, deviceId:string}]
+     */
     this.connectedDevices = [];
   }
 
