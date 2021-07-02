@@ -136,6 +136,38 @@ export default class SpaceManager {
   Returns true if connected appropriately, false otherwise.
    */
   connectDevices(fromId, toId, pinNum = -1) {
+    const proceed = this.areDevicesConnectable(fromId, toId);
+    if (!proceed) {
+      return false;
+    }
+
+    const fromDev = this.devices.find((dev) => dev.id == fromId);
+    const toDev = this.devices.find((dev) => dev.id == toId);
+
+    // Handle the connection if there are no errors:
+
+    // Get the correct pin number
+    if (pinNum === -1) {
+      // ^ If pinNum was not specified in method call, find first open pinNum.
+      // Pin numbers start at 1, not 0.
+      pinNum = 1;
+      while (fromDev.connectedDevices.find((dev) => dev.pinNumber == pinNum))
+        pinNum++;
+    }
+
+    // Connect the devices.
+    fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
+    toDev.isConnected = true;
+    toDev.connectedTo = fromId;
+
+    // Draw lines connecting devices
+    this.drawLines();
+
+    return true;
+  }
+
+  // Logs errors and returns whether or not the two devices are connectable
+  areDevicesConnectable(fromId, toId) {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
 
@@ -160,32 +192,21 @@ export default class SpaceManager {
       return false;
     }
 
-    // Handle the connection if there are no errors:
-
-    // Get the correct pin number
-    if (pinNum === -1) {
-      // ^ If pinNum was not specified in method call, find first open pinNum.
-      // Pin numbers start at 1, not 0.
-      pinNum = 1;
-      while (fromDev.connectedDevices.find((dev) => dev.pinNumber == pinNum))
-        pinNum++;
-    }
-
-    // Connect the devices.
-    fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
-    toDev.isConnected = true;
-    toDev.connectedTo = fromId;
-
-    // Draw lines connecting devices
-    this.drawLines();
-
     return true;
   }
 
   // Disconnect an RPi-like device with the ID fromId and the device with the
   // id toId.
-  // TODO
-  disconnectDevices(fromId, toId) {}
+  disconnectDevices(fromId, toId, drawLines = true) {
+    const proceed = this.areDevicesConnectable(fromId, toId);
+    if (!proceed) {
+      return false;
+    }
+
+    const fromDev = this.devices.find((dev) => dev.id == fromId);
+    const toDev = this.devices.find((dev) => dev.id == toId);
+    // TODO
+  }
 
   // Place the devices on screen correctly, according to their JS object's
   // position.x & position.y values.
