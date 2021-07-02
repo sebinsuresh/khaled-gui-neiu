@@ -48,7 +48,32 @@ export default class SpaceManager {
     // Get the "context" of the canvas, so the program can draw in the canvas.
     this.lineCanvCtx = this.lineCanvElem.getContext("2d");
 
+    // Timeout object for using with window resize event.
+    this.windowResizer = null;
+    window.addEventListener("resize", (ev) => {
+      this.windowResizeListener.apply(this, [ev]);
+    });
+
     // TODO: Other event listeners
+  }
+
+  // When the window is resized, the illustrations have to re-render.
+  // However, the "resize" event fires every frame of the browser UI,
+  // so we add a timeout - The event is placed on a 50ms delay.
+  // 'windowResizer' is a variable for this timeout functionality.
+  // Code from: https://stackoverflow.com/a/60204716
+  windowResizeListener(ev) {
+    // Clear any existing timeout.
+    clearTimeout(this.windowResizer);
+
+    // Create a new timeout on a 200ms delay.
+    this.windowResizer = setTimeout(() => {
+      // Execute these functions on a timeout.
+
+      this.resizeLineDrawingCanvas();
+      this.drawLines();
+      this.refreshIllustrations();
+    }, 50);
   }
 
   // Make .draggable class elements draggable using interact.js
@@ -253,11 +278,20 @@ export default class SpaceManager {
     });
   }
 
+  // Resizes the elements on the line-drawing canvas size to match
+  // the parent elements (visualizer space/dotted region) size.
+  resizeLineDrawingCanvas() {
+    if (this.lineCanvElem) {
+      this.lineCanvElem.width = this.vizSpaceElement.clientWidth;
+      this.lineCanvElem.height = this.vizSpaceElement.clientHeight;
+    }
+  }
+
   // Function to create the canvas element that draws lines between devices.
   createLineCanv() {
     const canvElem = document.createElement("canvas");
 
-    canvElem.id = "visuazlier-canvas";
+    canvElem.class = "visualizer-canvas";
     canvElem.width = this.vizSpaceElement.clientWidth;
     canvElem.height = this.vizSpaceElement.clientHeight;
 
