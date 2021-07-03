@@ -129,20 +129,19 @@ export default class SpaceManager {
     this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
   }
 
-  /* 
-  Connnect an RPi-like device with the id fromId, to a device with the id toId.
-  The pin number is an optional third parameter. By default it will be set to 
-  the next open pin number.
-  Returns true if connected appropriately, false otherwise.
+  /**
+   * Connnect an RPi-like device with the id fromId, to a device with the id toId.
+   * The pin number is an optional third parameter. By default it will be set to
+   * the next open pin number.
+   * Returns true if connected appropriately, false otherwise.
+   *
+   *  @return boolean
    */
   connectDevices(fromId, toId, pinNum = -1) {
-    const proceed = this.areDevicesConnectable(fromId, toId);
-    if (!proceed) {
-      return false;
-    }
-
-    const fromDev = this.devices.find((dev) => dev.id == fromId);
-    const toDev = this.devices.find((dev) => dev.id == toId);
+    const proceed = this.areDevicesConnectable(fromId, toId, pinNum);
+    if (!proceed) return false;
+    /** @type {{fromDev : RPi, toDev : Device}} */
+    const { fromDev, toDev } = proceed;
 
     // Handle the connection if there are no errors:
 
@@ -166,8 +165,22 @@ export default class SpaceManager {
     return true;
   }
 
-  // Logs errors and returns whether or not the two devices are connectable
-  areDevicesConnectable(fromId, toId) {
+  /**
+   * Logs errors and returns false if the devices are not connectable.
+   * Returns the device objects (truthy value) in an object, if they
+   * are connectable.
+   *
+   * @param {string} fromId Id of the RPi device that you are connecting
+   * the other device to.
+   * @param {string} toId Id of the second device that you are connecting
+   *  the RPi to.
+   * @param {number} [pinNum] Pin number of RPi that the other device is
+   * connecting to. Leave blank for automatic/skip.
+   * @returns {(boolean | {fromDev : RPi, toDev : Device} )}
+   * False if devices are not connectable, {fromDev, toDev} if
+   * they are connectable.
+   */
+  areDevicesConnectable(fromId, toId, pinNum = -1) {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
 
@@ -192,19 +205,16 @@ export default class SpaceManager {
       return false;
     }
 
-    return true;
+    return { fromDev, toDev };
   }
 
   // Disconnect an RPi-like device with the ID fromId and the device with the
   // id toId.
   disconnectDevices(fromId, toId, drawLines = true) {
     const proceed = this.areDevicesConnectable(fromId, toId);
-    if (!proceed) {
-      return false;
-    }
-
-    const fromDev = this.devices.find((dev) => dev.id == fromId);
-    const toDev = this.devices.find((dev) => dev.id == toId);
+    if (!proceed) return false;
+    /** @type {{fromDev : RPi, toDev : Device}} */
+    const { fromDev, toDev } = proceed;
     // TODO
   }
 
