@@ -26,6 +26,11 @@ export default class Label {
     };
 
     this.elem = this.createElem();
+
+    /** @type {HTMLDivElement} */
+    this.kvPairsContainerElem = null;
+
+    this.setKVPairElems();
     this.parent.element.appendChild(this.elem);
   }
 
@@ -43,8 +48,33 @@ export default class Label {
     return elem;
   }
 
-  // Show the label HTML element.
+  /**
+   * Sets (or creates if it doesn't exist) the k:v pair HTML elements and
+   * container, and update them with values from this.object.
+   */
+  setKVPairElems() {
+    if (!this.kvPairsContainerElem) {
+      this.kvPairsContainerElem = document.createElement("div");
+      this.kvPairsContainerElem.classList.add("kvPairsContainer");
+    }
+
+    // Create k:v pair divs if they don't exist, add listeners, and
+
+    // OLD COMMENTS:
+    // Delete any existing children - no need to dispose of event listeners,
+    // browsers do this automatically.
+    // https://stackoverflow.com/questions/6033821/do-i-need-to-remove-event-listeners-before-removing-elements
+
+    // Create new children for each property, fill in values, and add listeners
+    // for change.
+  }
+
+  /**
+   * Show the label HTML element, after setting the k:v pairs to the latest
+   * values.
+   */
   show() {
+    this.setKVPairElems();
     this.elem.classList.remove("noDisplay");
   }
 
