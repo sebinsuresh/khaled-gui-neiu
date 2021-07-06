@@ -140,6 +140,7 @@ export default class SpaceManager {
   connectDevices(fromId, toId, pinNum = -1) {
     const proceed = this.areDevicesConnectable(fromId, toId, pinNum);
     if (!proceed) return false;
+
     /** @type {{fromDev : RPi, toDev : Device}} */
     const { fromDev, toDev } = proceed;
 
@@ -213,8 +214,10 @@ export default class SpaceManager {
   disconnectDevices(fromId, toId, drawLines = true) {
     const proceed = this.areDevicesConnectable(fromId, toId);
     if (!proceed) return false;
+
     /** @type {{fromDev : RPi, toDev : Device}} */
     const { fromDev, toDev } = proceed;
+
     // TODO
   }
 
@@ -302,7 +305,6 @@ export default class SpaceManager {
 
   // Reload the illustrations on each device on screen.
   // This might be required after the window size gets changed.
-  // TODO: Decide if line rendering & other stuff happens here.
   refreshIllustrations() {
     this.devices.forEach((devObj) => {
       devObj.show();
