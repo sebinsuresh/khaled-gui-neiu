@@ -1,11 +1,12 @@
-/* 
-  Raspberry Pi Device.
-
-  This device can connect other devices to it.
-*/
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
 
+/**
+ * Class Representing a Raspberry Pi Device.
+ * This device ca connect other devices to it.
+ *
+ * @extends {Device}
+ */
 export default class RPi extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super(
