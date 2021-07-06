@@ -47,6 +47,7 @@ export default class Device {
   createElem() {
     const elem = document.createElement("div");
     elem.classList.add("deviceContainer", "draggable");
+    elem.title = this.name;
 
     elem.id = this.id;
 
