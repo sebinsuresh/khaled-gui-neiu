@@ -7,6 +7,7 @@
 */
 import { deviceNames } from "./helpers/deviceNames.js";
 import Label from "./label.js";
+import SpaceManager from "./spaceManager.js";
 
 export default class Device {
   constructor(deviceTypeStr, numDevicesThisType = 0, isPreviewElem = false) {
@@ -84,13 +85,35 @@ export default class Device {
     return this;
   }
 
-  /* 
-  Delete this device :
-  Removes any listeners, any connections with other devices, HTML elements,
-  and itself from the space manager array.
-  */
-  // TODO
-  delete() {}
+  /**
+   * Delete this device :
+   * Removes any listeners, HTML elements, and any connections with other
+   * devices.
+   *
+   * @param {SpaceManager} spaceMan The SpaceManager that manages this device
+   */
+  delete(spaceMan) {
+    // Remove interact listeners.
+    // Note: I'm not sure if the object won't get garbage-collected if
+    // I don't remove this. (This ".draggable" class is how interact-js
+    // grabs elements for dragging)
+    this.element.classList.remove("draggable");
+
+    // Remove HTML element and children.
+    while (this.element.firstChild)
+      this.element.removeChild(this.element.firstChild);
+
+    // Remove any connection this device has with some RPi.
+    if (this.isConnected) {
+      const RPiConnTo = spaceMan.devices.find(
+        (dev) => dev.id === this.connectedTo
+      );
+      RPiConnTo.connectedDevices.splice(
+        RPiConnTo.connectedDevices.findIndex((dev) => dev.deviceId === this.id),
+        1
+      );
+    }
+  }
 
   // Updates the Label object associated with this device.
   updateLabel(key, val) {

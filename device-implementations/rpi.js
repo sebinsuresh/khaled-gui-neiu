@@ -1,5 +1,6 @@
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
+import SpaceManager from "../spaceManager.js";
 
 /**
  * Class Representing a Raspberry Pi Device.
@@ -532,6 +533,29 @@ export default class RPi extends Device {
         if (!this.statuses.includes(newStatus))
           console.error(`Invalid status change for ${this.name}`);
         return this.show();
+    }
+  }
+
+  /**
+   * Delete this device :
+   * Removes any listeners, HTML elements, and any connections with other
+   * devices.
+   *
+   * @param {SpaceManager} spaceMan The SpaceManager that manages this device
+   */
+  delete(spaceMan) {
+    // Call the delete function for Device class (superclass)
+    super.delete(spaceMan);
+
+    // Remove any connection this RPi has with other devices.
+    if (this.connectedDevices.length > 0) {
+      this.connectedDevices.forEach((connDevPinId) => {
+        const connDevObj = spaceMan.devices.find(
+          (dev) => dev.id === connDevPinId.deviceId
+        );
+        connDevObj.isConnected = false;
+        connDevObj.connectedTo = null;
+      });
     }
   }
 

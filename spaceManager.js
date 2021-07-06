@@ -130,42 +130,8 @@ export default class SpaceManager {
       return;
     }
 
-    // Remove interact listeners.
-    // I'm not sure if the object won't get garbage-collected if I
-    // don't remove this. (This ".draggable" class is how interact-js
-    // grabs elements for dragging)
-    delDevice.element.classList.remove("draggable");
-
-    // Remove HTML element and children.
-    while (delDevice.element.firstChild)
-      delDevice.element.removeChild(delDevice.element.firstChild);
-
-    // If device is an RPi, remove any connection with other devices.
-    if (
-      delDevice.deviceTypeStr === "RPI" &&
-      delDevice.connectedDevices.length > 0
-    ) {
-      delDevice.connectedDevices.forEach((connDevPinId) => {
-        const connDevObj = this.devices.find(
-          (dev) => dev.id === connDevPinId.deviceId
-        );
-        connDevObj.isConnected = false;
-        connDevObj.connectedTo = null;
-      });
-    }
-
-    // If device is not an RPi, remove any connection with some RPi.
-    if (delDevice.deviceTypeStr !== "RPI" && delDevice.isConnected) {
-      const RPiConnTo = this.devices.find(
-        (dev) => dev.id === delDevice.connectedTo
-      );
-      RPiConnTo.connectedDevices.splice(
-        RPiConnTo.connectedDevices.findIndex(
-          (dev) => dev.deviceId === deviceId
-        ),
-        1
-      );
-    }
+    // Call the delete function of the device object.
+    delDevice.delete(this);
 
     // Delete JS object (from array and eventually from memory).
     this.devices.splice(this.devices.indexOf(delDevice), 1);
