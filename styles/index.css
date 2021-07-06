@@ -190,6 +190,10 @@ body {
   /* display: none; */
 }
 
+.noDisplay {
+  display: none;
+}
+
 .deviceContainer {
   width: fit-content;
   background-color: #e8ddb520;
@@ -316,4 +320,14 @@ body {
 
 .deviceContainer .connectDevBtn:hover {
   background-color: #219ebc80;
+}
+
+.labelDiv {
+  background-color: #219ebc;
+  padding: 0.5rem;
+  font-family: "Consolas", Courier, monospace;
+
+  position: absolute;
+  left: calc(100% - 2rem);
+  top: calc(100% - 2rem);
 }
