@@ -177,11 +177,13 @@ export default class SpaceManager {
    *  the RPi to.
    * @param {number} [pinNum] Pin number of RPi that the other device is
    * connecting to. Leave blank for automatic/skip.
+   * @param {boolean} [tryingConnect] Trying to connect the devices (true)
+   * or disconnect them (false).
    * @returns {(boolean | {fromDev : RPi, toDev : Device} )}
    * False if devices are not connectable, {fromDev, toDev} if
    * they are connectable.
    */
-  areDevicesConnectable(fromId, toId, pinNum = -1) {
+  areDevicesConnectable(fromId, toId, pinNum = -1, tryingConnect = true) {
     const fromDev = this.devices.find((dev) => dev.id == fromId);
     const toDev = this.devices.find((dev) => dev.id == toId);
 
@@ -192,9 +194,12 @@ export default class SpaceManager {
         : // If fromDev is not an RPI
         fromDev.deviceTypeStr !== "RPI"
         ? `fromId must belong to an RPi device. Given: ${fromDev.deviceTypeStr}`
-        : // If the device is already connected
-        toDev.isConnected
+        : // If the device is already connected, and you are trying to connect
+        tryingConnect & toDev.isConnected
         ? `toId '${toId}' already connected to RPi '${toDev.connectedTo}'`
+        : // If the device is not connected, and you're trying to connect
+        !tryingConnect && !toDev.isConnected
+        ? `toId '${toId}' is not connected to any RPi`
         : // If there is already a device at that pinNum
         pinNum !== -1 &&
           fromDev.connectedDevices.find((devObj) => devObj.pinNumber == pinNum)
@@ -209,16 +214,29 @@ export default class SpaceManager {
     return { fromDev, toDev };
   }
 
-  // Disconnect an RPi-like device with the ID fromId and the device with the
-  // id toId.
+  /**
+   * Disconnect an RPi-like device with the ID fromId and the device with the
+   * id toId.
+   */
   disconnectDevices(fromId, toId, drawLines = true) {
-    const proceed = this.areDevicesConnectable(fromId, toId);
+    const proceed = this.areDevicesConnectable(fromId, toId, undefined, false);
     if (!proceed) return false;
 
     /** @type {{fromDev : RPi, toDev : Device}} */
     const { fromDev, toDev } = proceed;
 
-    // TODO
+    // Remove from fromDev list
+    fromDev.connectedDevices.splice(
+      fromDev.connectedDevices.findIndex((dev) => dev.deviceId == toId),
+      1
+    );
+
+    // Toggle isConnected & null connectedTo in toDev
+    toDev.isConnected = false;
+    toDev.connectedTo = null;
+
+    // Draw lines if drawLines === true
+    if (drawLines) this.drawLines();
   }
 
   // Place the devices on screen correctly, according to their JS object's
