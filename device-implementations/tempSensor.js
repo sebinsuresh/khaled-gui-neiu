@@ -6,13 +6,7 @@ import { colors, TAU } from "../helpers/helpers.js";
 
 export default class TempSensor extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "TEMPSENSOR",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "TEMPSENSOR" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("TEMPSENSOR", spaceMan, isPreviewElem);
   }
 
   // Creates and return illustration for the device.

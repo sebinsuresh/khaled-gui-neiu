@@ -131,7 +131,7 @@ export default class SpaceManager {
     }
 
     // Call the delete function of the device object.
-    delDevice.delete(this);
+    delDevice.delete();
 
     // Delete JS object (from array and eventually from memory).
     this.devices.splice(this.devices.indexOf(delDevice), 1);

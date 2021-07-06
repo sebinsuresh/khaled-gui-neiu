@@ -10,13 +10,7 @@ import SpaceManager from "../spaceManager.js";
  */
 export default class RPi extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "RPI",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "RPI" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("RPI", spaceMan, isPreviewElem);
 
     this.statuses = ["ON"];
     this.status = "ON";
@@ -58,17 +52,15 @@ export default class RPi extends Device {
    * Delete this device :
    * Removes any listeners, HTML elements, and any connections with other
    * devices.
-   *
-   * @param {SpaceManager} spaceMan The SpaceManager that manages this device
    */
-  delete(spaceMan) {
+  delete() {
     // Call the delete function for Device class (superclass)
-    super.delete(spaceMan);
+    super.delete();
 
     // Remove any connection this RPi has with other devices.
     if (this.connectedDevices.length > 0) {
       this.connectedDevices.forEach((connDevPinId) => {
-        const connDevObj = spaceMan.devices.find(
+        const connDevObj = this.spaceMan.devices.find(
           (dev) => dev.id === connDevPinId.deviceId
         );
         connDevObj.isConnected = false;

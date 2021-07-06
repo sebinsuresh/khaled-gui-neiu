@@ -6,13 +6,7 @@ import { colors, TAU } from "../helpers/helpers.js";
 
 export default class LEDBulb extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "LED",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "LED" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("LED", spaceMan, isPreviewElem);
   }
 
   // Creates and return illustration for the LED.

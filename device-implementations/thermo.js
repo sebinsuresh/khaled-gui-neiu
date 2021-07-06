@@ -6,13 +6,7 @@ import { colors, TAU } from "../helpers/helpers.js";
 
 export default class Thermometer extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "THERMOMETER",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "THERMOMETER" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("THERMOMETER", spaceMan, isPreviewElem);
   }
 
   // Creates and return illustration for the device.

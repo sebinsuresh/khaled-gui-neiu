@@ -6,13 +6,7 @@ import { colors, TAU } from "../helpers/helpers.js";
 
 export default class Bulb extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "BULB",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "BULB" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("BULB", spaceMan, isPreviewElem);
   }
 
   // Creates and return illustration for the device.

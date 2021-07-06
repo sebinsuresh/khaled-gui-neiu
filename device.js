@@ -10,12 +10,22 @@ import Label from "./label.js";
 import SpaceManager from "./spaceManager.js";
 
 export default class Device {
-  constructor(deviceTypeStr, numDevicesThisType = 0, isPreviewElem = false) {
+  constructor(
+    deviceTypeStr,
+    spaceMan = window.spaceMan,
+    isPreviewElem = false
+  ) {
     if (!isPreviewElem) {
+      // Find the number of devices of this type already existing in space.
+      const numDevicesThisType = spaceMan.devices.reduce((acc, el) => {
+        return acc + (el.deviceTypeStr == deviceTypeStr ? 1 : 0);
+      }, 0);
       this.indexThisType = numDevicesThisType + 1;
       this.deviceTypeStr = deviceTypeStr;
       this.id = this.deviceTypeStr + this.indexThisType;
       this.name = deviceNames[this.deviceTypeStr] + " " + this.indexThisType;
+
+      this.spaceMan = spaceMan;
 
       // Place the device on random location on screen initially.
       this.position = {
@@ -89,10 +99,8 @@ export default class Device {
    * Delete this device :
    * Removes any listeners, HTML elements, and any connections with other
    * devices.
-   *
-   * @param {SpaceManager} spaceMan The SpaceManager that manages this device
    */
-  delete(spaceMan) {
+  delete() {
     // Remove interact listeners.
     // Note: I'm not sure if the object won't get garbage-collected if
     // I don't remove this. (This ".draggable" class is how interact-js
@@ -105,7 +113,7 @@ export default class Device {
 
     // Remove any connection this device has with some RPi.
     if (this.isConnected) {
-      const RPiConnTo = spaceMan.devices.find(
+      const RPiConnTo = this.spaceMan.devices.find(
         (dev) => dev.id === this.connectedTo
       );
       RPiConnTo.connectedDevices.splice(

@@ -6,13 +6,7 @@ import { colors, hexToRgba, TAU } from "../helpers/helpers.js";
 
 export default class Lamp extends Device {
   constructor(spaceMan, isPreviewElem = false) {
-    super(
-      "LAMP",
-      spaceMan.devices.reduce((acc, el) => {
-        return acc + (el.deviceTypeStr == "LAMP" ? 1 : 0);
-      }, 0),
-      isPreviewElem
-    );
+    super("LAMP", spaceMan, isPreviewElem);
   }
 
   // Creates and return illustration for the device.
