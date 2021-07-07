@@ -85,7 +85,7 @@ export default class Device {
 
   // Sets the zoom level of the illustration.
   setZoom(zoomVal) {
-    this.illo.zoom = zoomVal;
+    this.illustration.zdogillo.zoom = zoomVal;
     return this.show();
   }
 
