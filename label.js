@@ -58,15 +58,8 @@ export default class Label {
       this.kvPairsContainerElem.classList.add("kvPairsContainer");
     }
 
-    // Create k:v pair divs if they don't exist, add listeners, and
-
-    // OLD COMMENTS:
-    // Delete any existing children - no need to dispose of event listeners,
-    // browsers do this automatically.
-    // https://stackoverflow.com/questions/6033821/do-i-need-to-remove-event-listeners-before-removing-elements
-
-    // Create new children for each property, fill in values, and add listeners
-    // for change.
+    // Create k:v pair divs if they don't exist, add listeners, and set
+    // data-prop values
   }
 
   /**
@@ -88,5 +81,6 @@ export default class Label {
   setObjectVal(key, val) {
     this.object[key] = val;
     // TODO: set the values within this.elem HTMLelement
+    // TODO: Update corresponding value in the Device object too
   }
 }
