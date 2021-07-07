@@ -1,33 +1,47 @@
-/* 
-  Device superclass that all device classes extend from.
-
-  The constructor requires passing the 'device type' string (must match the 
-  property key in deviceNames.js for corresponding device), and the number
-  of devices of this type that exist in the space already.
-*/
 import { deviceNames } from "./helpers/deviceNames.js";
 import Label from "./label.js";
 import SpaceManager from "./spaceManager.js";
 
+/** Device superclass that all device classes extend from. */
 export default class Device {
+  /**
+   * Create an isntance of a device.
+   *
+   * @param {string} deviceTypeStr The string that uniquely identifies this
+   * device type. Must match the property key in ./helpers/deviceNames.js for
+   * corresponding device.
+   * @param {SpaceManager} spaceMan The SpaceManager that manages this instance
+   * of the device.
+   * @param {boolean} isPreviewElem Sets whether the device illustration is
+   * placed within the preview modal.
+   */
   constructor(
     deviceTypeStr,
     spaceMan = window.spaceMan,
     isPreviewElem = false
   ) {
     if (!isPreviewElem) {
+      this.deviceTypeStr = deviceTypeStr;
+
       // Find the number of devices of this type already existing in space.
       const numDevicesThisType = spaceMan.devices.reduce((acc, el) => {
         return acc + (el.deviceTypeStr == deviceTypeStr ? 1 : 0);
       }, 0);
       this.indexThisType = numDevicesThisType + 1;
-      this.deviceTypeStr = deviceTypeStr;
       this.id = this.deviceTypeStr + this.indexThisType;
       this.name = deviceNames[this.deviceTypeStr] + " " + this.indexThisType;
 
+      /**
+       * The SpaceManager that manages this instance of device.
+       * @type {SpaceManager}
+       */
       this.spaceMan = spaceMan;
 
-      // Place the device on random location on screen initially.
+      /**
+       * The position x & y ratios on the visualizer space. Intially placed at
+       * random positions.
+       * @type {{x: number, y: number}}
+       * */
       this.position = {
         x: parseFloat((0.9 * Math.random()).toFixed(2)),
         y: parseFloat((0.9 * Math.random()).toFixed(2)),
