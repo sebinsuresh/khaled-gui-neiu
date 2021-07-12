@@ -105,7 +105,7 @@ export default class TempSensor extends Device {
   }
 
   // Change the status of the device.
-  changeStatus(newStatus) {
+  changeStatus(newStatus, newTempValue = 73) {
     if (this.statuses.includes(newStatus)) {
       this.status = newStatus;
     }
@@ -115,7 +115,7 @@ export default class TempSensor extends Device {
         this.illustration.tempText.color = colors["dark"];
         return this.show();
       case "ON":
-        this.illustration.tempText.value = "72°";
+        this.illustration.tempText.value = newTempValue.toString() + "°";
         this.illustration.tempText.color = colors["gray"];
         return this.show();
       default:

@@ -152,7 +152,7 @@ export default class Thermometer extends Device {
   }
 
   // Change the status of the device.
-  changeStatus(newStatus) {
+  changeStatus(newStatus, newTempValue = 73) {
     if (this.statuses.includes(newStatus)) {
       this.status = newStatus;
     }
@@ -175,6 +175,7 @@ export default class Thermometer extends Device {
         }
         return this.show();
       case "ON":
+        this.illustration.IlloOffText.value = newTempValue.toString() + "°";
         this.illustration.IlloOffText.visible = true;
         this.illustration.IlloOffText.color = "white";
         this.illustration.line1_offset.color = colors["yellow"];
