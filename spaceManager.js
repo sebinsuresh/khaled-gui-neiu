@@ -260,12 +260,20 @@ export default class SpaceManager {
   placeDevices() {
     this.devices.forEach((dev) => {
       // Find the new x & y values using the JS object's position object.
-      const newX = Math.round(
-        dev.position.x * this.vizSpaceElement.clientWidth
-      );
-      const newY = Math.round(
-        dev.position.y * this.vizSpaceElement.clientHeight
-      );
+      let newX = Math.round(dev.position.x * this.vizSpaceElement.clientWidth);
+      let newY = Math.round(dev.position.y * this.vizSpaceElement.clientHeight);
+
+      // Make the device fit within the boundaries of this.vizSpaceElement.
+      // X-value:
+      if (newX + dev.element.clientWidth > this.vizSpaceElement.clientWidth) {
+        newX = this.vizSpaceElement.clientWidth - dev.element.clientWidth;
+        dev.position.x = (newX / this.vizSpaceElement.clientWidth).toFixed(2);
+      }
+      // Y-value:
+      if (newY + dev.element.clientHeight > this.vizSpaceElement.clientHeight) {
+        newY = this.vizSpaceElement.clientHeight - dev.element.clientHeight;
+        dev.position.y = (newY / this.vizSpaceElement.clientHeight).toFixed(2);
+      }
 
       // Set the location on screen for the deviceContainer HTML element.
       dev.element.style.transform = `translate(${newX}px, ${newY}px)`;
