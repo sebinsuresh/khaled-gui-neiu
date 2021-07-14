@@ -326,6 +326,11 @@ body {
   background-color: #219ebc;
   padding: 0.5rem;
   font-family: "Consolas", Courier, monospace;
+  font-size: 0.75rem;
+  text-align: left;
+  width: max-content;
+  cursor: text;
+  color: lightcyan;
 
   position: absolute;
   left: calc(100% - 2rem);
@@ -347,7 +352,7 @@ body {
   user-select: none;
 
   position: absolute;
-  right: 5px;
+  left: 5px;
   bottom: 5px;
 
   transition: all 0.2s ease-in;

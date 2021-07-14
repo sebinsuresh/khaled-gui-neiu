@@ -108,6 +108,7 @@ export default class Device {
     const btn = document.createElement("div");
     btn.classList.add("label-btn");
     btn.innerText = "i";
+    btn.title = "Show/hide label";
     btn.onclick = () => this.label.toggleHidden();
     return btn;
   }

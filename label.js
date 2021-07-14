@@ -20,9 +20,12 @@ export default class Label {
      * The JS object containing information for this label.
      */
     this.object = {
-      name: parentObject.name,
-      id: parentObject.id,
-      comment: "Default comment. Click to type in a new comment.",
+      name: { value: parentObject.name, editable: true },
+      id: { value: parentObject.id, editable: false },
+      comment: {
+        value: "Default comment. Click to type in a new comment.",
+        editable: true,
+      },
     };
 
     this.elem = this.createElem();
@@ -44,7 +47,9 @@ export default class Label {
     elem.classList.add("labelDiv");
 
     // TODO: replace with proper editable k:v pairs
-    elem.textContent = JSON.stringify(this.object);
+    elem.innerHTML = JSON.stringify(this.object, null, 2)
+      .replaceAll("  ", "&emsp;&emsp;")
+      .replaceAll("\n", "<br/>");
 
     return elem;
   }
