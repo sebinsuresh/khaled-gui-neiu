@@ -65,6 +65,9 @@ export default class Device {
       this.connectedDevices = null;
 
       this.label = new Label(this);
+      this.label.hide();
+      this.labelBtn = this.createLabelBtn();
+      this.element.appendChild(this.labelBtn);
     }
   }
 
@@ -95,6 +98,18 @@ export default class Device {
     deleteBtn.title = "Delete this device";
 
     return deleteBtn;
+  }
+
+  /**
+   * Creates a button to show/hide label
+   * @returns {HTMLDivElement}
+   * */
+  createLabelBtn() {
+    const btn = document.createElement("div");
+    btn.classList.add("label-btn");
+    btn.innerText = "i";
+    btn.onclick = () => this.label.toggleHidden();
+    return btn;
   }
 
   // Sets the zoom level of the illustration.

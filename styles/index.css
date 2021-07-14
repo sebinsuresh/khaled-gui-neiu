@@ -330,4 +330,29 @@ body {
   position: absolute;
   left: calc(100% - 2rem);
   top: calc(100% - 2rem);
+
+  border-radius: 0.75rem;
+}
+
+.label-btn {
+  width: 16px;
+  height: 16px;
+  font-size: 0.75rem;
+  background-color: #219ebc;
+  border-radius: 50%;
+  cursor: pointer;
+  /* font-weight: bold; */
+  color: white;
+  border: 2px solid white;
+  user-select: none;
+
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+
+  transition: all 0.2s ease-in;
+}
+
+.label-btn:hover {
+  background-color: #8ecae6;
 }

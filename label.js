@@ -26,6 +26,7 @@ export default class Label {
     };
 
     this.elem = this.createElem();
+    this.isHidden = false;
 
     /** @type {HTMLDivElement} */
     this.kvPairsContainerElem = null;
@@ -69,11 +70,19 @@ export default class Label {
   show() {
     this.setKVPairElems();
     this.elem.classList.remove("noDisplay");
+    this.isHidden = false;
   }
 
   // Hide the label HTML element.
   hide() {
     this.elem.classList.add("noDisplay");
+    this.isHidden = true;
+  }
+
+  // Toggle the hidden status of the label
+  toggleHidden() {
+    if (this.isHidden) this.show();
+    else this.hide();
   }
 
   // Change the value for a given key in this label.
