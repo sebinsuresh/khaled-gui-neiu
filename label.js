@@ -29,7 +29,8 @@ export default class Label {
     };
 
     this.elem = this.createElem();
-    this.isHidden = false;
+    this.elem.classList.add("noDisplay");
+    this.hide();
 
     /** @type {HTMLDivElement} */
     this.kvPairsContainerElem = null;
@@ -74,13 +75,15 @@ export default class Label {
    */
   show() {
     this.setKVPairElems();
+    this.elem.classList.remove("hiding");
     this.elem.classList.remove("noDisplay");
     this.isHidden = false;
   }
 
   // Hide the label HTML element.
   hide() {
-    this.elem.classList.add("noDisplay");
+    this.elem.classList.add("hiding");
+    setTimeout(() => this.elem.classList.add("noDisplay"), 199);
     this.isHidden = true;
   }
 
