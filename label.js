@@ -26,11 +26,16 @@ export default class Label {
       { propName: "comment", editable: true },
     ];
 
-    /**
-     * The JS object containing information for this label.
-     */
+    /** The JS object containing information for this label.*/
     this.object = {};
 
+    /** Indicates whether the HTML element needs an update.*/
+    this.needsElemUpdate = false;
+
+    /**
+     * The HTML element for the label.
+     * @type {HTMLDivElement}
+     * */
     this.elem = this.createElem();
     this.elem.classList.add("noDisplay");
     this.hide();
@@ -44,12 +49,17 @@ export default class Label {
     /**
      * Checks for any changes in parent & updates this.object every
      * <interval> milliseconds.
-     * Don't put DOM updating code (not performant) in setInterval!!
+     * Be careful putting DOM updating code (not performant) in setInterval!!
      *
      * @type {ReturnType<typeof setInterval>}
      *  */
     this.watcher = setInterval(() => {
       this.updateObject();
+
+      // DOM-updating code!
+      // Updates the HTML element if the label is currently visible and
+      // requires an update.
+      if (!this.isHidden && this.needsElemUpdate) this.setKVPairElems();
     }, interval);
   }
 
@@ -66,24 +76,44 @@ export default class Label {
 
   /**
    * Update Label's object based on the latest values from the parent device.
+   * Also sets this.needsElemUpdate if there are any properties that changed.
    */
   updateObject() {
+    // List of updated properties. Used for logging them to console.
+    // TODO: Should this array should be made instance level?
+    let updatedProps = [];
+
+    // Iterate over all the properties from the parent device being watched,
+    // and update any non-existent/unchanged properties in label's object.
     this.watchProps.forEach((prop) => {
       const key = prop.propName;
       if (!(key in this.parent)) {
+        // Property not belonging to parent device object is in this.watchProps
         console.warn(
           `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
         );
       } else if (this.parent[key] !== this.object[key]) {
-        console.log("Label object updated");
+        // If there is a value mismatch between parent's property and label's
+        // object's property, update the label object.
         this.object[key] = this.parent[key];
+
+        updatedProps.push(key);
       }
     });
+
+    if (updatedProps.length > 0) {
+      console.log(
+        `#${this.parent.id}'s Label obj updated: ${updatedProps.toString()}`
+      );
+      // Mark the HTML element as needing an update.
+      this.needsElemUpdate = true;
+    }
   }
 
   /**
    * Sets (or creates if it doesn't exist) the k:v pair HTML elements and
    * container, and update them with values from this.object.
+   * Also sets this.needsElemUpdate to false, since we updated the elem.
    */
   setKVPairElems() {
     if (!this.kvPairsContainerElem) {
@@ -99,10 +129,11 @@ export default class Label {
       .replaceAll("\n", "<br>");
     if (newInnerHTML !== this.elem.innerHTML) {
       console.log("Label element text updated.");
-      // console.log("OLD:", this.elem.innerHTML);
-      // console.log("NEW:", newInnerHTML);
       this.elem.innerHTML = newInnerHTML;
     }
+
+    // Mark the HTML element as updated.
+    this.needsElemUpdate = false;
   }
 
   /**
@@ -117,31 +148,33 @@ export default class Label {
 
   /**
    * Show the label HTML element, after setting the k:v pairs to the latest
-   * values.
+   * values. Sets this.isHidden to false.
    */
   show() {
     this.updateObject();
-    this.setKVPairElems();
+    if (this.needsElemUpdate) this.setKVPairElems();
     this.elem.classList.remove("hiding");
     this.elem.classList.remove("noDisplay");
     this.isHidden = false;
   }
 
-  // Hide the label HTML element.
+  /** Hide the label HTML element. Sets this.isHidden to true. */
   hide() {
     this.elem.classList.add("hiding");
     setTimeout(() => this.elem.classList.add("noDisplay"), 184);
     this.isHidden = true;
   }
 
-  // Toggle the hidden status of the label
+  /** Toggle the hidden status of the label */
   toggleHidden() {
     if (this.isHidden) this.show();
     else this.hide();
   }
 
-  // Change the value for a given key in this label.
-  // This will also update the value in the HTML element.
+  /**
+   * Change the value for a given key in this label.
+   * This will also update the value in the HTML element.
+   */
   setObjectVal(key, val) {
     this.object[key] = val;
     this.setKVPairElems();
