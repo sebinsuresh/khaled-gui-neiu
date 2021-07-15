@@ -119,6 +119,7 @@ export default class Label {
     if (!this.kvPairsContainerElem) {
       this.kvPairsContainerElem = document.createElement("div");
       this.kvPairsContainerElem.classList.add("kvPairsContainer");
+      this.elem.appendChild(this.kvPairsContainerElem);
     }
 
     // Create k:v pair divs if they don't exist, add listeners, and set
@@ -127,9 +128,9 @@ export default class Label {
     const newInnerHTML = JSON.stringify(this.object, null, 2)
       .replaceAll("  ", "&nbsp;&nbsp;")
       .replaceAll("\n", "<br>");
-    if (newInnerHTML !== this.elem.innerHTML) {
-      console.log("Label element text updated.");
-      this.elem.innerHTML = newInnerHTML;
+    if (newInnerHTML !== this.kvPairsContainerElem.innerHTML) {
+      console.log("Label element text updated.", newInnerHTML);
+      this.kvPairsContainerElem.innerHTML = newInnerHTML;
     }
 
     // Mark the HTML element as updated.

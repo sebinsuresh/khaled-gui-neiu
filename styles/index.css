@@ -325,12 +325,6 @@ body {
 .labelDiv {
   background-color: #219ebc;
   padding: 0.5rem;
-  font-family: "Consolas", Courier, monospace;
-  font-size: 0.75rem;
-  text-align: left;
-  width: max-content;
-  cursor: text;
-  color: lightcyan;
 
   position: absolute;
   left: calc(100% - 2rem);
@@ -340,6 +334,16 @@ body {
 
   transform-origin: top left;
   animation: pop-in 0.3s;
+}
+
+.labelDiv .kvPairsContainer {
+  width: max-content;
+  font-family: "Consolas", Courier, monospace;
+  font-size: 0.75rem;
+  text-align: left;
+  color: lightcyan;
+
+  cursor: text;
 }
 
 .labelDiv.hiding {
