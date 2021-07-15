@@ -64,11 +64,23 @@ export default class Device {
       // For RPi:
       this.connectedDevices = null;
 
+      // Developer comments for this device.
+      this.comment = "Default comment. Click to type in a new comment.";
+
       this.label = new Label(this);
       this.label.hide();
       this.labelBtn = this.createLabelBtn();
       this.element.appendChild(this.labelBtn);
     }
+  }
+
+  set name(newName) {
+    this._name = newName;
+    if (this.element) this.element.title = newName;
+  }
+
+  get name() {
+    return this._name;
   }
 
   // Creates the draggable outer-div for the device.
