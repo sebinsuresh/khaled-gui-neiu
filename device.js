@@ -149,9 +149,14 @@ export default class Device {
     // grabs elements for dragging)
     this.element.classList.remove("draggable");
 
+    this.label.delete();
+
     // Remove HTML element and children.
     while (this.element.firstChild)
       this.element.removeChild(this.element.firstChild);
+
+    // Remove the HTML element itself
+    this.element.remove();
 
     // Remove any connection this device has with some RPi.
     if (this.isConnected) {

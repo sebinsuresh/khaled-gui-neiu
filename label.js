@@ -30,7 +30,6 @@ export default class Label {
      * The JS object containing information for this label.
      */
     this.object = {};
-    this.contentChanged = true;
 
     this.elem = this.createElem();
     this.elem.classList.add("noDisplay");
@@ -40,6 +39,18 @@ export default class Label {
     this.kvPairsContainerElem = null;
 
     this.parent.element.appendChild(this.elem);
+
+    const interval = 500;
+    /**
+     * Checks for any changes in parent & updates this.object every
+     * <interval> milliseconds.
+     * Don't put DOM updating code (not performant) in setInterval!!
+     *
+     * @type {ReturnType<typeof setInterval>}
+     *  */
+    this.watcher = setInterval(() => {
+      this.updateObject();
+    }, interval);
   }
 
   /**
@@ -64,6 +75,7 @@ export default class Label {
           `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
         );
       } else if (this.parent[key] !== this.object[key]) {
+        console.log("Label object updated");
         this.object[key] = this.parent[key];
       }
     });
@@ -91,6 +103,16 @@ export default class Label {
       // console.log("NEW:", newInnerHTML);
       this.elem.innerHTML = newInnerHTML;
     }
+  }
+
+  /**
+   * Delete the label & clear setIntervals
+   */
+  delete() {
+    clearInterval(this.watcher);
+    this.elem.innerHTML = "";
+    this.object = null;
+    this.parent = null;
   }
 
   /**
