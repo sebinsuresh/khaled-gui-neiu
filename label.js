@@ -81,7 +81,10 @@ export default class Label {
   updateObject() {
     // List of updated properties. Used for logging them to console.
     // TODO: Should this array should be made instance level?
-    let updatedProps = [];
+    const updatedProps = [];
+
+    // List of keys to remove from being watched.
+    const keysToRemove = [];
 
     // Iterate over all the properties from the parent device being watched,
     // and update any non-existent/unchanged properties in label's object.
@@ -90,16 +93,23 @@ export default class Label {
       if (!(key in this.parent)) {
         // Property not belonging to parent device object is in this.watchProps
         console.warn(
-          `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
+          `Unkown property '${key}' being watched by label (Device: ${this.parent.id}). Removing..`
         );
+        keysToRemove.push(key);
       } else if (typeof this.parent[key] === "object") {
-        // TODO: NESTED OBJECTS ARE PASSED BY REFERENCE! The changes are not noticed the way it is checking equality below (Eg: try adding position to watchProps): spaceMan.devices[0].label.watchProps.push({propName:"position", editable: false});
-        console.error("Cannot watch objects/arrays (yet) :/");
-        // Temporary solution: Convert to JSON, store and compare that.
-        const oldVal = this.object[key];
+        // TODO: NESTED OBJECTS ARE PASSED BY REFERENCE! The changes are not noticed the way it is checking equality below (Eg: try adding position to watchProps)
+
+        // Show warning only the first time the key is encountered.
+        if (this.object[key] === undefined)
+          console.warn("Cannot watch objects/arrays properly.");
+
+        // Temporary solution: Convert to JSON, compare, and store
+        // after parsing the string back to JS objects if changed.
+        // Possibly inefficient: https://stackoverflow.com/a/5344074
+        const oldVal = JSON.stringify(this.object[key]);
         const newVal = JSON.stringify(this.parent[key]);
         if (oldVal !== newVal) {
-          this.object[key] = newVal;
+          this.object[key] = JSON.parse(newVal);
           updatedProps.push(key);
         }
       } else if (this.parent[key] !== this.object[key]) {
@@ -112,9 +122,7 @@ export default class Label {
     });
 
     if (updatedProps.length > 0) {
-      console.log(
-        `#${this.parent.id}'s Label obj updated: ${updatedProps.toString()}`
-      );
+      console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
       // Mark the HTML element as needing an update.
       this.needsElemUpdate = true;
     }
@@ -139,7 +147,7 @@ export default class Label {
       .replaceAll("  ", "&nbsp;&nbsp;")
       .replaceAll("\n", "<br>");
     if (newInnerHTML !== this.kvPairsContainerElem.innerHTML) {
-      console.log("Label element text updated.", newInnerHTML);
+      console.log("Label element text updated.");
       this.kvPairsContainerElem.innerHTML = newInnerHTML;
     }
 
