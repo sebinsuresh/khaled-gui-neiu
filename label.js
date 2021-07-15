@@ -122,7 +122,7 @@ export default class Label {
     });
 
     if (updatedProps.length > 0) {
-      console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
+      // console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
       // Mark the HTML element as needing an update.
       this.needsElemUpdate = true;
     }
@@ -147,7 +147,7 @@ export default class Label {
       .replaceAll("  ", "&nbsp;&nbsp;")
       .replaceAll("\n", "<br>");
     if (newInnerHTML !== this.kvPairsContainerElem.innerHTML) {
-      console.log("Label element text updated.");
+      // console.log("Label element text updated.");
       this.kvPairsContainerElem.innerHTML = newInnerHTML;
     }
 
