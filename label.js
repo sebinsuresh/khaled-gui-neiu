@@ -92,6 +92,16 @@ export default class Label {
         console.warn(
           `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
         );
+      } else if (typeof this.parent[key] === "object") {
+        // TODO: NESTED OBJECTS ARE PASSED BY REFERENCE! The changes are not noticed the way it is checking equality below (Eg: try adding position to watchProps): spaceMan.devices[0].label.watchProps.push({propName:"position", editable: false});
+        console.error("Cannot watch objects/arrays (yet) :/");
+        // Temporary solution: Convert to JSON, store and compare that.
+        const oldVal = this.object[key];
+        const newVal = JSON.stringify(this.parent[key]);
+        if (oldVal !== newVal) {
+          this.object[key] = newVal;
+          updatedProps.push(key);
+        }
       } else if (this.parent[key] !== this.object[key]) {
         // If there is a value mismatch between parent's property and label's
         // object's property, update the label object.

@@ -60,9 +60,9 @@ export default class Device {
       // Properties to connect devices.
       // For non-RPi:
       this.isConnected = false;
-      this.connectedTo = null;
+      this.connectedTo = undefined;
       // For RPi:
-      this.connectedDevices = null;
+      this.connectedDevices = undefined;
 
       // Developer comments for this device.
       this.comment = "Default comment. Click to type in a new comment.";

@@ -249,7 +249,7 @@ export default class SpaceManager {
 
     // Toggle isConnected & null connectedTo in toDev
     toDev.isConnected = false;
-    toDev.connectedTo = null;
+    toDev.connectedTo = undefined;
 
     // Draw lines if drawLines === true
     if (drawLines) this.drawLines();
