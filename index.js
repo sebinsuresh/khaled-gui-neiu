@@ -71,3 +71,19 @@ console.log(`Time it took for updating DOM elements: ${time}ms`);
 // About half a millisecond (0.6ms) to do 10,000 DOM updates
 // Even less (0.09ms) for the stringfiy + comparison.
 */
+
+/* 
+// Test 2:
+const inputElem = document.createElement("input");
+inputElem.type = "text";
+document.body.appendChild(inputElem);
+
+inputElem.onchange = (ev) => console.log(`changed: ${ev.target}`);
+
+setInterval(() => {
+  inputElem === document.activeElement ? null : console.log(inputElem.value);
+}, 500);
+
+// To check whether an input field is being focused, compare it against 
+// document.activeElement (read-only).
+ */
