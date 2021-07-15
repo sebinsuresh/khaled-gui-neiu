@@ -30,6 +30,7 @@ export default class Label {
      * The JS object containing information for this label.
      */
     this.object = {};
+    this.contentChanged = true;
 
     this.elem = this.createElem();
     this.elem.classList.add("noDisplay");
@@ -58,12 +59,12 @@ export default class Label {
   updateObject() {
     this.watchProps.forEach((prop) => {
       const key = prop.propName;
-      if (key in this.parent) {
-        this.object[key] = this.parent[key];
-      } else {
+      if (!(key in this.parent)) {
         console.warn(
           `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
         );
+      } else if (this.parent[key] !== this.object[key]) {
+        this.object[key] = this.parent[key];
       }
     });
   }
@@ -81,9 +82,15 @@ export default class Label {
     // Create k:v pair divs if they don't exist, add listeners, and set
     // data-prop values
     // TODO: replace with proper editable k:v pairs
-    this.elem.innerHTML = JSON.stringify(this.object, null, 2)
-      .replaceAll("  ", "&emsp;&emsp;")
-      .replaceAll("\n", "<br/>");
+    const newInnerHTML = JSON.stringify(this.object, null, 2)
+      .replaceAll("  ", "&nbsp;&nbsp;")
+      .replaceAll("\n", "<br>");
+    if (newInnerHTML !== this.elem.innerHTML) {
+      console.log("Label element text updated.");
+      // console.log("OLD:", this.elem.innerHTML);
+      // console.log("NEW:", newInnerHTML);
+      this.elem.innerHTML = newInnerHTML;
+    }
   }
 
   /**
