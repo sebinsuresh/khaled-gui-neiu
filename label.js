@@ -17,16 +17,19 @@ export default class Label {
     this.parent = parentObject;
 
     /**
+     * Properties to watch from the parent device.
+     * @type [{propName : string, editable: boolean}]
+     * */
+    this.watchProps = [
+      { propName: "name", editable: true },
+      { propName: "id", editable: false },
+      { propName: "comment", editable: true },
+    ];
+
+    /**
      * The JS object containing information for this label.
      */
-    this.object = {
-      name: { value: parentObject.name, editable: true },
-      id: { value: parentObject.id, editable: false },
-      comment: {
-        value: "Default comment. Click to type in a new comment.",
-        editable: true,
-      },
-    };
+    this.object = {};
 
     this.elem = this.createElem();
     this.elem.classList.add("noDisplay");
@@ -35,7 +38,6 @@ export default class Label {
     /** @type {HTMLDivElement} */
     this.kvPairsContainerElem = null;
 
-    this.setKVPairElems();
     this.parent.element.appendChild(this.elem);
   }
 
@@ -47,12 +49,23 @@ export default class Label {
     const elem = document.createElement("div");
     elem.classList.add("labelDiv");
 
-    // TODO: replace with proper editable k:v pairs
-    elem.innerHTML = JSON.stringify(this.object, null, 2)
-      .replaceAll("  ", "&emsp;&emsp;")
-      .replaceAll("\n", "<br/>");
-
     return elem;
+  }
+
+  /**
+   * Update Label's object based on the latest values from the parent device.
+   */
+  updateObject() {
+    this.watchProps.forEach((prop) => {
+      const key = prop.propName;
+      if (key in this.parent) {
+        this.object[key] = this.parent[key];
+      } else {
+        console.warn(
+          `Unkown property '${key}' being watched by label (Device: ${this.parent.id})`
+        );
+      }
+    });
   }
 
   /**
@@ -67,6 +80,10 @@ export default class Label {
 
     // Create k:v pair divs if they don't exist, add listeners, and set
     // data-prop values
+    // TODO: replace with proper editable k:v pairs
+    this.elem.innerHTML = JSON.stringify(this.object, null, 2)
+      .replaceAll("  ", "&emsp;&emsp;")
+      .replaceAll("\n", "<br/>");
   }
 
   /**
@@ -74,6 +91,7 @@ export default class Label {
    * values.
    */
   show() {
+    this.updateObject();
     this.setKVPairElems();
     this.elem.classList.remove("hiding");
     this.elem.classList.remove("noDisplay");
@@ -83,7 +101,7 @@ export default class Label {
   // Hide the label HTML element.
   hide() {
     this.elem.classList.add("hiding");
-    setTimeout(() => this.elem.classList.add("noDisplay"), 199);
+    setTimeout(() => this.elem.classList.add("noDisplay"), 184);
     this.isHidden = true;
   }
 
@@ -97,7 +115,6 @@ export default class Label {
   // This will also update the value in the HTML element.
   setObjectVal(key, val) {
     this.object[key] = val;
-    // TODO: set the values within this.elem HTMLelement
-    // TODO: Update corresponding value in the Device object too
+    this.setKVPairElems();
   }
 }
