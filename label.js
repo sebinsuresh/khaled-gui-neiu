@@ -43,6 +43,14 @@ export default class Label {
     /** @type {HTMLDivElement} */
     this.kvPairsContainerElem = null;
 
+    /**
+     * Object containing mappings of each watched property from parent to
+     * the k:v pair elements (a label and an input element).
+     *
+     * @type {Object.<string, {labelElem: HTMLLabelElement, inputElem: HTMLInputElement}>}
+     * */
+    this.kvPairsElems = {};
+
     this.parent.element.appendChild(this.elem);
 
     const interval = 500;
@@ -140,8 +148,52 @@ export default class Label {
       this.elem.appendChild(this.kvPairsContainerElem);
     }
 
-    // Create k:v pair divs if they don't exist, add listeners, and set
-    // data-prop values
+    // Create k:v pair divs if they don't exist, add listeners, and set values.
+    this.watchProps.forEach((obj) => {
+      const { propName, editable } = obj;
+      if (this.kvPairsElems[propName] === undefined) {
+        // The input element (text field)
+        const inputElem = document.createElement("input");
+        inputElem.id = this.parent.id + "-Label-" + propName;
+        inputElem.value = this.object[propName];
+        if (!editable) inputElem.disabled = true;
+
+        // The label element
+        const labelElem = document.createElement("label");
+        labelElem.innerText = propName + ":";
+        labelElem.setAttribute("for", inputElem.id);
+
+        // Add the elements to a div and to this.kvPairsContainersElem.
+        const kvPairDiv = document.createElement("div");
+        kvPairDiv.appendChild(labelElem);
+        kvPairDiv.appendChild(document.createElement("br"));
+        kvPairDiv.appendChild(inputElem);
+        this.kvPairsContainerElem.appendChild(kvPairDiv);
+
+        // Add listener for the input field, if it is editable, and not
+        // an object. The listener updates the parent object.
+        if (editable && typeof this.object[propName] !== "object") {
+          inputElem.onchange = (ev) => {
+            const newVal = ev.target.value;
+            this.parent[propName] = newVal;
+            this.object[propName] = newVal;
+          };
+        }
+
+        // Set the values in this.kvPairsElems
+        this.kvPairsElems[propName] = { labelElem, inputElem };
+      }
+
+      const inputElem = this.kvPairsElems[propName].inputElem;
+      if (
+        typeof this.object[propName] !== "object" &&
+        inputElem.value !== this.object[propName]
+      ) {
+        inputElem.value = this.object[propName];
+      }
+    });
+
+    /* 
     // TODO: replace with proper editable k:v pairs
     const newInnerHTML = JSON.stringify(this.object, null, 2)
       .replaceAll("  ", "&nbsp;&nbsp;")
@@ -149,7 +201,7 @@ export default class Label {
     if (newInnerHTML !== this.kvPairsContainerElem.innerHTML) {
       // console.log("Label element text updated.");
       this.kvPairsContainerElem.innerHTML = newInnerHTML;
-    }
+    } */
 
     // Mark the HTML element as updated.
     this.needsElemUpdate = false;
