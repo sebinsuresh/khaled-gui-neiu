@@ -314,7 +314,7 @@ body {
 
 .labelDiv {
   background-color: #219ebc;
-  padding: 0.25rem 0.75rem 1rem 0.75rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.75rem;
 
   position: absolute;
   left: calc(100% - 2rem);
@@ -361,16 +361,19 @@ body {
     transform: scale(0.5);
   }
 }
+.kvPairsContainer div {
+  margin-bottom: 0.25rem;
+}
 
 .labelDiv .kvPairsContainer label {
-  font-family: "Consolas", Courier, monospace;
+  /* font-family: "Consolas", Courier, monospace; */
   color: lightcyan;
 }
 
 .labelDiv .kvPairsContainer div input,
 .labelDiv .kvPairsContainer div textarea {
   font-family: "Consolas", Courier, monospace;
-  /* font-size: 0.75rem; */
+  font-size: 1rem;
   background-color: #219ebc;
   color: lightcyan;
 
@@ -382,6 +385,11 @@ body {
 .labelDiv .kvPairsContainer div input:focus,
 .labelDiv .kvPairsContainer div textarea:focus {
   background-color: #4dbbd6;
+}
+
+.labelDiv .kvPairsContainer div input:disabled,
+.labelDiv .kvPairsContainer div textarea:disabled {
+  border: none;
 }
 
 .label-btn {
