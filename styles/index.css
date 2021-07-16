@@ -314,7 +314,7 @@ body {
 
 .labelDiv {
   background-color: #219ebc;
-  padding: 0.5rem;
+  padding: 0.25rem 0.75rem 1rem 0.75rem;
 
   position: absolute;
   left: calc(100% - 2rem);
@@ -327,13 +327,13 @@ body {
 }
 
 .labelDiv .kvPairsContainer {
-  width: max-content;
   font-family: "Consolas", Courier, monospace;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  width: max-content;
   text-align: left;
-  color: lightcyan;
-
   cursor: text;
+
+  color: lightcyan;
 }
 
 .labelDiv.hiding {
@@ -360,6 +360,28 @@ body {
     opacity: 0;
     transform: scale(0.5);
   }
+}
+
+.labelDiv .kvPairsContainer label {
+  font-family: "Consolas", Courier, monospace;
+  color: lightcyan;
+}
+
+.labelDiv .kvPairsContainer div input,
+.labelDiv .kvPairsContainer div textarea {
+  font-family: "Consolas", Courier, monospace;
+  font-size: 0.75rem;
+  background-color: #219ebc;
+  color: lightcyan;
+
+  border: 1px solid #00304950;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.labelDiv .kvPairsContainer div input:focus,
+.labelDiv .kvPairsContainer div textarea:focus {
+  background-color: #4dbbd6;
 }
 
 .label-btn {
