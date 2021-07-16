@@ -18,12 +18,12 @@ export default class Label {
 
     /**
      * Properties to watch from the parent device.
-     * @type [{propName : string, editable: boolean}]
+     * @type [{propName : string, editable: boolean, textArea?: boolean}]
      * */
     this.watchProps = [
       { propName: "name", editable: true },
       { propName: "id", editable: false },
-      { propName: "comment", editable: true },
+      { propName: "comment", editable: true, textArea: true },
     ];
 
     /** The JS object containing information for this label.*/
@@ -150,13 +150,16 @@ export default class Label {
 
     // Create k:v pair divs if they don't exist, add listeners, and set values.
     this.watchProps.forEach((obj) => {
-      const { propName, editable } = obj;
+      const { propName, editable, textArea } = obj;
       if (this.kvPairsElems[propName] === undefined) {
         // The input element (text field)
-        const inputElem = document.createElement("input");
+        const inputElem = document.createElement(
+          textArea ? "textarea" : "input"
+        );
         inputElem.id = this.parent.id + "-Label-" + propName;
         inputElem.value = this.object[propName];
         if (!editable) inputElem.disabled = true;
+        if (textArea) inputElem.rows = 3;
 
         // The label element
         const labelElem = document.createElement("label");

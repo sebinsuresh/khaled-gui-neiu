@@ -370,7 +370,7 @@ body {
 .labelDiv .kvPairsContainer div input,
 .labelDiv .kvPairsContainer div textarea {
   font-family: "Consolas", Courier, monospace;
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
   background-color: #219ebc;
   color: lightcyan;
 
