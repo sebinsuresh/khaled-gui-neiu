@@ -1,18 +1,49 @@
-/* 
-  Temp Sensor device.
-*/
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
 
+/**
+ * Class representing a temperature sensor device.
+ * @extends Device
+ */
 export default class TempSensor extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super("TEMPSENSOR", spaceMan, isPreviewElem);
   }
 
-  // Creates and return illustration for the device.
-  // This must be called after placing the device container on screen already.
-  // Otherwise, the width and height of the canvas would not be set properly
-  // by Zdog, and the illustration won't be rendered correctly.
+  /**
+   * Change the status of the device.
+   * @param {string} newStatus The new status to change the device to.
+   * @param {number|string} [newTempValue] The new temperature shown in the
+   * device
+   * */
+  changeStatus(newStatus, newTempValue = 73) {
+    if (this.statuses.includes(newStatus)) {
+      this.status = newStatus;
+    }
+    switch (newStatus) {
+      case "OFF":
+        this.illustration.tempText.value = "--";
+        this.illustration.tempText.color = colors["dark"];
+        return this.show();
+      case "ON":
+        this.illustration.tempText.value = newTempValue.toString() + "°";
+        this.illustration.tempText.color = colors["gray"];
+        return this.show();
+      default:
+        if (!this.statuses.includes(newStatus))
+          console.error(`Invalid status change for ${this.name}`);
+        return this.show();
+    }
+  }
+
+  /**
+   * Creates and return illustration for the device.
+   * This must be called after placing the device container on screen already.
+   * Otherwise, the width and height of the canvas would not be set properly
+   * by Zdog, and the illustration won't be rendered correctly.
+   * @param {boolean} isPreviewElem Whether this instance is part of a preview
+   * modal
+   * */
   createIllustration(isPreviewElem) {
     // The main illustration
     this.illustration.zdogillo = new Zdog.Illustration({
@@ -102,26 +133,5 @@ export default class TempSensor extends Device {
     });
 
     return this.show();
-  }
-
-  // Change the status of the device.
-  changeStatus(newStatus, newTempValue = 73) {
-    if (this.statuses.includes(newStatus)) {
-      this.status = newStatus;
-    }
-    switch (newStatus) {
-      case "OFF":
-        this.illustration.tempText.value = "--";
-        this.illustration.tempText.color = colors["dark"];
-        return this.show();
-      case "ON":
-        this.illustration.tempText.value = newTempValue.toString() + "°";
-        this.illustration.tempText.color = colors["gray"];
-        return this.show();
-      default:
-        if (!this.statuses.includes(newStatus))
-          console.error(`Invalid status change for ${this.name}`);
-        return this.show();
-    }
   }
 }

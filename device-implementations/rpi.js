@@ -4,8 +4,7 @@ import SpaceManager from "../spaceManager.js";
 
 /**
  * Class Representing a Raspberry Pi Device.
- * This device ca connect other devices to it.
- *
+ * This device can connect other devices to it.
  * @extends {Device}
  */
 export default class RPi extends Device {
@@ -17,23 +16,35 @@ export default class RPi extends Device {
 
     /**
      * Array of { pinNumber, deviceId } for other devices connected to the RPi.
-     *
      * @type [{pinNumber:number, deviceId:string}]
      */
     this.connectedDevices = [];
   }
 
-  // OVERRIDE for RPi (To make the width 200px):
-  // Creates the canvas element placed inside the draggable device div
-  createCanvElem() {
-    const canvElem = document.createElement("canvas");
-    canvElem.classList.add("deviceCanv");
-    canvElem.style.width = "200px";
+  /**
+   * Add the specified device to the list of connected devices of this RPi.
+   * Note that this only updates the connectedDevices array of the RPi device.
+   * The other device's properties must be updated separately.
+   * @param {string} idToConnect The ID of the device connecting to the RPi
+   * @param {number} pinum The pin to connect the other device to
+   */
+  addConnectedDevice(idToConnect, pinNum = -1) {
+    // Find the correct pinNum
+    // If pinNum was not specified in method call, find first available pinNum.
+    if (pinNum === -1) {
+      // Pin numbers start at 1, not 0.
+      pinNum = 1;
+      while (this.connectedDevices.find((dev) => dev.pinNumber == pinNum))
+        pinNum++;
+    }
 
-    return canvElem;
+    this.connectedDevices.push({ pinNumber: pinNum, deviceId: idToConnect });
   }
 
-  // Change the status of the RPi.
+  /**
+   * Change the status of the device.
+   * @param {string} newStatus The new status to change the device to.
+   * */
   changeStatus(newStatus) {
     if (this.statuses.includes(newStatus)) {
       this.status = newStatus;
@@ -46,6 +57,19 @@ export default class RPi extends Device {
           console.error(`Invalid status change for ${this.name}`);
         return this.show();
     }
+  }
+
+  /**
+   * Creates the canvas element placed inside the draggable device div
+   * OVERRIDE for RPi: To make the width 200px.
+   * @returns {HTMLDivElement}
+   */
+  createCanvElem() {
+    const canvElem = document.createElement("canvas");
+    canvElem.classList.add("deviceCanv");
+    canvElem.style.width = "200px";
+
+    return canvElem;
   }
 
   /**
@@ -79,26 +103,6 @@ export default class RPi extends Device {
   }
 
   /**
-   * Add the specified device to the list of connected devices of this RPi.
-   * Note that this only updates the connectedDevices array of the RPi device.
-   * The other device's properties must be updated separately.
-   * @param {string} idToConnect The ID of the device connecting to the RPi
-   * @param {number} pinum The pin to connect the other device to
-   */
-  addConnectedDevice(idToConnect, pinNum = -1) {
-    // Find the correct pinNum
-    // If pinNum was not specified in method call, find first available pinNum.
-    if (pinNum === -1) {
-      // Pin numbers start at 1, not 0.
-      pinNum = 1;
-      while (this.connectedDevices.find((dev) => dev.pinNumber == pinNum))
-        pinNum++;
-    }
-
-    this.connectedDevices.push({ pinNumber: pinNum, deviceId: idToConnect });
-  }
-
-  /**
    * Remove the connected device from this RPi. Note that this only updates the
    * connectedDevices array of this RPi. The other device's properties must be
    * separately updated.
@@ -112,10 +116,14 @@ export default class RPi extends Device {
     );
   }
 
-  // Creates and return illustration for the Raspberry Pi device.
-  // This must be called after placing the device container on screen already.
-  // Otherwise, the width and height of the canvas would not be set properly
-  // by Zdog, and the illustration won't be rendered correctly.
+  /**
+   * Creates and return illustration for the device.
+   * This must be called after placing the device container on screen already.
+   * Otherwise, the width and height of the canvas would not be set properly
+   * by Zdog, and the illustration won't be rendered correctly.
+   * @param {boolean} isPreviewElem Whether this instance is part of a preview
+   * modal
+   * */
   createIllustration(isPreviewElem) {
     // The main illustration
     this.illustration.zdogillo = new Zdog.Illustration({

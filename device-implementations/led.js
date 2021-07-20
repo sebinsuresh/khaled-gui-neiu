@@ -1,18 +1,50 @@
-/* 
-  LED Bulb.
-*/
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
 
+/**
+ * Class representing a LED bulb device.
+ * @extends Device
+ */
 export default class LEDBulb extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super("LED", spaceMan, isPreviewElem);
   }
 
-  // Creates and return illustration for the LED.
-  // This must be called after placing the device container on screen already.
-  // Otherwise, the width and height of the canvas would not be set properly
-  // by Zdog, and the illustration won't be rendered correctly.
+  /** Change the status of the device.
+   * @param {string} newStatus The new status to change the device to.
+   * */
+  changeStatus(newStatus) {
+    if (this.statuses.includes(newStatus)) {
+      this.status = newStatus;
+    }
+    switch (newStatus) {
+      case "OFF":
+        this.illustration.ledTop.color = colors["red"];
+        this.illustration.ledCylider.color = colors["red"];
+        this.illustration.ledCylider.backface = colors["redLight"];
+        this.illustration.glow.visible = false;
+        return this.show();
+      case "ON":
+        this.illustration.ledTop.color = colors["redLight"];
+        this.illustration.ledCylider.color = colors["redLight"];
+        this.illustration.ledCylider.backface = colors["redLight2"];
+        this.illustration.glow.visible = true;
+        return this.show();
+      default:
+        if (!this.statuses.includes(newStatus))
+          console.error(`Invalid status change for ${this.name}`);
+        return this.show();
+    }
+  }
+
+  /**
+   * Creates and return illustration for the device.
+   * This must be called after placing the device container on screen already.
+   * Otherwise, the width and height of the canvas would not be set properly
+   * by Zdog, and the illustration won't be rendered correctly.
+   * @param {boolean} isPreviewElem Whether this instance is part of a preview
+   * modal
+   * */
   createIllustration(isPreviewElem) {
     // The main illustration
     this.illustration.zdogillo = new Zdog.Illustration({
@@ -71,30 +103,5 @@ export default class LEDBulb extends Device {
     });
 
     return this.show();
-  }
-
-  // Change the status of the LED.
-  changeStatus(newStatus) {
-    if (this.statuses.includes(newStatus)) {
-      this.status = newStatus;
-    }
-    switch (newStatus) {
-      case "OFF":
-        this.illustration.ledTop.color = colors["red"];
-        this.illustration.ledCylider.color = colors["red"];
-        this.illustration.ledCylider.backface = colors["redLight"];
-        this.illustration.glow.visible = false;
-        return this.show();
-      case "ON":
-        this.illustration.ledTop.color = colors["redLight"];
-        this.illustration.ledCylider.color = colors["redLight"];
-        this.illustration.ledCylider.backface = colors["redLight2"];
-        this.illustration.glow.visible = true;
-        return this.show();
-      default:
-        if (!this.statuses.includes(newStatus))
-          console.error(`Invalid status change for ${this.name}`);
-        return this.show();
-    }
   }
 }

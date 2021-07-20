@@ -1,18 +1,54 @@
-/* 
-  Bulb.
-*/
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
 
+/**
+ * Class representing a bulb device.
+ * @extends Device
+ */
 export default class Bulb extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super("BULB", spaceMan, isPreviewElem);
   }
 
-  // Creates and return illustration for the device.
-  // This must be called after placing the device container on screen already.
-  // Otherwise, the width and height of the canvas would not be set properly
-  // by Zdog, and the illustration won't be rendered correctly.
+  /** Change the status of the device.
+   * @param {string} newStatus The new status to change the device to.
+   * */
+  changeStatus(newStatus) {
+    if (this.statuses.includes(newStatus)) {
+      this.status = newStatus;
+    }
+    switch (newStatus) {
+      case "OFF":
+        this.illustration.bulb.color = colors["bulbColor"];
+        this.illustration.bulbHighlight.visible = true;
+        this.illustration.filament.color = colors["filamentOffColor"];
+        this.illustration.bulbInnerGlow.visible = false;
+        this.illustration.bulbOuterGlow.visible = false;
+        this.illustration.outerRays.visible = false;
+        return this.show();
+      case "ON":
+        this.illustration.bulb.color = colors["bulbOnColor"];
+        this.illustration.bulbHighlight.visible = false;
+        this.illustration.filament.color = colors["filamentOnColor"];
+        this.illustration.bulbInnerGlow.visible = true;
+        this.illustration.bulbOuterGlow.visible = true;
+        this.illustration.outerRays.visible = true;
+        return this.show();
+      default:
+        if (!this.statuses.includes(newStatus))
+          console.error(`Invalid status change for ${this.name}`);
+        return this.show();
+    }
+  }
+
+  /**
+   * Creates and return illustration for the device.
+   * This must be called after placing the device container on screen already.
+   * Otherwise, the width and height of the canvas would not be set properly
+   * by Zdog, and the illustration won't be rendered correctly.
+   * @param {boolean} isPreviewElem Whether this instance is part of a preview
+   * modal
+   * */
   createIllustration(isPreviewElem) {
     this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
@@ -201,34 +237,5 @@ export default class Bulb extends Device {
     });
 
     return this.show();
-  }
-
-  // Change the status of the device.
-  changeStatus(newStatus) {
-    if (this.statuses.includes(newStatus)) {
-      this.status = newStatus;
-    }
-    switch (newStatus) {
-      case "OFF":
-        this.illustration.bulb.color = colors["bulbColor"];
-        this.illustration.bulbHighlight.visible = true;
-        this.illustration.filament.color = colors["filamentOffColor"];
-        this.illustration.bulbInnerGlow.visible = false;
-        this.illustration.bulbOuterGlow.visible = false;
-        this.illustration.outerRays.visible = false;
-        return this.show();
-      case "ON":
-        this.illustration.bulb.color = colors["bulbOnColor"];
-        this.illustration.bulbHighlight.visible = false;
-        this.illustration.filament.color = colors["filamentOnColor"];
-        this.illustration.bulbInnerGlow.visible = true;
-        this.illustration.bulbOuterGlow.visible = true;
-        this.illustration.outerRays.visible = true;
-        return this.show();
-      default:
-        if (!this.statuses.includes(newStatus))
-          console.error(`Invalid status change for ${this.name}`);
-        return this.show();
-    }
   }
 }

@@ -2,10 +2,19 @@
   Some helper objects or functions useful for illustrations.
 */
 
-// TAU: constant used in illustrations
+/**
+ * TAU: 2*Pi, This constant is used in Zdog's illustrations.
+ * @type {number}
+ * */
 export const TAU = Zdog.TAU;
 
-// Converts a hex color code string to 'rgba(..)' string
+/**
+ * Convert a given hex color string to rgba colors. Optionally pass in an alpha
+ * value to the resultant color.
+ * @param {string} hex The hex string representing the color to convert to rgba
+ * @param {string|number} alpha The alpha value between 0 and 1
+ * @returns {string}
+ */
 export const hexToRgba = function (hex, alpha = "1.0") {
   hex = hex.trim().replace("#", "");
   const red = parseInt(hex.substr(0, 2), 16);
@@ -14,7 +23,7 @@ export const hexToRgba = function (hex, alpha = "1.0") {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 };
 
-// Various colors used by the illustrations.
+/** Various colors used by the illustrations. */
 export const colors = {
   blue0: "#0C1220",
   blue1: "#273348",

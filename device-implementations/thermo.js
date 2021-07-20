@@ -1,18 +1,77 @@
-/* 
-  Thermometer device.
-*/
 import Device from "../device.js";
 import { colors, TAU } from "../helpers/helpers.js";
 
+/**
+ * Class representing a thermometer device.
+ * @extends Device
+ */
 export default class Thermometer extends Device {
   constructor(spaceMan, isPreviewElem = false) {
     super("THERMOMETER", spaceMan, isPreviewElem);
   }
 
-  // Creates and return illustration for the device.
-  // This must be called after placing the device container on screen already.
-  // Otherwise, the width and height of the canvas would not be set properly
-  // by Zdog, and the illustration won't be rendered correctly.
+  /**
+   * Change the status of the device.
+   * @param {string} newStatus The new status to change the device to.
+   * @param {number|string} [newTempValue] The new temperature shown in the
+   * device
+   * */
+  changeStatus(newStatus, newTempValue = 73) {
+    if (this.statuses.includes(newStatus)) {
+      this.status = newStatus;
+    }
+    switch (newStatus) {
+      case "OFF":
+        this.illustration.IlloOffText.visible = false;
+        this.illustration.line1_offset.color = colors["blue1"];
+        for (let i = 0; i < 5; i++) {
+          this.illustration.arcGroup.children[i].color = colors["blue1"];
+        }
+        for (let i = 0; i < 3; i++) {
+          this.illustration.smallerLinesGroup1.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup2.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup3.children[i].color =
+            colors["blue1"];
+          this.illustration.smallerLinesGroup4.children[i].color =
+            colors["blue1"];
+        }
+        return this.show();
+      case "ON":
+        this.illustration.IlloOffText.value = newTempValue.toString() + "°";
+        this.illustration.IlloOffText.visible = true;
+        this.illustration.IlloOffText.color = "white";
+        this.illustration.line1_offset.color = colors["yellow"];
+        for (let i = 0; i < 5; i++) {
+          this.illustration.arcGroup.children[i].color = colors["yellow"];
+        }
+        for (let i = 0; i < 3; i++) {
+          this.illustration.smallerLinesGroup1.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup2.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup3.children[i].color =
+            colors["yellow"];
+          this.illustration.smallerLinesGroup4.children[i].color =
+            colors["yellow"];
+        }
+        return this.show();
+      default:
+        if (!this.statuses.includes(newStatus))
+          console.error(`Invalid status change for ${this.name}`);
+        return this.show();
+    }
+  }
+
+  /**
+   * Creates and return illustration for the device.
+   * This must be called after placing the device container on screen already.
+   * Otherwise, the width and height of the canvas would not be set properly
+   * by Zdog, and the illustration won't be rendered correctly.
+   * @param {boolean} isPreviewElem Whether this instance is part of a preview
+   * modal
+   * */
   createIllustration(isPreviewElem) {
     this.illustration.zdogillo = new Zdog.Illustration({
       element: this.canvElem,
@@ -149,54 +208,5 @@ export default class Thermometer extends Device {
       visible: false,
     });
     return this.show();
-  }
-
-  // Change the status of the device.
-  changeStatus(newStatus, newTempValue = 73) {
-    if (this.statuses.includes(newStatus)) {
-      this.status = newStatus;
-    }
-    switch (newStatus) {
-      case "OFF":
-        this.illustration.IlloOffText.visible = false;
-        this.illustration.line1_offset.color = colors["blue1"];
-        for (let i = 0; i < 5; i++) {
-          this.illustration.arcGroup.children[i].color = colors["blue1"];
-        }
-        for (let i = 0; i < 3; i++) {
-          this.illustration.smallerLinesGroup1.children[i].color =
-            colors["blue1"];
-          this.illustration.smallerLinesGroup2.children[i].color =
-            colors["blue1"];
-          this.illustration.smallerLinesGroup3.children[i].color =
-            colors["blue1"];
-          this.illustration.smallerLinesGroup4.children[i].color =
-            colors["blue1"];
-        }
-        return this.show();
-      case "ON":
-        this.illustration.IlloOffText.value = newTempValue.toString() + "°";
-        this.illustration.IlloOffText.visible = true;
-        this.illustration.IlloOffText.color = "white";
-        this.illustration.line1_offset.color = colors["yellow"];
-        for (let i = 0; i < 5; i++) {
-          this.illustration.arcGroup.children[i].color = colors["yellow"];
-        }
-        for (let i = 0; i < 3; i++) {
-          this.illustration.smallerLinesGroup1.children[i].color =
-            colors["yellow"];
-          this.illustration.smallerLinesGroup2.children[i].color =
-            colors["yellow"];
-          this.illustration.smallerLinesGroup3.children[i].color =
-            colors["yellow"];
-          this.illustration.smallerLinesGroup4.children[i].color =
-            colors["yellow"];
-        }
-        return this.show();
-      default:
-        if (!this.statuses.includes(newStatus))
-          console.error(`Invalid status change for ${this.name}`);
-        return this.show();
-    }
   }
 }
