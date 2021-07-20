@@ -70,6 +70,15 @@ export default class RPi extends Device {
   }
 
   /**
+   * Check whether a device exists at specified pin number or not.
+   * @param {string} pinNum Pin number of this RPi to check for any devices
+   * @returns {boolean} Existence of device at specified pin of this RPi
+   */
+  deviceAtPinAlready(pinNum) {
+    return !!this.connectedDevices.find((dev) => dev.pinNumber === pinNum);
+  }
+
+  /**
    * Add the specified device to the list of connected devices of this RPi.
    * Note that this only updates the connectedDevices array of the RPi device.
    * The other device's properties must be updated separately.
@@ -89,8 +98,19 @@ export default class RPi extends Device {
     this.connectedDevices.push({ pinNumber: pinNum, deviceId: idToConnect });
   }
 
-  // Remove the connected device from this RPi.
-  removeConnectedDevice(idToRemove) {}
+  /**
+   * Remove the connected device from this RPi. Note that this only updates the
+   * connectedDevices array of this RPi. The other device's properties must be
+   * separately updated.
+   * @param {string} idToRemove The ID of the device being removed from RPi's
+   * connections.
+   */
+  removeConnectedDevice(idToRemove) {
+    this.connectedDevices.splice(
+      this.connectedDevices.findIndex((dev) => dev.deviceId === idToRemove),
+      1
+    );
+  }
 
   // Creates and return illustration for the Raspberry Pi device.
   // This must be called after placing the device container on screen already.

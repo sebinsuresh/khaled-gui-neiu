@@ -5,7 +5,7 @@ import SpaceManager from "./spaceManager.js";
 /** Device superclass that all device classes extend from. */
 export default class Device {
   /**
-   * Create an isntance of a device.
+   * Create an instance of a device.
    *
    * @param {string} deviceTypeStr The string that uniquely identifies this
    * device type. Must match the property key in ./helpers/deviceNames.js for
@@ -142,11 +142,22 @@ export default class Device {
    * Connect this device to another device. Note that this only updates the
    * connection properties on this device, the other device's list of
    * connections must be maintained separately.
-   * @param {string} toDevId
+   * @param {string} deviceId ID of the RPi device this device is being
+   * connected to.
    */
-  connectToDevice(toDevId) {
+  connectToDevice(deviceId) {
     this.isConnected = true;
-    this.connectedTo = toDevId;
+    this.connectedTo = deviceId;
+  }
+
+  /**
+   * Disconnect from the RPi device this device is connected to. Note that this
+   * only updates the connection properties on this device, the other device's
+   * list of connections must be maintained separately.
+   */
+  disconnectFromDevice() {
+    this.isConnected = false;
+    this.connectedTo = undefined;
   }
 
   /**
