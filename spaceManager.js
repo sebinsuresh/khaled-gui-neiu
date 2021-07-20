@@ -35,7 +35,7 @@ export default class SpaceManager {
      * Array that contains instances of classes representing each device
      * placed on screen. Each element is an instance of some class that
      * extends the 'Device' class.
-     * @type {Array<Device, RPi>}
+     * @type {[Device, RPi]}
      */
     this.devices = [];
 
@@ -144,33 +144,6 @@ export default class SpaceManager {
   }
 
   /**
-   * Connnect an RPi-like device with the id fromId, to a device with the id toId.
-   * The pin number is an optional third parameter. By default it will be set to
-   * the next open pin number.
-   * Returns true if connected appropriately, false otherwise.
-   *
-   *  @return boolean
-   */
-  connectDevices(fromId, toId, pinNum = -1) {
-    const proceed = this.areDevicesConnectable(fromId, toId, pinNum);
-    if (!proceed) return false;
-
-    /** @type {{fromDev : RPi, toDev : Device}} */
-    const { fromDev, toDev } = proceed;
-
-    /* Handle the connection if there are no errors: */
-
-    // Connect toDev to specified pinNum of fromDev
-    fromDev.addConnectedDevice(toId, pinNum);
-    toDev.connectToDevice(fromId);
-
-    // Draw lines connecting devices
-    this.drawLines();
-
-    return true;
-  }
-
-  /**
    * Logs errors and returns false if the devices are not connectable.
    * Returns the device objects (truthy value) in an object, if they
    * are connectable.
@@ -205,8 +178,7 @@ export default class SpaceManager {
         !tryingConnect && !toDev.isConnected
         ? `toId '${toId}' is not connected to any RPi`
         : // If there is already a device at that pinNum
-        pinNum !== -1 &&
-          fromDev.connectedDevices.find((devObj) => devObj.pinNumber == pinNum)
+        pinNum !== -1 && fromDev.deviceAtPinAlready(pinNum)
         ? `Device ${foundDevAtPin.deviceId} connected to pin number already`
         : "";
 
@@ -216,6 +188,33 @@ export default class SpaceManager {
     }
 
     return { fromDev, toDev };
+  }
+
+  /**
+   * Connnect an RPi-like device with the id fromId, to a device with the id toId.
+   * The pin number is an optional third parameter. By default it will be set to
+   * the next open pin number.
+   * Returns true if connected appropriately, false otherwise.
+   *
+   *  @return boolean
+   */
+  connectDevices(fromId, toId, pinNum = -1) {
+    const proceed = this.areDevicesConnectable(fromId, toId, pinNum);
+    if (!proceed) return false;
+
+    /** @type {{fromDev : RPi, toDev : Device}} */
+    const { fromDev, toDev } = proceed;
+
+    /* Handle the connection if there are no errors: */
+
+    // Connect toDev to specified pinNum of fromDev
+    fromDev.addConnectedDevice(toId, pinNum);
+    toDev.connectToDevice(fromId);
+
+    // Draw lines connecting devices
+    this.drawLines();
+
+    return true;
   }
 
   /**
@@ -229,15 +228,9 @@ export default class SpaceManager {
     /** @type {{fromDev : RPi, toDev : Device}} */
     const { fromDev, toDev } = proceed;
 
-    // Remove from fromDev list
-    fromDev.connectedDevices.splice(
-      fromDev.connectedDevices.findIndex((dev) => dev.deviceId == toId),
-      1
-    );
-
-    // Toggle isConnected & null connectedTo in toDev
-    toDev.isConnected = false;
-    toDev.connectedTo = undefined;
+    // Remove connections in both fromDev & toDev devices.
+    fromDev.removeConnectedDevice(toId);
+    toDev.disconnectFromDevice();
 
     // Draw lines if drawLines === true
     if (drawLines) this.drawLines();
