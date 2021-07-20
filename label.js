@@ -32,10 +32,7 @@ export default class Label {
     /** Indicates whether the HTML element needs an update.*/
     this.needsElemUpdate = false;
 
-    /**
-     * The HTML element for the label.
-     * @type {HTMLDivElement}
-     * */
+    /** The HTML element for the label.*/
     this.elem = this.createElem();
     this.elem.classList.add("noDisplay");
     this.hide();
@@ -87,8 +84,8 @@ export default class Label {
    * Also sets this.needsElemUpdate if there are any properties that changed.
    */
   updateObject() {
-    // List of updated properties. Used for logging them to console.
-    // TODO: Should this array should be made instance level?
+    // List of updated properties. Used for marking the label element as
+    // needing an update.
     const updatedProps = [];
 
     // List of keys to remove from being watched.
@@ -111,9 +108,10 @@ export default class Label {
         if (this.object[key] === undefined)
           console.warn("Cannot watch objects/arrays properly.");
 
-        // Temporary solution: Convert to JSON, compare, and store
-        // after parsing the string back to JS objects if changed.
-        // Possibly inefficient: https://stackoverflow.com/a/5344074
+        // Temporary solution to check if nested object values have changed:
+        // Convert to JSON, compare, and store after parsing the string back
+        // to JS objects if changed. Possibly inefficient:
+        // https://stackoverflow.com/a/5344074
         const oldVal = JSON.stringify(this.object[key]);
         const newVal = JSON.stringify(this.parent[key]);
         if (oldVal !== newVal) {
@@ -129,8 +127,17 @@ export default class Label {
       }
     });
 
+    // Remove keys that are unknown - if the keys don't exist in the parent
+    // device object.
+    keysToRemove.forEach((keyToRemove) => {
+      this.watchProps.splice(
+        this.watchProps.findIndex((obj) => obj.propName == keyToRemove)
+      );
+    });
+
     if (updatedProps.length > 0) {
       // console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
+
       // Mark the HTML element as needing an update.
       this.needsElemUpdate = true;
     }
@@ -187,6 +194,8 @@ export default class Label {
         this.kvPairsElems[propName] = { labelElem, inputElem };
       }
 
+      // Update the text content within the input element, if the value in
+      // this.object does not match with the input element content.
       const inputElem = this.kvPairsElems[propName].inputElem;
       if (
         typeof this.object[propName] !== "object" &&
@@ -195,16 +204,6 @@ export default class Label {
         inputElem.value = this.object[propName];
       }
     });
-
-    /* 
-    // TODO: replace with proper editable k:v pairs
-    const newInnerHTML = JSON.stringify(this.object, null, 2)
-      .replaceAll("  ", "&nbsp;&nbsp;")
-      .replaceAll("\n", "<br>");
-    if (newInnerHTML !== this.kvPairsContainerElem.innerHTML) {
-      // console.log("Label element text updated.");
-      this.kvPairsContainerElem.innerHTML = newInnerHTML;
-    } */
 
     // Mark the HTML element as updated.
     this.needsElemUpdate = false;
@@ -251,6 +250,6 @@ export default class Label {
    */
   setObjectVal(key, val) {
     this.object[key] = val;
-    this.setKVPairElems();
+    this.needsElemUpdate = true;
   }
 }
