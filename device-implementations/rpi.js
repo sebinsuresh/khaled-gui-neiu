@@ -69,6 +69,26 @@ export default class RPi extends Device {
     }
   }
 
+  /**
+   * Add the specified device to the list of connected devices of this RPi.
+   * Note that this only updates the connectedDevices array of the RPi device.
+   * The other device's properties must be updated separately.
+   * @param {string} idToConnect The ID of the device connecting to the RPi
+   * @param {number} pinum The pin to connect the other device to
+   */
+  addConnectedDevice(idToConnect, pinNum = -1) {
+    // Find the correct pinNum
+    // If pinNum was not specified in method call, find first available pinNum.
+    if (pinNum === -1) {
+      // Pin numbers start at 1, not 0.
+      pinNum = 1;
+      while (this.connectedDevices.find((dev) => dev.pinNumber == pinNum))
+        pinNum++;
+    }
+
+    this.connectedDevices.push({ pinNumber: pinNum, deviceId: idToConnect });
+  }
+
   // Remove the connected device from this RPi.
   removeConnectedDevice(idToRemove) {}
 

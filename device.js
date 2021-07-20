@@ -139,6 +139,17 @@ export default class Device {
   }
 
   /**
+   * Connect this device to another device. Note that this only updates the
+   * connection properties on this device, the other device's list of
+   * connections must be maintained separately.
+   * @param {string} toDevId
+   */
+  connectToDevice(toDevId) {
+    this.isConnected = true;
+    this.connectedTo = toDevId;
+  }
+
+  /**
    * Delete this device :
    * Removes any listeners, HTML elements, and any connections with other
    * devices.

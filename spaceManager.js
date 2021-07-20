@@ -158,21 +158,11 @@ export default class SpaceManager {
     /** @type {{fromDev : RPi, toDev : Device}} */
     const { fromDev, toDev } = proceed;
 
-    // Handle the connection if there are no errors:
+    /* Handle the connection if there are no errors: */
 
-    // Get the correct pin number
-    if (pinNum === -1) {
-      // ^ If pinNum was not specified in method call, find first open pinNum.
-      // Pin numbers start at 1, not 0.
-      pinNum = 1;
-      while (fromDev.connectedDevices.find((dev) => dev.pinNumber == pinNum))
-        pinNum++;
-    }
-
-    // Connect the devices.
-    fromDev.connectedDevices.push({ pinNumber: pinNum, deviceId: toId });
-    toDev.isConnected = true;
-    toDev.connectedTo = fromId;
+    // Connect toDev to specified pinNum of fromDev
+    fromDev.addConnectedDevice(toId, pinNum);
+    toDev.connectToDevice(fromId);
 
     // Draw lines connecting devices
     this.drawLines();
