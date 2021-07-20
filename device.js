@@ -31,10 +31,6 @@ export default class Device {
       this.id = this.deviceTypeStr + this.indexThisType;
       this.name = deviceNames[this.deviceTypeStr] + " " + this.indexThisType;
 
-      /**
-       * The SpaceManager that manages this instance of device.
-       * @type {SpaceManager}
-       */
       this.spaceMan = spaceMan;
 
       /**
@@ -51,6 +47,7 @@ export default class Device {
       this.canvElem = this.createCanvElem();
       this.element.appendChild(this.canvElem);
 
+      // Delete button not necessary in this version
       // this.deleteBtn = this.createDeleteBtn();
       // this.element.appendChild(this.deleteBtn);
 
@@ -70,17 +67,19 @@ export default class Device {
       this.comment = "Default comment. Click to type in a new comment.";
 
       this.label = new Label(this);
-      this.label.hide();
+
       this.labelBtn = this.createLabelBtn();
       this.element.appendChild(this.labelBtn);
     }
   }
 
+  // Setter for device name. Sets the title (hover text) of element.
   set name(newName) {
     this._name = newName;
     if (this.element) this.element.title = newName + ", #" + this.id;
   }
 
+  // Getter for device name.
   get name() {
     return this._name;
   }
@@ -147,7 +146,7 @@ export default class Device {
   delete() {
     // Remove interact listeners.
     // Note: I'm not sure if the object won't get garbage-collected if
-    // I don't remove this. (This ".draggable" class is how interact-js
+    // I don't remove this. (The ".draggable" class is how interact-js
     // grabs elements for dragging)
     this.element.classList.remove("draggable");
 
