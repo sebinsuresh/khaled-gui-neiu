@@ -1,0 +1,21 @@
+Improvements:
+
+- Implement all TODOs
+
+- SpaceManager's connectDevices() and disconnectDevices() have some functionality that can be moved to Device and RPi class
+	- connectDevice's "setting pin number" part
+	- part where various properties of the device objects (.connectedDevices, .isConnected, .connectedTo) etc are set
+	- disconnectDevice's code to do the same ^
+
+- RPi: Add function to check if RPi has device at specific pin number
+	- Use this within areDevicesConnectable() in SpaceMan
+
+- Label: Setter codes are not being used in Label & device classes.
+
+- SpaceMan: Move all "create__" code to top, all the functionality code (listeners, illustration updation) to bottom
+
+- Order functions alphabetically
+
+- JSDocs for all functions, classes, class properties
+
+- Allowing for other controller device classes than RPi. Right now all connection code is hardcoded to check for "RPI".
