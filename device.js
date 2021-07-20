@@ -49,9 +49,11 @@ export default class Device {
 
       this.element = this.createElem();
       this.canvElem = this.createCanvElem();
-      this.deleteBtn = this.createDeleteBtn();
       this.element.appendChild(this.canvElem);
-      this.element.appendChild(this.deleteBtn);
+
+      // this.deleteBtn = this.createDeleteBtn();
+      // this.element.appendChild(this.deleteBtn);
+
       this.illustration = {};
 
       this.statuses = ["OFF", "ON"];
@@ -76,7 +78,7 @@ export default class Device {
 
   set name(newName) {
     this._name = newName;
-    if (this.element) this.element.title = newName;
+    if (this.element) this.element.title = newName + ", #" + this.id;
   }
 
   get name() {
@@ -87,7 +89,7 @@ export default class Device {
   createElem() {
     const elem = document.createElement("div");
     elem.classList.add("deviceContainer", "draggable");
-    elem.title = this.name;
+    elem.title = this.name + ", #" + this.id;
 
     elem.id = this.id;
 
