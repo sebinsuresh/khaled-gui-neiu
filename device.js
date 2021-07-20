@@ -10,9 +10,9 @@ export default class Device {
    * @param {string} deviceTypeStr The string that uniquely identifies this
    * device type. Must match the property key in ./helpers/deviceNames.js for
    * corresponding device.
-   * @param {SpaceManager} spaceMan The SpaceManager that manages this instance
+   * @param {SpaceManager} [spaceMan] The SpaceManager that manages this instance
    * of the device.
-   * @param {boolean} isPreviewElem Sets whether the device illustration is
+   * @param {boolean} [isPreviewElem] Sets whether the device illustration is
    * placed within the preview modal.
    */
   constructor(
@@ -73,18 +73,48 @@ export default class Device {
     }
   }
 
-  // Setter for device name. Sets the title (hover text) of element.
+  /**
+   * Name of the device.
+   * @type {string}
+   */
+  get name() {
+    return this._name;
+  }
+
+  /** Setter also sets the title (hover text) of element. */
   set name(newName) {
     this._name = newName;
     if (this.element) this.element.title = newName + ", #" + this.id;
   }
 
-  // Getter for device name.
-  get name() {
-    return this._name;
+  /**
+   * Creates the canvas element placed inside the draggable device div.
+   * @returns {HTMLDivElement}
+   */
+  createCanvElem() {
+    const canvElem = document.createElement("canvas");
+    canvElem.classList.add("deviceCanv");
+
+    return canvElem;
   }
 
-  // Creates the draggable outer-div for the device.
+  /**
+   * Creates a delete button for the device.
+   * @returns {HTMLDivElement}
+   * */
+  createDeleteBtn() {
+    const deleteBtn = document.createElement("div");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.innerText = "x";
+    deleteBtn.title = "Delete this device";
+
+    return deleteBtn;
+  }
+
+  /**
+   * Creates the draggable outer-div for the device.
+   * @returns {HTMLDivElement}
+   * */
   createElem() {
     const elem = document.createElement("div");
     elem.classList.add("deviceContainer", "draggable");
@@ -93,24 +123,6 @@ export default class Device {
     elem.id = this.id;
 
     return elem;
-  }
-
-  // Creates the canvas element placed inside the draggable device div.
-  createCanvElem() {
-    const canvElem = document.createElement("canvas");
-    canvElem.classList.add("deviceCanv");
-
-    return canvElem;
-  }
-
-  // Creates a delete button for the device.
-  createDeleteBtn() {
-    const deleteBtn = document.createElement("div");
-    deleteBtn.classList.add("delete-btn");
-    deleteBtn.innerText = "x";
-    deleteBtn.title = "Delete this device";
-
-    return deleteBtn;
   }
 
   /**
@@ -126,18 +138,6 @@ export default class Device {
     return btn;
   }
 
-  // Sets the zoom level of the illustration.
-  setZoom(zoomVal) {
-    this.illustration.zdogillo.zoom = zoomVal;
-    return this.show();
-  }
-
-  // Show/re-render the illustration.
-  show() {
-    this.illustration.zdogillo.updateRenderGraph();
-    return this;
-  }
-
   /**
    * Connect this device to another device. Note that this only updates the
    * connection properties on this device, the other device's list of
@@ -151,19 +151,8 @@ export default class Device {
   }
 
   /**
-   * Disconnect from the RPi device this device is connected to. Note that this
-   * only updates the connection properties on this device, the other device's
-   * list of connections must be maintained separately.
-   */
-  disconnectFromDevice() {
-    this.isConnected = false;
-    this.connectedTo = undefined;
-  }
-
-  /**
-   * Delete this device :
-   * Removes any listeners, HTML elements, and any connections with other
-   * devices.
+   * Delete this device: Removes any listeners, HTML elements, and any
+   * connections with other devices.
    */
   delete() {
     // Remove interact listeners.
@@ -193,7 +182,42 @@ export default class Device {
     }
   }
 
-  // Updates the Label object associated with this device.
+  /**
+   * Disconnect from the RPi device this device is connected to. Note that this
+   * only updates the connection properties on this device, the other device's
+   * list of connections must be maintained separately.
+   */
+  disconnectFromDevice() {
+    this.isConnected = false;
+    this.connectedTo = undefined;
+  }
+
+  /**
+   * Sets the zoom level of the illustration.
+   * @param {number} zoomVal The zoom level to set this device to
+   * @returns {Device} To make method chaining possible, this device object is
+   * returned.
+   * */
+  setZoom(zoomVal) {
+    this.illustration.zdogillo.zoom = zoomVal;
+    return this.show();
+  }
+
+  /**
+   * Show/re-render the illustration.
+   * @returns {Device} To make method chaining possible, this device object is
+   * returned.
+   * */
+  show() {
+    this.illustration.zdogillo.updateRenderGraph();
+    return this;
+  }
+
+  /**
+   * Updates a property in the Label object associated with this device.
+   * @param {string} key The name of key/property you are updating
+   * @param {string} val The updated value for the specified key
+   */
   updateLabel(key, val) {
     this.label.setObjectVal(key, val);
   }

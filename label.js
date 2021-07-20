@@ -1,17 +1,15 @@
-/**
- *Label class that contains the label Key:value pairs and functionality
- *for each device.
- *The functions that modify the values will update the HTML elements as
- *well as the JS objects.
- */
-
 import Device from "./device.js";
 
+/**
+ * Label class that contains the label Key:value pairs and functionality
+ * for each device. The functions that modify the values will update the
+ * HTML elements as well as the JS objects.
+ */
 export default class Label {
   /**
-   * Create a Label object
-   * @param {Device} parentObject The Device object that this label is
-   * assigned to.
+   * Create a Label object.
+   * @param {Device} parentObject The Device object that this label is assigned
+   * to.
    */
   constructor(parentObject) {
     this.parent = parentObject;
@@ -80,65 +78,20 @@ export default class Label {
   }
 
   /**
-   * Update Label's object based on the latest values from the parent device.
-   * Also sets this.needsElemUpdate if there are any properties that changed.
+   * Delete the label & clear setIntervals
    */
-  updateObject() {
-    // List of updated properties. Used for marking the label element as
-    // needing an update.
-    const updatedProps = [];
+  delete() {
+    clearInterval(this.watcher);
+    this.elem.innerHTML = "";
+    this.object = null;
+    this.parent = null;
+  }
 
-    // List of keys to remove from being watched.
-    const keysToRemove = [];
-
-    // Iterate over all the properties from the parent device being watched,
-    // and update any non-existent/unchanged properties in label's object.
-    this.watchProps.forEach((prop) => {
-      const key = prop.propName;
-      if (!(key in this.parent)) {
-        // Property not belonging to parent device object is in this.watchProps
-        console.warn(
-          `Unkown property '${key}' being watched by label (Device: ${this.parent.id}). Removing..`
-        );
-        keysToRemove.push(key);
-      } else if (typeof this.parent[key] === "object") {
-        // Show warning only the first time the key is encountered.
-        if (this.object[key] === undefined)
-          console.warn("Cannot watch objects/arrays properly.");
-
-        // Temporary solution to check if nested object values have changed:
-        // Convert to JSON, compare, and store after parsing the string back
-        // to JS objects if changed. Possibly inefficient:
-        // https://stackoverflow.com/a/5344074
-        const oldVal = JSON.stringify(this.object[key]);
-        const newVal = JSON.stringify(this.parent[key]);
-        if (oldVal !== newVal) {
-          this.object[key] = JSON.parse(newVal);
-          updatedProps.push(key);
-        }
-      } else if (this.parent[key] !== this.object[key]) {
-        // If there is a value mismatch between parent's property and label's
-        // object's property, update the label object.
-        this.object[key] = this.parent[key];
-
-        updatedProps.push(key);
-      }
-    });
-
-    // Remove keys that are unknown - if the keys don't exist in the parent
-    // device object.
-    keysToRemove.forEach((keyToRemove) => {
-      this.watchProps.splice(
-        this.watchProps.findIndex((obj) => obj.propName == keyToRemove)
-      );
-    });
-
-    if (updatedProps.length > 0) {
-      // console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
-
-      // Mark the HTML element as needing an update.
-      this.needsElemUpdate = true;
-    }
+  /** Hide the label HTML element. Sets this.isHidden to true. */
+  hide() {
+    this.elem.classList.add("hiding");
+    setTimeout(() => this.elem.classList.add("noDisplay"), 184);
+    this.isHidden = true;
   }
 
   /**
@@ -208,13 +161,14 @@ export default class Label {
   }
 
   /**
-   * Delete the label & clear setIntervals
+   * Change the value for a given key in this label.
+   * This will also update the value in the HTML element.
+   * @param {string} key The name of key/property you are updating
+   * @param {string} val The updated value for the specified key
    */
-  delete() {
-    clearInterval(this.watcher);
-    this.elem.innerHTML = "";
-    this.object = null;
-    this.parent = null;
+  setObjectVal(key, val) {
+    this.object[key] = val;
+    this.needsElemUpdate = true;
   }
 
   /**
@@ -229,13 +183,6 @@ export default class Label {
     this.isHidden = false;
   }
 
-  /** Hide the label HTML element. Sets this.isHidden to true. */
-  hide() {
-    this.elem.classList.add("hiding");
-    setTimeout(() => this.elem.classList.add("noDisplay"), 184);
-    this.isHidden = true;
-  }
-
   /** Toggle the hidden status of the label */
   toggleHidden() {
     if (this.isHidden) this.show();
@@ -243,11 +190,64 @@ export default class Label {
   }
 
   /**
-   * Change the value for a given key in this label.
-   * This will also update the value in the HTML element.
+   * Update Label's object based on the latest values from the parent device.
+   * Also sets this.needsElemUpdate if there are any properties that changed.
    */
-  setObjectVal(key, val) {
-    this.object[key] = val;
-    this.needsElemUpdate = true;
+  updateObject() {
+    // List of updated properties. Used for marking the label element as
+    // needing an update.
+    const updatedProps = [];
+
+    // List of keys to remove from being watched.
+    const keysToRemove = [];
+
+    // Iterate over all the properties from the parent device being watched,
+    // and update any non-existent/unchanged properties in label's object.
+    this.watchProps.forEach((prop) => {
+      const key = prop.propName;
+      if (!(key in this.parent)) {
+        // Property not belonging to parent device object is in this.watchProps
+        console.warn(
+          `Unkown property '${key}' being watched by label (Device: ${this.parent.id}). Removing..`
+        );
+        keysToRemove.push(key);
+      } else if (typeof this.parent[key] === "object") {
+        // Show warning only the first time the key is encountered.
+        if (this.object[key] === undefined)
+          console.warn("Cannot watch objects/arrays properly.");
+
+        // Temporary solution to check if nested object values have changed:
+        // Convert to JSON, compare, and store after parsing the string back
+        // to JS objects if changed. Possibly inefficient:
+        // https://stackoverflow.com/a/5344074
+        const oldVal = JSON.stringify(this.object[key]);
+        const newVal = JSON.stringify(this.parent[key]);
+        if (oldVal !== newVal) {
+          this.object[key] = JSON.parse(newVal);
+          updatedProps.push(key);
+        }
+      } else if (this.parent[key] !== this.object[key]) {
+        // If there is a value mismatch between parent's property and label's
+        // object's property, update the label object.
+        this.object[key] = this.parent[key];
+
+        updatedProps.push(key);
+      }
+    });
+
+    // Remove keys that are unknown - if the keys don't exist in the parent
+    // device object.
+    keysToRemove.forEach((keyToRemove) => {
+      this.watchProps.splice(
+        this.watchProps.findIndex((obj) => obj.propName == keyToRemove)
+      );
+    });
+
+    if (updatedProps.length > 0) {
+      // console.log(`#${this.parent.id}'s Label obj updated: ${updatedProps}`);
+
+      // Mark the HTML element as needing an update.
+      this.needsElemUpdate = true;
+    }
   }
 }

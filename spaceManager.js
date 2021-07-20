@@ -1,7 +1,3 @@
-/* 
-  Space Manager class.
-*/
-
 import RPi from "./device-implementations/rpi.js";
 import LEDBulb from "./device-implementations/led.js";
 import TempSensor from "./device-implementations/tempSensor.js";
@@ -10,6 +6,11 @@ import Lamp from "./device-implementations/lamp.js";
 import Thermometer from "./device-implementations/thermo.js";
 import Device from "./device.js";
 
+/**
+ * Object that maps names of device types (string) to the actual classes that
+ * represent those devices.
+ * @type {Object.<string, Device>}
+ */
 const deviceClasses = {
   RPI: RPi,
   LED: LEDBulb,
@@ -19,11 +20,20 @@ const deviceClasses = {
   THERMOMETER: Thermometer,
 };
 
+/**
+ * Space Manager class that manages the visualizer space, the devices,
+ * connections between them, and so on.
+ */
 export default class SpaceManager {
+  /**
+   * Create a new SpaceManager instance.
+   * @param {string} selector HTML element selector string (eg: ".classname",
+   * "#id") for selecting the element within which the SpaceManager operates
+   * (visualizer region).
+   */
   constructor(selector) {
     /**
      * Visualizer area that you can add devices to, drag them around in, etc.
-     *
      * @type HTMLDivElement
      */
     this.vizSpaceElement = document.querySelector(selector);
@@ -55,53 +65,11 @@ export default class SpaceManager {
     });
   }
 
-  // When the window is resized, the illustrations have to re-render.
-  // However, the "resize" event fires every frame of the browser UI,
-  // so we add a timeout - The event is placed on a 50ms delay.
-  // 'windowResizer' is a variable for this timeout functionality.
-  // Code from: https://stackoverflow.com/a/60204716
-  windowResizeListener(ev) {
-    // Clear any existing timeout.
-    clearTimeout(this.windowResizer);
-
-    // Create a new timeout on a 200ms delay.
-    this.windowResizer = setTimeout(() => {
-      // Execute these functions on a timeout.
-
-      this.resizeLineDrawingCanvas();
-      this.drawLines();
-      this.refreshIllustrations();
-    }, 50);
-  }
-
-  // Make .draggable class elements draggable using interact.js
-  makeDraggables() {
-    interact(`#${this.vizSpaceElement.id} .draggable`).draggable({
-      autoscroll: false,
-      ignoreFrom: `#${this.vizSpaceElement.id} .draggable :not(canvas)`,
-      inertia: false,
-      modifiers: [
-        interact.modifiers.restrictRect({
-          restriction: "parent",
-          endOnly: false,
-        }),
-      ],
-      listeners: {
-        // The drag-listener methods requires "this" context access -
-        // So that it can access this.devices[]., for example.
-        // To pass the context when the event calls the function, use .apply()
-        // like below, instead of simply saying "end: this.dragEndListener".
-        //
-        // Read more about .apply():
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
-        move: (ev) => this.dragMoveListener.apply(this, [ev]),
-        end: (ev) => this.dragEndListener.apply(this, [ev]),
-      },
-    });
-  }
-
-  // Add a device to the smart devices space, and returns the
-  // device object, if it is valid.
+  /**
+   * Add a device to the smart devices space, and returns the device object,
+   * if it is valid.
+   * @param {string} deviceType The device type name passed in as a string.
+   */
   addDevice(deviceType) {
     if (deviceType in deviceClasses) {
       const newDeviceObj = new deviceClasses[deviceType](this, false);
@@ -116,31 +84,6 @@ export default class SpaceManager {
       console.error("Invalid device type!");
       return null;
     }
-  }
-
-  // Delete a device from the devices space, given its id string.
-  deleteDevice(deviceId) {
-    // Get the device object
-    const delDevice = this.devices.find((dev) => dev.id === deviceId);
-
-    if (!delDevice) {
-      console.error(`Device with id '${deviceId}' does not exist in space`);
-      return;
-    }
-
-    // Call the delete function of the device object.
-    delDevice.delete();
-
-    // Delete JS object (from array and eventually from memory).
-    this.devices.splice(this.devices.indexOf(delDevice), 1);
-
-    // Redraw lines.
-    this.drawLines();
-  }
-
-  // Change status of device specified by the given ID
-  changeStatus(deviceId, status) {
-    this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
   }
 
   /**
@@ -191,12 +134,26 @@ export default class SpaceManager {
   }
 
   /**
-   * Connnect an RPi-like device with the id fromId, to a device with the id toId.
-   * The pin number is an optional third parameter. By default it will be set to
-   * the next open pin number.
+   * Change status of device specified by the given ID.
+   * @param {string} deviceId The ID of the device to change status of
+   * @param {string} status The status to change the device to
+   */
+  changeStatus(deviceId, status) {
+    this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
+  }
+
+  /**
+   * Connnect two devices given their IDs. The first device must be an RPi.
    * Returns true if connected appropriately, false otherwise.
    *
-   *  @return boolean
+   * @param {string} fromId The ID of RPi device that you are connecting the
+   * other device to
+   * @param {string} toId The ID of the other device that you are connecting the
+   * RPi to.
+   * @param {number} [pinNum] Optional pin number value to connect the device
+   * at. By default it will be set to the next open pin number in the first
+   * device, represented by fromId.
+   * @returns {boolean} Whether the connection was a success.
    */
   connectDevices(fromId, toId, pinNum = -1) {
     const proceed = this.areDevicesConnectable(fromId, toId, pinNum);
@@ -218,8 +175,52 @@ export default class SpaceManager {
   }
 
   /**
+   * Function to create the canvas element that draws lines between devices.
+   * @returns {HTMLDivElement} The canvas element created.
+   */
+  createLineCanv() {
+    const canvElem = document.createElement("canvas");
+
+    canvElem.class = "visualizer-canvas";
+    canvElem.width = this.vizSpaceElement.clientWidth;
+    canvElem.height = this.vizSpaceElement.clientHeight;
+
+    return canvElem;
+  }
+
+  /**
+   * Delete a device from the devices space, given its id string.
+   * @param {string} deviceId The ID of the device being deleted.
+   * @returns {void}
+   */
+  deleteDevice(deviceId) {
+    // Get the device object
+    const delDevice = this.devices.find((dev) => dev.id === deviceId);
+
+    if (!delDevice) {
+      console.error(`Device with id '${deviceId}' does not exist in space`);
+      return;
+    }
+
+    // Call the delete function of the device object.
+    delDevice.delete();
+
+    // Delete JS object (from array and eventually from memory).
+    this.devices.splice(this.devices.indexOf(delDevice), 1);
+
+    // Redraw lines.
+    this.drawLines();
+  }
+
+  /**
    * Disconnect an RPi-like device with the ID fromId and the device with the
    * id toId.
+   * @param {string} fromId The RPI-like device from which the other device is
+   * being disconnected
+   * @param {string} toId The ID of the second device being disconnected
+   * @param {boolean} [drawLines] Whether to redraw lines on the canvas that
+   * connects device elements. True by default.
+   * @returns {void}
    */
   disconnectDevices(fromId, toId, drawLines = true) {
     const proceed = this.areDevicesConnectable(fromId, toId, undefined, false);
@@ -236,36 +237,65 @@ export default class SpaceManager {
     if (drawLines) this.drawLines();
   }
 
-  // Place the devices on screen correctly, according to their JS object's
-  // position.x & position.y values.
-  placeDevices() {
-    this.devices.forEach((dev) => {
-      // Find the new x & y values using the JS object's position object.
-      let newX = Math.round(dev.position.x * this.vizSpaceElement.clientWidth);
-      let newY = Math.round(dev.position.y * this.vizSpaceElement.clientHeight);
+  /**
+   * Listener for move events thrown by the interactable object.
+   * @param {Event} event The move event thrown by the drag listener
+   * (interactjs)
+   * */
+  dragMoveListener(event) {
+    let target = event.target;
+    let x = Math.round((parseFloat(target.dataset.x) || 0) + event.dx);
+    let y = Math.round((parseFloat(target.dataset.y) || 0) + event.dy);
 
-      // Make the device fit within the boundaries of this.vizSpaceElement.
-      // X-value:
-      if (newX + dev.element.clientWidth > this.vizSpaceElement.clientWidth) {
-        newX = this.vizSpaceElement.clientWidth - dev.element.clientWidth;
-        dev.position.x = (newX / this.vizSpaceElement.clientWidth).toFixed(2);
-      }
-      // Y-value:
-      if (newY + dev.element.clientHeight > this.vizSpaceElement.clientHeight) {
-        newY = this.vizSpaceElement.clientHeight - dev.element.clientHeight;
-        dev.position.y = (newY / this.vizSpaceElement.clientHeight).toFixed(2);
-      }
+    target.style.transform = `translate(${x}px, ${y}px)`;
 
-      // Set the location on screen for the deviceContainer HTML element.
-      dev.element.style.transform = `translate(${newX}px, ${newY}px)`;
+    target.dataset.x = x;
+    target.dataset.y = y;
 
-      // Set the data attributes that interactjs use.
-      dev.element.dataset.x = newX;
-      dev.element.dataset.y = newY;
-    });
+    // Draw lines connecting devices.
+    this.drawLines();
   }
 
-  // Draw the lines between connected devices on screen.
+  /**
+   * Function that gets called when an object drag ends.
+   * Sets the x & y positions in device objects using devX & devY from here.
+   * The x & y values are values between 0 and 1, representing it's position
+   * within the device space/dotted region - this might be useful for setting
+   * the position of the html div, irrespective of resolution/window size.
+   *
+   * @param {Event} event The drag end event thrown by the drag listener
+   * (interactjs)
+   * */
+  dragEndListener(event) {
+    console.log(event);
+    const deviceDiv = event.target;
+    const deviceId = deviceDiv.id;
+
+    // Find the object for this device from the devices array.
+    const deviceObj = this.devices.find((dev) => dev.id == deviceId);
+
+    let devX = Math.abs(
+      (
+        (parseFloat(deviceDiv.dataset.x) || 0) /
+        deviceDiv.parentElement.clientWidth
+      ).toFixed(2)
+    );
+    let devY = Math.abs(
+      (
+        (parseFloat(deviceDiv.dataset.y) || 0) /
+        deviceDiv.parentElement.clientHeight
+      ).toFixed(2)
+    );
+
+    // Update the object's x & y properties.
+    deviceObj.position.x = devX;
+    deviceObj.position.y = devY;
+
+    // Draw lines connecting devices.
+    this.drawLines();
+  }
+
+  /** Draw the lines between connected devices on screen.*/
   drawLines() {
     const ctx = this.lineCanvCtx;
 
@@ -276,7 +306,6 @@ export default class SpaceManager {
 
     /**
      * List of all RPi devices on screen.
-     *
      * @type RPi[]
      */
     const rPiDevices = this.devices.filter(
@@ -326,16 +355,77 @@ export default class SpaceManager {
     });
   }
 
-  // Reload the illustrations on each device on screen.
-  // This might be required after the window size gets changed.
+  /** Make .draggable class elements draggable using interact.js */
+  makeDraggables() {
+    interact(`#${this.vizSpaceElement.id} .draggable`).draggable({
+      autoscroll: false,
+      ignoreFrom: `#${this.vizSpaceElement.id} .draggable :not(canvas)`,
+      inertia: false,
+      modifiers: [
+        interact.modifiers.restrictRect({
+          restriction: "parent",
+          endOnly: false,
+        }),
+      ],
+      listeners: {
+        // The drag-listener methods requires "this" context access -
+        // So that it can access this.devices[]., for example.
+        // To pass the context when the event calls the function, use .apply()
+        // like below, instead of simply saying "end: this.dragEndListener".
+        //
+        // Read more about .apply():
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+        move: (ev) => this.dragMoveListener.apply(this, [ev]),
+        end: (ev) => this.dragEndListener.apply(this, [ev]),
+      },
+    });
+  }
+
+  /**
+   * Place the devices on screen correctly, according to their JS object's
+   * position.x & position.y values.
+   */
+  placeDevices() {
+    this.devices.forEach((dev) => {
+      // Find the new x & y values using the JS object's position object.
+      let newX = Math.round(dev.position.x * this.vizSpaceElement.clientWidth);
+      let newY = Math.round(dev.position.y * this.vizSpaceElement.clientHeight);
+
+      // Make the device fit within the boundaries of this.vizSpaceElement.
+      // X-value:
+      if (newX + dev.element.clientWidth > this.vizSpaceElement.clientWidth) {
+        newX = this.vizSpaceElement.clientWidth - dev.element.clientWidth;
+        dev.position.x = (newX / this.vizSpaceElement.clientWidth).toFixed(2);
+      }
+      // Y-value:
+      if (newY + dev.element.clientHeight > this.vizSpaceElement.clientHeight) {
+        newY = this.vizSpaceElement.clientHeight - dev.element.clientHeight;
+        dev.position.y = (newY / this.vizSpaceElement.clientHeight).toFixed(2);
+      }
+
+      // Set the location on screen for the deviceContainer HTML element.
+      dev.element.style.transform = `translate(${newX}px, ${newY}px)`;
+
+      // Set the data attributes that interactjs use.
+      dev.element.dataset.x = newX;
+      dev.element.dataset.y = newY;
+    });
+  }
+
+  /**
+   * Reload the illustrations on each device on screen.
+   * This might be required after the window size gets changed.
+   */
   refreshIllustrations() {
     this.devices.forEach((devObj) => {
       devObj.show();
     });
   }
 
-  // Resizes the elements on the line-drawing canvas size to match
-  // the parent elements (visualizer space/dotted region) size.
+  /**
+   * Resizes the elements on the line-drawing canvas size to match
+   * the parent elements (visualizer space/dotted region) size.
+   */
   resizeLineDrawingCanvas() {
     if (this.lineCanvElem) {
       this.lineCanvElem.width = this.vizSpaceElement.clientWidth;
@@ -343,62 +433,26 @@ export default class SpaceManager {
     }
   }
 
-  // Function to create the canvas element that draws lines between devices.
-  createLineCanv() {
-    const canvElem = document.createElement("canvas");
+  /**
+   * When the window is resized, the illustrations have to re-render.
+   * However, the "resize" event fires every frame of the browser UI,
+   * so we add a timeout - The event is placed on a 50ms delay.
+   * 'windowResizer' is a variable for this timeout functionality.
+   * Code from: https://stackoverflow.com/a/60204716
+   *
+   * @param {Event} ev The Window resize event object
+   */
+  windowResizeListener(ev) {
+    // Clear any existing timeout.
+    clearTimeout(this.windowResizer);
 
-    canvElem.class = "visualizer-canvas";
-    canvElem.width = this.vizSpaceElement.clientWidth;
-    canvElem.height = this.vizSpaceElement.clientHeight;
+    // Create a new timeout on a 200ms delay.
+    this.windowResizer = setTimeout(() => {
+      // Execute these functions on a timeout.
 
-    return canvElem;
-  }
-
-  // Listens to move events thrown by the interactable object
-  dragMoveListener(event) {
-    let target = event.target;
-    let x = Math.round((parseFloat(target.dataset.x) || 0) + event.dx);
-    let y = Math.round((parseFloat(target.dataset.y) || 0) + event.dy);
-
-    target.style.transform = `translate(${x}px, ${y}px)`;
-
-    target.dataset.x = x;
-    target.dataset.y = y;
-
-    // Draw lines connecting devices.
-    this.drawLines();
-  }
-
-  // Function that gets called when an object drag ends.
-  // Sets the x & y positions in device objects using devX & devY from here.
-  // The x & y values are values between 0 and 1, representing it's position
-  // within the device space/dotted region - this might be useful for setting
-  // the position of the html div, irrespective of resolution/window size.
-  dragEndListener(event) {
-    const deviceDiv = event.target;
-    const deviceId = deviceDiv.id;
-
-    // Find the object for this device from the devices array.
-    const deviceObj = this.devices.find((dev) => dev.id == deviceId);
-
-    let devX = Math.abs(
-      (
-        (parseFloat(deviceDiv.dataset.x) || 0) /
-        deviceDiv.parentElement.clientWidth
-      ).toFixed(2)
-    );
-    let devY = Math.abs(
-      (
-        (parseFloat(deviceDiv.dataset.y) || 0) /
-        deviceDiv.parentElement.clientHeight
-      ).toFixed(2)
-    );
-
-    // Update the object's x & y properties.
-    deviceObj.position.x = devX;
-    deviceObj.position.y = devY;
-
-    // Draw lines connecting devices.
-    this.drawLines();
+      this.resizeLineDrawingCanvas();
+      this.drawLines();
+      this.refreshIllustrations();
+    }, 50);
   }
 }
