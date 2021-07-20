@@ -86,6 +86,34 @@ export default class SpaceManager {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // Delete a device from the devices space, given its id string.
+  deleteDevice(deviceId) {
+    // Get the device object
+    const delDevice = this.devices.find((dev) => dev.id === deviceId);
+
+    if (!delDevice) {
+      console.error(`Device with id '${deviceId}' does not exist in space`);
+      return;
+    }
+
+    // Call the delete function of the device object.
+    delDevice.delete();
+
+    // Delete JS object (from array and eventually from memory).
+    this.devices.splice(this.devices.indexOf(delDevice), 1);
+
+    // Redraw lines.
+    this.drawLines();
+  }
+
+  // Change status of device specified by the given ID
+  changeStatus(deviceId, status) {
+    this.devices.find((dev) => dev.id == deviceId).changeStatus(status);
+  }
+
+>>>>>>> 68377ffbb52764631cdf44fcf9f9fa0e2be8afb9
   /**
    * Logs errors and returns false if the devices are not connectable.
    * Returns the device objects (truthy value) in an object, if they

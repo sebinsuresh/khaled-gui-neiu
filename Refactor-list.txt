@@ -1,9 +1,5 @@
 Improvements:
 
-- Label: Setter codes are not being used in Label & device classes.
-
-- SpaceMan: Move all "create__" code to top, all the functionality code (listeners, illustration updation) to bottom
-
 - Order functions alphabetically
 
 - JSDocs for all functions, classes, class properties
