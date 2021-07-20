@@ -53,8 +53,6 @@ export default class SpaceManager {
     window.addEventListener("resize", (ev) => {
       this.windowResizeListener.apply(this, [ev]);
     });
-
-    // TODO: Other event listeners
   }
 
   // When the window is resized, the illustrations have to re-render.

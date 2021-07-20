@@ -102,8 +102,6 @@ export default class Label {
         );
         keysToRemove.push(key);
       } else if (typeof this.parent[key] === "object") {
-        // TODO: NESTED OBJECTS ARE PASSED BY REFERENCE! The changes are not noticed the way it is checking equality below (Eg: try adding position to watchProps)
-
         // Show warning only the first time the key is encountered.
         if (this.object[key] === undefined)
           console.warn("Cannot watch objects/arrays properly.");

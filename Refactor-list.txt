@@ -1,7 +1,5 @@
 Improvements:
 
-- Implement all TODOs
-
 - SpaceManager's connectDevices() and disconnectDevices() have some functionality that can be moved to Device and RPi class
 	- connectDevice's "setting pin number" part
 	- part where various properties of the device objects (.connectedDevices, .isConnected, .connectedTo) etc are set

@@ -70,7 +70,6 @@ export default class RPi extends Device {
   }
 
   // Remove the connected device from this RPi.
-  // TODO: implement the method, and add comment on what it does.
   removeConnectedDevice(idToRemove) {}
 
   // Creates and return illustration for the Raspberry Pi device.
